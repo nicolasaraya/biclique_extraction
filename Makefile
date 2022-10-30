@@ -1,12 +1,19 @@
 CC=g++
 CFLAGS=-g -O3 -fopenmp -lm
-EXECUTABLE=main.o 
-OBJECTS = main.cpp AdjencyMatrix.cpp
+EXECUTABLE=main.o
+CONFIGURE=clear mk
+OBJECTS = main.cpp AdjencyMatrix.cpp AdjencyMatrix.hpp
 
 all: $(EXECUTABLE)
 
+configure: $(CONFIGURE)
+
+mk:
+	mkdir -p ./data
+	mkdir -p ./output
+
 main.o: main.cpp AdjencyMatrix.cpp AdjencyMatrix.hpp
-	$(CC) $(CFLAGS) -o biclique_extrator.o $(OBJECTS)
+	$(CC) $(CFLAGS) -o biclique_extrator $(OBJECTS)
  
 clear:
 	rm -fr *.o biclique_extrator *~
