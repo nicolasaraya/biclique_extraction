@@ -16,4 +16,4 @@ main.o: main.cpp AdjencyMatrix.cpp AdjencyMatrix.hpp
 	$(CC) $(CFLAGS) -o biclique_extractor $(OBJECTS)
  
 clear:
-	rm -fr *.o biclique_extrator *~
+	rm -fr biclique_extrator
