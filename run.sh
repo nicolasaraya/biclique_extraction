@@ -1,1 +1,1 @@
-./biclique_extrator
+./biclique_extractor

@@ -13,7 +13,7 @@ mk:
 	mkdir -p ./output
 
 main.o: main.cpp AdjencyMatrix.cpp AdjencyMatrix.hpp
-	$(CC) $(CFLAGS) -o biclique_extrator $(OBJECTS)
+	$(CC) $(CFLAGS) -o biclique_extractor $(OBJECTS)
  
 clear:
 	rm -fr *.o biclique_extrator *~
