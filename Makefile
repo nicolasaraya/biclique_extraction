@@ -1,7 +1,7 @@
 CC=g++
-CFLAGS=-g -O3 -fopenmp -lm s
+CFLAGS=-g -O3 -fopenmp -lm
 EXECUTABLE=main.o 
-OBJECTS = main.cpp AdjencyMatrix.hpp AdjencyMatrix.cpp
+OBJECTS = main.cpp AdjencyMatrix.cpp
 
 all: $(EXECUTABLE)
 
