@@ -1,6 +1,3 @@
 biclique_extractor.o
 /data
-/data/*
 /output
-/output/*
-/data2
