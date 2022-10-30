@@ -1,5 +1,5 @@
 
-# Identifition and extraction of Bicliques using MinHash and Prefix Tree
+# Identification and extraction of Bicliques using MinHash and Prefix Tree
 
   
   
