@@ -1,4 +1,3 @@
-
 # Identification and extraction of Bicliques using MinHash and Prefix Tree
 
 ![Biclique](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Biclique_K_3_3.svg/2381px-Biclique_K_3_3.svg.png)

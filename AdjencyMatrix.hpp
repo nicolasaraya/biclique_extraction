@@ -7,27 +7,27 @@
 #include <cstdint>
 #include <vector>
 #include <sstream> 
+#include "Utils.h"
 
 using namespace std;
-
 
 class AdjencyMatrix{
     public:
         AdjencyMatrix();
         ~AdjencyMatrix();
-        void loadFileTxt(const string);
+        void insert(Node);
+        void sort();
+        uint64_t size();
+        Node getNode(uint64_t);
     private:
         /*
             vars
         */
-        uint64_t countNodes; 
-        string path;
-        vector<pair<uint64_t, vector<uint64_t>>> matrix; 
+        vector<Node> matrix; 
         
         /*
             methods
         */
-        
         vector<uint64_t> splitString(string, string);
 
 };
