@@ -16,9 +16,7 @@ int main(int argc, char *argv[]){
 
     be.makeAdjencyMatrix();
     cout << be.getAdjencyMatrix()->size() << endl;
-    cout << "ok0" << endl;
     be.computeShingles();
-    cout << "ok1" << endl;
     //be.printSignatures();
     be.computeClusters();
     cout <<"********************************" << endl;

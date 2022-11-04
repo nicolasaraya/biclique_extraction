@@ -28,7 +28,7 @@ SignNode* Shingle::computeShingle(Node* _node){
     if (ady_nodes->size() == 0){
         return NULL; 
     }
-    cout << ady_nodes->size() << endl;
+    //cout << ady_nodes->size() << endl;
     //if(ady_nodes->size() < shingle_size ) return NULL;
 
     vector<uint64_t> MIN; 

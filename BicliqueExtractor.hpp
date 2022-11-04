@@ -33,7 +33,7 @@ class BicliqueExtractor{
         int numb_clusters;
         uint16_t num_signatures;
         uint32_t biclique_size; 
-        uint32_t minClusterSize = 1;
+        uint32_t minClusterSize = 10;
         string path; 
         AdjencyMatrix* adjMatrix;
         vector<SignNode*> signatures;

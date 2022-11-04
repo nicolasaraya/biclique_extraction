@@ -31,7 +31,7 @@ void BicliqueExtractor::makeAdjencyMatrix(){
         //cout << "i: " << countAux << " , size: " << nodes.size() << endl; 
         if(nodes.size() == 0) continue;
         uint64_t nodeID = nodes[0]; 
-        sort(nodes.begin(), nodes.end());
+        //sort(nodes.begin(), nodes.end());
         if(nodes.size() > 0){
             Node* aux = new Node(nodeID, nodes);
             adjMatrix->insert(aux); 
@@ -142,7 +142,10 @@ void BicliqueExtractor::computeClusters(){
         Clusters = ClustersChild;
         ClustersChild.clear();
         
-        
+    }
+    for(auto i : Clusters){
+        //printSignatures2(*i);
+
     }
     cout << "Clusters encontrados: " << Clusters.size() << endl;
     
