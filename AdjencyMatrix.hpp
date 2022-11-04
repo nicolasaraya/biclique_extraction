@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <vector>
 #include <sstream> 
-#include "Utils.h"
+#include "Utils.hpp"
 
 using namespace std;
 
@@ -15,15 +15,15 @@ class AdjencyMatrix{
     public:
         AdjencyMatrix();
         ~AdjencyMatrix();
-        void insert(Node);
+        void insert(Node*);
         void sort();
         uint64_t size();
-        Node getNode(uint64_t);
+        Node* getNode(uint64_t);
     private:
         /*
             vars
         */
-        vector<Node> matrix; 
+        vector<Node*> matrix; 
         
         /*
             methods

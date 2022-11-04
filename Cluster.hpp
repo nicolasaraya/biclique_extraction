@@ -1,7 +1,7 @@
 #ifndef CLUSTER_HPP
 #define CLUSTER_HPP
 
-#include "Utils.h"
+#include "Utils.hpp"
 
 
 class Cluster{
@@ -10,7 +10,6 @@ class Cluster{
         ~Cluster();
 
     private:
-        vector<Node> nodes;
 };
 
 

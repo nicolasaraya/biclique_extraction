@@ -23,18 +23,23 @@ Shingle::~Shingle(){
 }
 
 
-vector<uint64_t> Shingle::computeShingle(uint64_t node, vector<uint64_t> ady_nodes){
-    if (ady_nodes.size() == 0){
-        return vector<uint64_t>(0); 
+SignNode* Shingle::computeShingle(Node* _node){
+    vector<uint64_t>* ady_nodes = &(_node->second);
+    if (ady_nodes->size() == 0){
+        return NULL; 
     }
-    
+    cout << ady_nodes->size() << endl;
+    //if(ady_nodes->size() < shingle_size ) return NULL;
+
     vector<uint64_t> MIN; 
     for (size_t i = 0; i < num_signatures; i++) MIN.push_back(prime);
 
-    for(size_t i = 0; i < ady_nodes.size() - shingle_size ; i++){
+
+    for(size_t i = 0; i < ady_nodes->size() - shingle_size ; i++){
         string shingle_ = ""; 
-        for(size_t j = 0; j < shingle_size; i++){
-            shingle_ += to_string(ady_nodes[i+j]);
+        for(size_t j = 0; j < shingle_size && i + j < ady_nodes->size(); j++){
+            //cout << "    " <<  ady_nodes->at(i+j) ;
+            shingle_ += to_string( ady_nodes->at(i+j));
         }
         uint64_t shingleID = hash_nodes(shingle_);
 
@@ -47,7 +52,9 @@ vector<uint64_t> Shingle::computeShingle(uint64_t node, vector<uint64_t> ady_nod
         } 
 
     }
-    return MIN;
+    //cout << MIN.size() << endl;
+    SignNode* s = new SignNode(_node, MIN);
+    return s;
 
     /*
     vector<uint64_t> HashedNodes(shingle_size); 

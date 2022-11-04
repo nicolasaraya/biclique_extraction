@@ -1,1 +1,1 @@
-./biclique_extractor
+./biclique_extractor dblp-2011.txt 3 1

@@ -1,8 +1,8 @@
 CC=g++
-CFLAGS=-g -O3 -fopenmp -lm
+CFLAGS=-g -O0 -fopenmp -lm -Wall
 EXECUTABLE=main.o
 CONFIGURE=clear mk
-OBJECTS = main.cpp AdjencyMatrix.cpp AdjencyMatrix.hpp BicliqueExtractor.hpp BicliqueExtractor.cpp Shingle.hpp Shingle.cpp Cluster.hpp Cluster.cpp
+OBJECTS = main.cpp AdjencyMatrix.cpp AdjencyMatrix.hpp BicliqueExtractor.hpp BicliqueExtractor.cpp Shingle.hpp Shingle.cpp Cluster.hpp Cluster.cpp Utils.hpp
 
 all: $(EXECUTABLE)
 
