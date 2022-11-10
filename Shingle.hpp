@@ -11,8 +11,6 @@ using namespace std;
 
 class Shingle{
     public:
-        typedef pair<uint64_t,vector<uint64_t>> sign_node; 
-
         Shingle(uint16_t num_signatures);
         ~Shingle();
         SignNode* computeShingle(Node*);
@@ -23,7 +21,6 @@ class Shingle{
         std::hash<string> hash_nodes;
         vector<uint64_t> A;
         vector<uint64_t> B;
-        vector<sign_node> sign_node_vec;
 };
 
 #endif

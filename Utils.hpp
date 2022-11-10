@@ -15,6 +15,7 @@ typedef struct{
     vector<uint64_t> Ady; 
 }Node;
 */
+
 typedef pair<Node*, vector<uint64_t>> SignNode; 
 
 #endif 

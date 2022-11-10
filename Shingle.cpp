@@ -24,6 +24,7 @@ Shingle::~Shingle(){
 
 
 SignNode* Shingle::computeShingle(Node* _node){
+    
     vector<uint64_t>* ady_nodes = &(_node->second);
     if (ady_nodes->size() == 0){
         return NULL; 
@@ -72,7 +73,7 @@ SignNode* Shingle::computeShingle(Node* _node){
 	            shingleHash = (( A_[j] *  shingleID)  + B_[j]) % prime_;
 	
 	            if (shingleHash < MIN_[j]){
-                    MIN_[j] = shingleHash;
+                    // MIN_[j] = shingleHash;
 	            }
 	        } 
         } 

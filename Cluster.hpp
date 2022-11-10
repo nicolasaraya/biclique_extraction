@@ -6,10 +6,11 @@
 
 class Cluster{
     public:
-        Cluster();
+        Cluster(vector<Node*>);
         ~Cluster();
 
     private:
+        vector<Node*> nodes;
 };
 
 

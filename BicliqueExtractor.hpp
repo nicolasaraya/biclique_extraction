@@ -30,10 +30,10 @@ class BicliqueExtractor{
         bool adjMatrixLoaded;
         bool adjMatrixSorted; 
         bool sortedHashes;
-        int numb_clusters;
+        int numb_clusters = 0;
         uint16_t num_signatures;
         uint32_t biclique_size; 
-        uint32_t minClusterSize = 10;
+        uint32_t minClusterSize = 1;
         string path; 
         AdjencyMatrix* adjMatrix;
         vector<SignNode*> signatures;
@@ -48,9 +48,8 @@ class BicliqueExtractor{
         bool compareMinHash(const SignNode*, const SignNode*, int);
 
         //nuevos metodos
-        void computeClusters2(vector<SignNode*>,int);
-        vector<uint64_t> make_positions_Groups(vector<SignNode*> ,int);
-        vector<SignNode*> makeGroups(vector<SignNode*>, uint64_t , uint64_t );
+        void computeClusters2(vector<SignNode*>*,int);
+        vector<vector<SignNode*>*> makeGroups(vector<SignNode*>*,int );
         void printSignatures2(vector<SignNode*>);
 	
         

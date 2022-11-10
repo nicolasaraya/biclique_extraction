@@ -1,7 +1,8 @@
 #include "Cluster.hpp"
 
 
-Cluster::Cluster(){
+Cluster::Cluster(vector<Node*> entry){
+    nodes = entry;
 }
 Cluster::~Cluster(){
 
