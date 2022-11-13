@@ -1,13 +1,14 @@
 #ifndef BICLIQUE_HPP
 #define BICLIQUE_HPP
 
+#include <algorithm>
+#include <functional>
 #include <iostream>
 #include <string>
-#include <algorithm>
 
+#include "AdjencyMatrix.hpp"
 #include "Cluster.hpp"
 #include "Shingle.hpp"
-#include "AdjencyMatrix.hpp"
 
 using namespace std; 
 
@@ -15,13 +16,8 @@ class BicliqueExtractor{
     public:
         BicliqueExtractor(const string, uint16_t, uint32_t);
         ~BicliqueExtractor();
-        void makeAdjencyMatrix();
-        void computeShingles();
-        void computeShinglesInline();
-        AdjencyMatrix* getAdjencyMatrix();
-        void printSignatures();
-        void computeClusters();
-        void saveCluster();
+
+        void extract();
 
     private:
         /*
@@ -30,28 +26,42 @@ class BicliqueExtractor{
         bool adjMatrixLoaded;
         bool adjMatrixSorted; 
         bool sortedHashes;
+        
         int numb_clusters = 0;
         uint16_t num_signatures;
         uint32_t biclique_size; 
         uint32_t minClusterSize = 1;
+
         string path; 
+
         AdjencyMatrix* adjMatrix;
-        vector<SignNode*> signatures;
-        vector< vector<SignNode*>* > Clusters; 
-        //vector<Cluster*> clusters;
+        vector<Cluster*> clusters;
         Shingle* shingle;
+        vector<SignNode*> signatures;
+        //vector< vector< Node* >* > Clusters;
         /*
             METHODS
         */
-        vector<uint64_t> splitString(string, string);
-        void sortSignatures(vector<SignNode*>*, int);
+        AdjencyMatrix* getAdjencyMatrix();
+
         bool compareMinHash(const SignNode*, const SignNode*, int);
 
-        //nuevos metodos
-        void computeClusters2(vector<SignNode*>*,int);
         vector<vector<SignNode*>*> makeGroups(vector<SignNode*>*,int );
+        vector<uint64_t> splitString(string, string);
+
+        void makeAdjencyMatrix();
+
+        void computeClusters();
+        void computeClusters2(vector<SignNode*>*,int);
+        void computeHistograms();
+        void computeShingles();
+        void computeShinglesInline();
+
+        void printSignatures();
         void printSignatures2(vector<SignNode*>);
-	
+
+        //void saveCluster();
+        void sortSignatures(vector<SignNode*>*, int);
         
 };
 

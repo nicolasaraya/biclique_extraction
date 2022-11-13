@@ -14,14 +14,7 @@ int main(int argc, char *argv[]){
     cout << "Num_signatures " << atoi(argv[2]) << endl;
     BicliqueExtractor be(path+argv[1], atoi(argv[2]), atoi(argv[3]));
 
-    be.makeAdjencyMatrix();
-    cout << be.getAdjencyMatrix()->size() << endl;
-    be.computeShingles();
-    //be.printSignatures();
-    be.computeClusters();
-    cout <<"********************************" << endl;
-    //be.saveCluster();
-    //be.printSignatures();
+    be.extract();
 
     return 0;
  }
