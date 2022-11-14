@@ -1,1 +1,0 @@
-g++ -g -O0 -fopenmp -lm -Wall -o biclique_extractor main.cpp AdjencyMatrix.cpp AdjencyMatrix.hpp BicliqueExtractor.hpp BicliqueExtractor.cpp Shingle.hpp Shingle.cpp Cluster.hpp Cluster.cpp Utils.hpp
