@@ -3,7 +3,8 @@
 
 #include <algorithm>
 #include <iostream>
-#include <map>
+#include <unordered_map>
+#include <functional>
 
 #include "Utils.hpp"
 
@@ -17,21 +18,13 @@ class Cluster{
 
         void computeHistogram();
         void printCluster();
+        void computeFrecuency(); 
 
     private:
         vector<Node*>* nodes;
-};
-
-struct edgeCmp{
-
-    bool operator()(const Node& rpStart, const Node& rpEnd ){
-        if ((rpStart.second).size() == (rpEnd.second).size()){
-	        return rpStart.first < rpEnd.first;
-        }
-        else{
-            return (rpStart.second).size() > (rpEnd.second).size();
-        } 
-    }
+        unordered_map<uint64_t, uint32_t> mapFrecuency; //Valor Nodo, Frecuencia
+        bool sortFrecuencyComp(const uint64_t&, const uint64_t&);
+        bool sortSizeComp(const Node*, const Node*);
 };
 
 

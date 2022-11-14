@@ -101,7 +101,7 @@ void BicliqueExtractor::makeAdjencyMatrix(){
             Node* aux = new Node(nodeID, nodes);
             adjMatrix->insert(aux); 
         } //push Nodo y Nodos Adyacentes.
-        //if(countAux++ == 10) break;
+        if(countAux++ == 10) break;
         //countAux++;
         //if(countAux++%1000 == 0) cout << countAux <<"Nodos leidos" << endl; //10 nodos
     }
@@ -178,7 +178,7 @@ void BicliqueExtractor::computeClusters2(vector<SignNode*>* sign_cluster,int col
         if( numberEntries > 10 && column < num_signatures-1){
             computeClusters2(groups[i],column+1);
         }
-        else if(numberEntries > 10 ){
+        else if(numberEntries > 1 ){
             vector< Node* >* new_cluster = new vector<Node*>(); 
             for(uint64_t j = 0; j < groups[i]->size(); j++){
                 new_cluster->push_back(groups[i]->at(j)->first);
@@ -205,8 +205,57 @@ void BicliqueExtractor::computeClusters2(vector<SignNode*>* sign_cluster,int col
 void BicliqueExtractor::computeHistograms(){
     //vector<Cluster*> clusters;
 
-    clusters[0]->computeHistogram(); 
+    //clusters[0]->computeHistogram(); 
+    vector<Node*> aux; 
+    Node* n1 = new Node;
+    vector<uint64_t> arista1{1,2,3,7,8};
+    n1->second = arista1; 
+    n1->first = 1;
+
+    Node* n2 = new Node;
+    vector<uint64_t> arista2{1,2,3,7,8};
+    n2->second = arista2;
+    n2->first = 2; 
+
+    Node* n3 = new Node;
+    vector<uint64_t> arista3{1,2,3,7,8};
+    n3->second = arista3;
+    n3->first = 3; 
+
+    Node* n5 = new Node;
+    vector<uint64_t> arista5{1,2,3,5,7,8};
+    n5->second = arista5;
+    n5->first = 5; 
+
+    Node* n6 = new Node;
+    vector<uint64_t> arista6{1,2,3,6,7,8};
+    n6->second = arista6;
+    n6->first = 6; 
+
+    Node* n7 = new Node;
+    vector<uint64_t> arista7{1,4,7,8};
+    n7->second = arista7;
+    n7->first = 7; 
+
+    Node* n8 = new Node;
+    vector<uint64_t> arista8{1,4,7,8};
+    n8->second = arista8;
+    n8->first = 8; 
+
+
+
+    aux.push_back(n1);
+    aux.push_back(n2);
+    aux.push_back(n3);
+    aux.push_back(n5);
+    aux.push_back(n6);
+    aux.push_back(n7);
+    aux.push_back(n8);
     
+
+    Cluster* c = new Cluster(&aux);
+    c->computeHistogram();
+
     return;
 }
 
