@@ -24,9 +24,10 @@ void BicliqueExtractor::extract(){
     cout << getAdjencyMatrix()->size() << endl;
     computeShingles();
     //adjMatrix->print();
-    printSignatures();
-    //computeClusters();
-    //computeHistograms();
+    //printSignatures();
+    computeClusters();
+    //printSignatures();
+    computeHistograms();
     cout <<"********************************" << endl;
     //saveCluster();
     //printSignatures();
@@ -97,14 +98,14 @@ void BicliqueExtractor::makeAdjencyMatrix(){
         if(nodes.size() == 0) continue;
         uint64_t nodeID = nodes[0]; 
         if(!withAutoCycle) nodes.erase(nodes.begin()); //eliminar autociclo
-        //sort(nodes.begin(), nodes.end());
+        sort(nodes.begin(), nodes.end());
         if(nodes.size() > 0){
             Node* aux = new Node(nodeID, nodes);
             adjMatrix->insert(aux); 
         } //push Nodo y Nodos Adyacentes.
-        //if(countAux++ == 10) break;
-        //countAux++;
-        //if(countAux++%1000 == 0) cout << countAux <<"Nodos leidos" << endl; //10 nodos
+        //if(countAux == 10) break;
+        countAux++;
+        //if(countAux%1000 == 0) cout << countAux <<"Nodos leidos" << endl; //10 nodos
     }
     adjMatrixLoaded = true; 
 }
@@ -123,8 +124,7 @@ void BicliqueExtractor::computeClusters(){
             if(subSignatures->size() > minClusterSize){
                 countA++;
             }   
-                //signNode -> Node -> vector<uint64>.size
-            
+                
 
             sortSignatures(subSignatures, i);
 
@@ -133,10 +133,10 @@ void BicliqueExtractor::computeClusters(){
             miniCluster->push_back(init);
              
             for(size_t k = 1; k < subSignatures->size(); k++){
-                if(subSignatures->at(k)->first->second.size() < minClusterSize){ //min debe tener minClustersize nodos ady.
+                //signNode -> Node -> vector<uint64>.size
+                if(subSignatures->at(k)->first->second.size() < minAdyNodes){ //minima cant de nodos ady.
                     continue;
                 }
-
 
                 if(subSignatures->at(k)->second.at(i) == miniCluster->at(0)->second.at(i)){
                     miniCluster->push_back(subSignatures->at(k));
@@ -234,17 +234,17 @@ void BicliqueExtractor::computeHistograms(){
     //clusters[0]->computeHistogram(); 
     //clusters[0]->printCluster();
     
-    //omp_set_num_threads(NUM_THREADS);
+    omp_set_num_threads(NUM_THREADS);
     int counter = 0;
     TIMERSTART(histogram);
-    //#pragma omp parallel for
+    
     //clusters[641]->printCluster();
     //clusters[617]->computeHistogram();
 
-    
+    #pragma omp parallel for
     for(auto i : clusters){
         counter++;
-        cout << counter << endl;
+        //cout << counter << endl;
         i->computeHistogram();
     }
     

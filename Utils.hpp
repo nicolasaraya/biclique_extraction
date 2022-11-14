@@ -9,7 +9,7 @@
 
 using namespace std; 
 
-#define NUM_THREADS 1
+#define NUM_THREADS 8
 
 typedef pair<uint64_t, vector<uint64_t>> Node;
 typedef pair<Node*, vector<uint64_t>> SignNode; 

@@ -27,12 +27,13 @@ class BicliqueExtractor{
         bool adjMatrixLoaded;
         bool adjMatrixSorted; 
         bool sortedHashes;
-        bool withAutoCycle = false;
+        bool withAutoCycle = true;
         
         int numb_clusters = 0;
         uint16_t num_signatures;
         uint32_t biclique_size; 
-        uint32_t minClusterSize = 10;
+        uint32_t minClusterSize = 1;
+        uint32_t minAdyNodes = 3; // = num_signatures? 
 
         string path; 
 
