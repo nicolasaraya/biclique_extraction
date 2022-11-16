@@ -9,8 +9,6 @@ Cluster::~Cluster(){
 }
 
 void Cluster::computeHistogram(){
-    printCluster();
-    cout <<" **************** " << endl;
     computeFrecuency();
 
     for(auto i : *nodes){
@@ -18,13 +16,13 @@ void Cluster::computeHistogram(){
         sort(adyNodes->begin(), adyNodes->end(), bind(&Cluster::sortFrecuencyComp, this, placeholders::_1, placeholders::_2));
 
         for(auto j : *adyNodes){
-            cout << j << " ";  
         }
-        cout << endl;
+        //cout << endl;
 
-        for(size_t j = adyNodes->size()-1 ; j >= 0; j--){
+        for(int j = adyNodes->size()-1 ; j >= 0; j--){
             if(mapFrecuency[ adyNodes->at(j) ] <= 1){
                 adyNodes->pop_back();
+                //if(adyNodes->size() == 0) break;
             }
             else break;
         }
@@ -34,7 +32,7 @@ void Cluster::computeHistogram(){
  
 
 
-    printCluster();
+    //printCluster();
 
 
 
@@ -58,11 +56,11 @@ void Cluster::computeFrecuency(){
         }
 
     }
-    
+    /*
     cout << "********MAP**********" << endl;
     for(auto i : mapFrecuency){
         cout << i.first << ", freq: " << i.second << endl;
-    }
+    }*/
 
 }
 
