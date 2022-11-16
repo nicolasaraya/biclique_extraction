@@ -27,7 +27,7 @@ void BicliqueExtractor::extract(){
     //printSignatures();
     computeClusters();
     //printSignatures();
-    computeHistograms();
+    computeTree();
     cout <<"********************************" << endl;
     //saveCluster();
     //printSignatures();
@@ -201,7 +201,7 @@ void BicliqueExtractor::computeClusters2(vector<SignNode*>* sign_cluster,int col
     for(size_t i = 0 ; i < groups.size(); i++){
         uint32_t numberEntries = groups[i]->size();
 
-        if( numberEntries > 10 && column < num_signatures-1){
+        if( numberEntries > minClusterSize && column < num_signatures-1){
             computeClusters2(groups[i],column+1);
         }
         else if(numberEntries > minClusterSize ){
@@ -228,30 +228,74 @@ void BicliqueExtractor::computeClusters2(vector<SignNode*>* sign_cluster,int col
     }
 }
 
-void BicliqueExtractor::computeHistograms(){
+void BicliqueExtractor::computeTree(){
     //vector<Cluster*> clusters;
-    for(auto i: clusters){
-        i->computeHistogram();
-
+    //for(auto i: clusters){
+    //    i->computeHistogram();
+    //}
     //clusters[0]->computeHistogram(); 
     //clusters[0]->printCluster();
-    
     omp_set_num_threads(NUM_THREADS);
     int counter = 0;
-    TIMERSTART(histogram);
+    TIMERSTART(create_tree);
+    /*
+    vector<Node*> *aux = new vector<Node*>();
+    Node* n1 = new Node;
+    vector<uint64_t> arista1{1,2,3,7,8};
+    n1->second = arista1; 
+    n1->first = 1;
+
+    Node* n2 = new Node;
+    vector<uint64_t> arista2{1,2,3,7,8};
+    n2->second = arista2;
+    n2->first = 2; 
+
+    Node* n3 = new Node;
+    vector<uint64_t> arista3{1,2,3,7,8};
+    n3->second = arista3;
+    n3->first = 3; 
+
+    Node* n5 = new Node;
+    vector<uint64_t> arista5{1,2,3,5,7,8};
+    n5->second = arista5;
+    n5->first = 5; 
+
+    Node* n6 = new Node;
+    vector<uint64_t> arista6{1,2,3,6,7,8};
+    n6->second = arista6;
+    n6->first = 6; 
+
+    Node* n7 = new Node;
+    vector<uint64_t> arista7{1,4,7,8};
+    n7->second = arista7;
+    n7->first = 7; 
+
+    Node* n8 = new Node;
+    vector<uint64_t> arista8{1,4,7,8};
+    n8->second = arista8;
+    n8->first = 8; 
+
+    aux->push_back(n1);
+    aux->push_back(n2);
+    aux->push_back(n3);
+    aux->push_back(n5);
+    aux->push_back(n6);
+    aux->push_back(n7);
+    aux->push_back(n8);
     
-    //clusters[641]->printCluster();
-    //clusters[617]->computeHistogram();
+    Cluster* c = new Cluster(aux);
+    c->computeTree();
+    */
 
     #pragma omp parallel for
     for(auto i : clusters){
         counter++;
         //cout << counter << endl;
-        i->computeHistogram();
+        i->computeTree();
     }
     
     
-    TIMERSTOP(histogram);
+    TIMERSTOP(create_trie);
     return;
 }
 

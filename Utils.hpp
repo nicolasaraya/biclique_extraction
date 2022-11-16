@@ -21,6 +21,14 @@ typedef struct{
 }Node;
 */
 
+struct TrieNode{
+    TrieNode *parent;
+    uint64_t vertex;
+    vector<uint64_t> indices;
+    vector<TrieNode*> childrens;
+};
+
+
 #define TIMERSTART(label)                                                  \
     std::chrono::time_point<std::chrono::high_resolution_clock> a##label, b##label; \
 	a##label = std::chrono::high_resolution_clock::now();

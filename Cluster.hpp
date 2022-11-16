@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <functional>
 
+#include "Trie.hpp"
 #include "Utils.hpp"
 
 using namespace std;
@@ -13,18 +14,23 @@ using namespace std;
 
 class Cluster{
     public:
+        Trie *t;
+
         Cluster(vector<Node*>*);
         ~Cluster();
 
         void computeHistogram();
+        void computeTree();
         void printCluster();
-        void computeFrecuency(); 
 
     private:
         vector<Node*>* nodes;
         unordered_map<uint64_t, uint32_t> mapFrecuency; //Valor Nodo, Frecuencia
+
+        
         bool sortFrecuencyComp(const uint64_t&, const uint64_t&);
         bool sortSizeComp(const Node*, const Node*);
+        void computeFrecuency(); 
 };
 
 

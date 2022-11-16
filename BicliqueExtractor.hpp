@@ -32,7 +32,7 @@ class BicliqueExtractor{
         int numb_clusters = 0;
         uint16_t num_signatures;
         uint32_t biclique_size; 
-        uint32_t minClusterSize = 1;
+        uint32_t minClusterSize = 10;
         uint32_t minAdyNodes = 3; // = num_signatures? 
 
         string path; 
@@ -56,7 +56,7 @@ class BicliqueExtractor{
 
         void computeClusters();
         void computeClusters2(vector<SignNode*>*,int);
-        void computeHistograms();
+        void computeTree();
         void computeShingles();
         void computeShinglesInline();
 
