@@ -21,3 +21,13 @@ void AdjencyMatrix::insert(Node* node){
 Node* AdjencyMatrix::getNode(uint64_t i){
     return matrix.at(i);
 }
+
+void AdjencyMatrix::print(){
+	for(auto i : matrix){
+		cout << i->first << ": ";
+		for(auto j : i->second){
+			cout << j << " ";
+		} 
+		cout << endl;
+	}
+}

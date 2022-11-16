@@ -19,6 +19,8 @@ class AdjencyMatrix{
         void sort();
         uint64_t size();
         Node* getNode(uint64_t);
+        void print();
+
     private:
         /*
             vars
@@ -29,7 +31,7 @@ class AdjencyMatrix{
             methods
         */
         vector<uint64_t> splitString(string, string);
-
+        
 };
 
 #endif
