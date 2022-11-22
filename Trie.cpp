@@ -1,15 +1,18 @@
 #include "Trie.hpp"
 
-using namespace std; 
+////////////////////////////////////////////////////////////////PUBLIC METHODS //////////////////////////////////////////////////////////////////
 
 Trie::Trie(){
     root = NULL;
 }
+
 Trie::~Trie(){
+    if(root != NULL){
+        clear(root);
+    }
 }
 
 void Trie::create(vector<Node*>* nodes){
-    cout << "Creating Trie" << endl;
     for(size_t i = 0; i < nodes->size();i++){
         if( root != NULL){
             if(nodes->size() > 0 && nodes->at(0)->first != root->vertex ){
@@ -19,6 +22,83 @@ void Trie::create(vector<Node*>* nodes){
         insert(nodes->at(i));
     }
 }
+void Trie::getBiclique(){
+    vector<uint64_t>* c = new vector<uint64_t>();
+    getBiclique(root,c);
+    
+    for(size_t i = 0; i < bicliques.size(); i++){
+        if(bicliques[i].first.size()>1){
+
+        cout << "biclique " << i+1 << endl;
+
+        cout << "S: ";
+        for(size_t j = 0; j < bicliques[i].first.size(); j++){
+            cout << bicliques[i].first[j] << " ";
+        }
+        cout << endl;
+
+        cout << "C: ";
+        for(size_t j = 0; j < bicliques[i].second.size(); j++){
+            cout << bicliques[i].second[j] << " ";
+        }
+        cout << endl;
+        }
+    }
+}
+
+void Trie::getBiclique(TrieNode* node,vector<uint64_t>* c){
+    c->push_back(node->vertex);
+    if(node->childrens.size() > 0){
+        for(size_t i = 0; i < node->childrens.size(); i++){
+            getBiclique(node->childrens[i],c);
+        }
+    }
+    else{
+        vector<uint64_t> c_local = *c;
+        bicliques.push_back(make_pair(node->indices,c_local));
+    }
+    c->pop_back();
+
+}
+
+void Trie::printTrie(){
+    if(root == NULL){
+        cout << "root is NULL" << endl;
+    }
+    else{
+        cout << "print trie" << endl;
+        print(root);
+        cout << "finish print" << endl;
+    }
+}
+
+////////////////////////////////////////////////////////////////PRIVATE METHODS //////////////////////////////////////////////////////////////////
+
+TrieNode* Trie::find(uint64_t vertex,TrieNode* ptr){
+    if(ptr == NULL){
+        return NULL;
+    }
+    if(ptr->vertex == vertex){
+        return ptr;
+    }
+    for(size_t i = 0; i < ptr->childrens.size();i++){
+        if(ptr->childrens[i]->vertex == vertex){
+            return ptr->childrens[i];
+        }
+    }
+    return NULL;
+}
+
+void Trie::clear(TrieNode* node){
+    if(node->childrens.size() > 0){
+        for(size_t i = 0; i < node->childrens.size();i++){
+            clear(node->childrens[i]);
+        }
+    }
+    delete node;
+}
+
+
 void Trie::insert(Node* node){
     TrieNode* t_node;
     TrieNode* ptr = root;
@@ -55,21 +135,6 @@ void Trie::insert(Node* node){
     }
 }
 
-TrieNode* Trie::find(uint64_t vertex,TrieNode* ptr){
-    if(ptr == NULL){
-        return NULL;
-    }
-    if(ptr->vertex == vertex){
-        return ptr;
-    }
-    for(size_t i = 0; i < ptr->childrens.size();i++){
-        if(ptr->childrens[i]->vertex == vertex){
-            return ptr->childrens[i];
-        }
-    }
-    return NULL;
-}
-
 void Trie::print(TrieNode* node){
     cout << "Nodo: " << node->vertex << endl;
     cout << "Indices: ";
@@ -81,15 +146,4 @@ void Trie::print(TrieNode* node){
         print(node->childrens[i]);
     }
 
-}
-
-void Trie::printTrie(){
-    if(root == NULL){
-        cout << "root is NULL" << endl;
-    }
-    else{
-        cout << "print trie" << endl;
-        print(root);
-        cout << "finish print" << endl;
-    }
 }

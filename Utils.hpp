@@ -13,6 +13,7 @@ using namespace std;
 
 typedef pair<uint64_t, vector<uint64_t>> Node;
 typedef pair<Node*, vector<uint64_t>> SignNode; 
+typedef pair<vector<uint64_t>, vector<uint64_t>> biclique;
 /*
 typedef struct{
     uint64_t ID; 

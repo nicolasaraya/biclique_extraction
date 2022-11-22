@@ -24,6 +24,9 @@ Node* AdjencyMatrix::getNode(uint64_t i){
 
 void AdjencyMatrix::print(){
 	for(auto i : matrix){
+		if(i->second.size() == 2){
+			cout << "size: " << i->second.size() << endl;
+		}
 		cout << i->first << ": ";
 		for(auto j : i->second){
 			cout << j << " ";

@@ -28,17 +28,21 @@ void Cluster::computeHistogram(){
         }
     }
     sort(nodes->begin(), nodes->end(), bind(&Cluster::sortSizeComp, this, placeholders::_1, placeholders::_2));
- 
-    //printCluster();
 }
 
-void Cluster::computeTree(){
-    //printCluster();
+void Cluster::computeTrie(){
+    printCluster();
+
     computeHistogram();
     //printCluster();
     t->create(nodes);
     //t->printTrie();
 }
+
+void Cluster::getBiclique(){
+    t->getBiclique();
+}
+
 
 void Cluster::printCluster(){
     cout << endl << "***************" << endl;

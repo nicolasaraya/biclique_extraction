@@ -24,10 +24,7 @@ class BicliqueExtractor{
         /*
             VARIABLES
         */
-        bool adjMatrixLoaded;
-        bool adjMatrixSorted; 
-        bool sortedHashes;
-        bool withAutoCycle = true;
+        bool withAutoCycle = false;
         
         int numb_clusters = 0;
         uint16_t num_signatures;
@@ -40,13 +37,13 @@ class BicliqueExtractor{
         AdjencyMatrix* adjMatrix;
         vector<Cluster*> clusters;
         Shingle* shingle;
+
+        vector<pair<vector<uint64_t>, vector<uint64_t>>> bicliques;
         vector<SignNode*> signatures;
         vector< vector< SignNode* >* > posClusters;
         /*
             METHODS
         */
-        AdjencyMatrix* getAdjencyMatrix();
-
         bool compareMinHash(const SignNode*, const SignNode*, int);
 
         vector<vector<SignNode*>*> makeGroups(vector<SignNode*>*,int );
@@ -55,15 +52,15 @@ class BicliqueExtractor{
         void makeAdjencyMatrix();
 
         void computeClusters();
-        void computeClusters2(vector<SignNode*>*,int);
+        int computeClusters2(vector<SignNode*>*,int);
         void computeTree();
         void computeShingles();
         void computeShinglesInline();
+        void extractBicliques();
 
         void printSignatures();
         void printSignatures2(vector<SignNode*>);
 
-        //void saveCluster();
         void sortSignatures(vector<SignNode*>*, int);
         
 };
