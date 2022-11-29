@@ -15,7 +15,7 @@ Trie::~Trie(){
 void Trie::create(vector<Node*>* nodes){
     for(size_t i = 0; i < nodes->size();i++){
         if( root != NULL){
-            if(nodes->size() > 0 && nodes->at(0)->first != root->vertex ){
+            if(nodes->at(i)->second.size() > 0 && nodes->at(i)->first != root->vertex ){
                 return;
             }
         }
