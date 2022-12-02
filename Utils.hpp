@@ -27,6 +27,7 @@ struct TrieNode{
     uint64_t vertex;
     vector<uint64_t> indices;
     vector<TrieNode*> childrens;
+    int depth;
 };
 
 

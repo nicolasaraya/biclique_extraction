@@ -13,22 +13,21 @@ BicliqueExtractor::BicliqueExtractor(const string path, uint16_t num_signatures,
 BicliqueExtractor::~BicliqueExtractor(){
     delete adjMatrix;
     for(auto i : signatures) delete i;
-    for(auto i : clusters) delete i;
     delete shingle;
 }
 
 void BicliqueExtractor::extract(){
     makeAdjencyMatrix();
-    cout << "Adjency Matrix Size: " << adjMatrix->size() << endl;
+    //cout << "Adjency Matrix Size: " << adjMatrix->size() << endl;
     //adjMatrix->print();
     computeShingles();
 
-    cout << "Compute clusters" << endl;
+    //cout << "Compute clusters" << endl;
     computeClusters();
-    cout << "Size of vector Clusters: " << clusters.size() << endl;
-    cout << "Compute Trie" << endl;
+    //cout << "Size of vector Clusters: " << clusters.size() << endl;
+    //cout << "Compute Trie" << endl;
     computeTree();
-    cout << "Compute Bilciques" << endl;
+    //cout << "Compute Bilciques" << endl;
     extractBicliques();
     
 }
@@ -93,8 +92,13 @@ void BicliqueExtractor::makeAdjencyMatrix(){
         //cout << "i: " << countAux << " , size: " << nodes.size() << endl; 
         if(nodes.size() == 0) continue;
         uint64_t nodeID = nodes[0]; 
-        if(!withAutoCycle) nodes.erase(nodes.begin()); //eliminar autociclo
+        nodes.erase(nodes.begin()); //eliminar autociclo
         sort(nodes.begin(), nodes.end());
+        auto aux = find(nodes.begin(), nodes.end(),nodeID);
+        if(withAutoCycle && aux != nodes.end()){
+            nodes.push_back(nodeID);
+            sort(nodes.begin(), nodes.end());
+        }
         if(nodes.size() > 0){
             Node* aux = new Node(nodeID, nodes);
             adjMatrix->insert(aux); 
@@ -105,86 +109,11 @@ void BicliqueExtractor::makeAdjencyMatrix(){
     }
 }
 
-
-void BicliqueExtractor::computeClusters(){
-    posClusters.clear();
-    posClusters.push_back(&signatures);
-    vector< vector<SignNode*>* > ClustersChild; 
-    
-    int countA = 0;
-    for(size_t i = 0; i < num_signatures; i++){
-        for(size_t j = 0; j < posClusters.size(); j++){
-            vector<SignNode*>* subSignatures = posClusters[j];
-
-            if(subSignatures->size() > minClusterSize){
-                countA++;
-            }   
-                
-
-            sortSignatures(subSignatures, i);
-
-            SignNode* init = subSignatures->at(0); //primer SignNode
-            vector<SignNode*>* miniCluster = new vector<SignNode*>();
-            miniCluster->push_back(init);
-             
-            for(size_t k = 1; k < subSignatures->size(); k++){
-                //signNode -> Node -> vector<uint64>.size
-                if(subSignatures->at(k)->first->second.size() < minAdyNodes){ //minima cant de nodos ady.
-                    continue;
-                }
-
-                if(subSignatures->at(k)->second.at(i) == miniCluster->at(0)->second.at(i)){
-                    miniCluster->push_back(subSignatures->at(k));
-                }
-                else{
-                    if(miniCluster->size() > minClusterSize) {
-                        if( (int)i != num_signatures-1) ClustersChild.push_back(miniCluster); 
-                        else{
-                            vector< Node* >* new_cluster = new vector<Node*>(); 
-                            for(size_t l = 0; l < miniCluster->size(); l++){
-                                new_cluster->push_back(miniCluster->at(l)->first);
-                            }
-                            Cluster *c = new Cluster(new_cluster);
-                            clusters.push_back(c);
-                        }
-                        //miniCluster = NULL;
-                    }
-                    else delete miniCluster;
-                    miniCluster =  new vector<SignNode*>();
-                    miniCluster->push_back(subSignatures->at(k));
-                                            //vector<signNode>*
-                                                //SignNode*
-                                                    //vector<uint64_t> MIN
-                                                        //i esimo hash
-                }
-            }
-            if(miniCluster->size() > minClusterSize) {
-                if( (int)i != num_signatures-1) ClustersChild.push_back(miniCluster); 
-                else{
-                    vector< Node* >* new_cluster = new vector<Node*>(); 
-                    for(size_t l = 0; l < miniCluster->size(); l++){
-                        new_cluster->push_back(miniCluster->at(l)->first);
-                    }
-                    Cluster *c = new Cluster(new_cluster);
-                    clusters.push_back(c);
-                }
-            }
-            else delete miniCluster;
-
-            if(i > 0) delete posClusters[j];
-        }
-        posClusters = ClustersChild;
-        ClustersChild.clear();
-    }
-    cout << "Clusters encontrados: " << clusters.size() << " + " << countA << endl;
-    
-}
-/*
 void BicliqueExtractor::computeClusters(){
     //printSignatures();
     int size_cluster = computeClusters2(&signatures,0);
     cout << "Clusters encontrados: " << size_cluster << endl;
-}*/
+}
 
 
 int BicliqueExtractor::computeClusters2(vector<SignNode*>* sign_cluster,int column){
@@ -257,8 +186,10 @@ void BicliqueExtractor::computeShingles(){
 }
 
 void BicliqueExtractor::extractBicliques(){
+    vector<biclique> bicliques;
     for(uint64_t i = 0; i < clusters.size(); i++){
-        clusters[i]->getBiclique();
+        bicliques.push_back(clusters[i]->getBiclique());
+        delete clusters[i];
     }
 }
 

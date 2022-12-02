@@ -20,7 +20,7 @@ class Cluster{
         ~Cluster();
 
         void computeTrie();
-        void getBiclique();
+        biclique getBiclique();
 
     private:
         vector<Node*>* nodes;

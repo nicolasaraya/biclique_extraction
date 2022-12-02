@@ -82,9 +82,10 @@ SignNode* Shingle::computeShingle(Node* _node){
     //cout <<"Size: " << _node->second.size() << endl;
     for(size_t i = 0; i <= _node->second.size() - shingle_size ; i++){
         string shingle_ = ""; 
+        /*
         if(_node->second[i] == 0){
             cout << " / numero hasheado: " << _node->second[i] <<"," << _node->first <<endl;
-        }
+        }*/
         for(size_t j = 0; j < shingle_size && i + j < _node->second.size(); j++){
             //cout << "    " <<  ady_nodes->at(i+j) ;
             shingle_ += to_string( _node->second.at(i+j));

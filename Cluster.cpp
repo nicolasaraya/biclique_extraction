@@ -31,7 +31,7 @@ void Cluster::computeHistogram(){
 }
 
 void Cluster::computeTrie(){
-    printCluster();
+    //printCluster();
 
     computeHistogram();
     //printCluster();
@@ -39,8 +39,8 @@ void Cluster::computeTrie(){
     //t->printTrie();
 }
 
-void Cluster::getBiclique(){
-    t->getBiclique();
+biclique Cluster::getBiclique(){
+    return t->getBiclique();
 }
 
 

@@ -1,0 +1,29 @@
+/*
+        if(i == 0){  // i = 0 / root
+            if(t_node != NULL){  // Si ya existe
+                t_node->indices.push_back(node->first);
+            }
+            else{  //No existe -> crear
+                t_node = new TrieNode();
+                t_node->vertex = node->second[i];
+                t_node->indices.push_back(node->first);
+                t_node->depth = i+1;
+
+                root = t_node;
+            }
+        }
+        else{  // i > 0
+            if(t_node != NULL){  // Si ya existe
+                t_node->indices.push_back(node->first);
+            }
+            else{  //No existe -> crear
+                t_node = new TrieNode();
+                t_node->vertex = node->second[i];
+                t_node->indices.push_back(node->first);
+                t_node->depth = i+1;
+
+                t_node->parent = ptr;
+                ptr->childrens.push_back(t_node);
+                
+            }
+        }*/

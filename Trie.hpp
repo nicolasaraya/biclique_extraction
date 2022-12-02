@@ -11,17 +11,19 @@ class Trie{
         ~Trie();
 
         void create(vector<Node*>*);
-        void getBiclique();
+        biclique getBiclique();
         void printTrie();
 
     private:
         TrieNode *root;
-        
-        vector<biclique> bicliques;
+
+        TrieNode* candidateBiclique;
 
         TrieNode* find(uint64_t,TrieNode*);
         void clear(TrieNode*);
-        void getBiclique(TrieNode*,vector<uint64_t>*);
+        void computeCandidateBiclique(TrieNode*);
+        void computeBiclique(biclique *,TrieNode*);
+
         void insert(Node*);
         void print(TrieNode*);
 
