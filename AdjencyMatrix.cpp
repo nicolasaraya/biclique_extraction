@@ -35,9 +35,6 @@ void AdjencyMatrix::print(){
 }
 
 void AdjencyMatrix::makeAdjencyList(){
-	
-	while(path[path.length()-1]!= '.') path.pop_back();
-	path.pop_back();
 	std::time_t t = std::time(0);   // get time now
     std::tm* t_now = std::localtime(&t);
 	string now =  to_string(t_now->tm_year + 1900) + '-' + to_string(t_now->tm_mon + 1) + '-' + to_string(t_now->tm_mday) + "-" + to_string(t_now->tm_hour) +to_string(t_now->tm_min) +to_string(t_now->tm_sec)  ;

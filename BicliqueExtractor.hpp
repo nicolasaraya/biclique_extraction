@@ -32,8 +32,10 @@ class BicliqueExtractor{
         uint32_t biclique_size; 
         uint32_t minClusterSize = 50;
         uint32_t minAdyNodes = 3; // = num_signatures? 
+        uint16_t iteration = 1;
 
         string path; 
+        string name;
 
         AdjencyMatrix* adjMatrix;
         vector<Cluster*> clusters;
@@ -62,6 +64,8 @@ class BicliqueExtractor{
         void printSignatures2(vector<SignNode*>);
 
         void sortSignatures(vector<SignNode*>*, int);
+        bool sortC(uint64_t*, uint64_t*);
+        bool sortNodes(Node*,Node*);
         
 };
 
