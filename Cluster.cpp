@@ -15,13 +15,14 @@ void Cluster::computeHistogram(){
     computeFrecuency();
 
     for(auto i : *nodes){
-        vector<uint64_t>* adyNodes = &i->second;
+        //vector<uint64_t>* adyNodes = &i->second;
 
-        sort(adyNodes->begin(), adyNodes->end(), bind(&Cluster::sortFrecuencyComp, this, placeholders::_1, placeholders::_2));
+        sort(i->adyNodes.begin(), i->adyNodes.end(), bind(&Cluster::sortFrecuencyComp, this, placeholders::_1, placeholders::_2));
         
-        for(size_t j = adyNodes->size()-1 ; j >= 0; j--){ //eliminar freq 1
-            if(mapFrecuency[ adyNodes->at(j) ] <= 1){
-                adyNodes->pop_back();
+        for(size_t j = i->adyNodes.size()-1 ; j >= 0; j--){ //eliminar freq 1
+            if(mapFrecuency[ i->adyNodes.at(j) ] <= 1){
+                i->cacheAdyNodes.push_back(i->adyNodes.at(j)); //backup de los nodos descartados.
+                i->adyNodes.pop_back();
                 //if(adyNodes->size() == 0) break;
             }
             else break;
@@ -34,12 +35,14 @@ void Cluster::computeTrie(){
     //printCluster();
 
     computeHistogram();
+    mapFrecuency.clear();
     //printCluster();
     t->create(nodes);
+    
     //t->printTrie();
 }
 
-biclique Cluster::getBiclique(){
+Biclique Cluster::getBiclique(){
     return t->getBiclique();
 }
 
@@ -47,9 +50,9 @@ biclique Cluster::getBiclique(){
 void Cluster::printCluster(){
     cout << endl << "***************" << endl;
     for(size_t i = 0; i < nodes->size(); i++){
-        cout << nodes->at(i)->first << ": ";
-        for(size_t j = 0; j < nodes->at(i)->second.size(); j++){
-            cout << nodes->at(i)->second[j] /*<< "(" << mapFrecuency[nodes->at(i)->second[j] ] << ")"*/<< " ";
+        cout << nodes->at(i)->nodeID << ": ";
+        for(size_t j = 0; j < nodes->at(i)->adyNodes.size(); j++){
+            cout << nodes->at(i)->adyNodes[j] /*<< "(" << mapFrecuency[nodes->at(i)->second[j] ] << ")"*/<< " ";
         }
         cout << endl;
     }
@@ -70,20 +73,20 @@ bool Cluster::sortFrecuencyComp(const uint64_t& a, const uint64_t& b ){
 }
 
 bool Cluster::sortSizeComp(const Node* a, const Node* b){
-    if(a->second.size() > b->second.size()){
+    if(a->adyNodes.size() + a->cacheAdyNodes.size() > b->adyNodes.size() + b->cacheAdyNodes.size()){
         return true; 
     }
-    else if(a->second.size() == b->second.size()){
-        return (a->first < b->first);
+    else if(a->adyNodes.size() + a->cacheAdyNodes.size() == b->adyNodes.size() + b->cacheAdyNodes.size()){
+        return (a->nodeID < b->nodeID);
     }
     else return false;
 }
 
 void Cluster::computeFrecuency(){
     for(auto i : *nodes){
-        vector<uint64_t>* adyNodes = &i->second;
+        //vector<uint64_t>* adyNodes = &i->second;
 
-        for(auto j : *adyNodes){
+        for(auto j : (i->adyNodes)){
             auto aux = mapFrecuency.find(j);
             if(aux != mapFrecuency.end()){ //existe
                 mapFrecuency[j]++;

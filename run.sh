@@ -1,1 +1,1 @@
-./biclique_extractor dblp-2011.txt 3 1
+./biclique_extractor file2.txt 3 1

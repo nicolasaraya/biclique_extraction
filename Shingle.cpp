@@ -65,7 +65,7 @@ SignNode* Shingle::computeShingle(Node* _node){
 
 SignNode* Shingle::computeShingle(Node* _node){
 
-    if (_node->second.size() == 0){
+    if (_node->adyNodes.size() == 0){
         return NULL; 
     }
     /*
@@ -76,32 +76,36 @@ SignNode* Shingle::computeShingle(Node* _node){
     //cout << ady_nodes->size() << endl;
     //if(ady_nodes->size() < shingle_size ) return NULL;
 
-    vector<uint64_t> MIN; 
-    for (size_t i = 0; i < num_signatures; i++) MIN.push_back(prime);
+    //vector<uint64_t> MIN; 
+    SignNode* s = new SignNode();
+    s->ptrNode = _node;
+
+
+    for (size_t i = 0; i < num_signatures; i++) s->minHash.push_back(prime);
 
     //cout <<"Size: " << _node->second.size() << endl;
-    for(size_t i = 0; i <= _node->second.size() - shingle_size ; i++){
+    for(size_t i = 0; i <= _node->adyNodes.size() - shingle_size ; i++){
         string shingle_ = ""; 
         /*
         if(_node->second[i] == 0){
             cout << " / numero hasheado: " << _node->second[i] <<"," << _node->first <<endl;
         }*/
-        for(size_t j = 0; j < shingle_size && i + j < _node->second.size(); j++){
+        for(size_t j = 0; j < shingle_size && i + j < _node->adyNodes.size(); j++){
             //cout << "    " <<  ady_nodes->at(i+j) ;
-            shingle_ += to_string( _node->second.at(i+j));
+            shingle_ += to_string( _node->adyNodes.at(i+j));
         }
         uint64_t shingleID = hash_nodes(shingle_);
 
         for(uint16_t k = 0; k < num_signatures; k++){
             uint64_t shingleHash = (A[k] * shingleID + B[k]) % prime;
             //cout << "shingle: " << shingleHash << " / numero hasheado: " << ady_nodes->at(i) <<"," << _node->first <<endl;
-            if(shingleHash < MIN[k]){
-                MIN[k] = shingleHash;
+            if(shingleHash < s->minHash[k]){
+                s->minHash[k] = shingleHash;
             }
         } 
 
     }
     //cout << MIN.size() << endl;
-    SignNode* s = new SignNode(_node, MIN);
+    
     return s;
 }

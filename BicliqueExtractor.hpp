@@ -25,11 +25,12 @@ class BicliqueExtractor{
             VARIABLES
         */
         bool withAutoCycle = false;
+        bool adjencyMatrixLoaded = false;
         
         int numb_clusters = 0;
         uint16_t num_signatures;
         uint32_t biclique_size; 
-        uint32_t minClusterSize = 3;
+        uint32_t minClusterSize = 50;
         uint32_t minAdyNodes = 3; // = num_signatures? 
 
         string path; 
@@ -38,7 +39,6 @@ class BicliqueExtractor{
         vector<Cluster*> clusters;
         Shingle* shingle;
 
-        vector<pair<vector<uint64_t>, vector<uint64_t>>> bicliques;
         vector<SignNode*> signatures;
         vector< vector< SignNode* >* > posClusters;
         /*
@@ -57,7 +57,7 @@ class BicliqueExtractor{
         void computeShingles();
         void computeShinglesInline();
         void extractBicliques();
-
+        void clearSignatures();
         void printSignatures();
         void printSignatures2(vector<SignNode*>);
 
