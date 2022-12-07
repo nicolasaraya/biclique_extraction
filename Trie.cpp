@@ -25,6 +25,7 @@ void Trie::create(vector<Node*>* nodes){
         insert(nodes->at(i));
     }
 }
+
 biclique Trie::getBiclique(){
     //printTrie();
     biclique b;

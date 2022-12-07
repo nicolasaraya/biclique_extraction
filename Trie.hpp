@@ -14,6 +14,8 @@ class Trie{
         biclique getBiclique();
         void printTrie();
 
+        uint64_t size_bicliques = 0;
+
     private:
         TrieNode *root;
 

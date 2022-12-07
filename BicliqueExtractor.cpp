@@ -91,6 +91,7 @@ void BicliqueExtractor::makeAdjencyMatrix(){
         vector<uint64_t> nodes = splitString(line, " ");
         //cout << "i: " << countAux << " , size: " << nodes.size() << endl; 
         if(nodes.size() == 0) continue;
+
         uint64_t nodeID = nodes[0]; 
         nodes.erase(nodes.begin()); //eliminar autociclo
         sort(nodes.begin(), nodes.end());
@@ -99,6 +100,7 @@ void BicliqueExtractor::makeAdjencyMatrix(){
             nodes.push_back(nodeID);
             sort(nodes.begin(), nodes.end());
         }
+
         if(nodes.size() > 0){
             Node* aux = new Node(nodeID, nodes);
             adjMatrix->insert(aux); 
@@ -186,11 +188,20 @@ void BicliqueExtractor::computeShingles(){
 }
 
 void BicliqueExtractor::extractBicliques(){
+    uint64_t size_bicliques = 0;
+    uint64_t size_bicliques_S = 0;
+    uint64_t size_bicliques_C = 0;
     vector<biclique> bicliques;
     for(uint64_t i = 0; i < clusters.size(); i++){
         bicliques.push_back(clusters[i]->getBiclique());
+        size_bicliques +=(bicliques[i].first.size())*(bicliques[i].second.size());
+        size_bicliques_S += (bicliques[i].first.size());
+        size_bicliques_C += (bicliques[i].second.size());
         delete clusters[i];
     }
+    cout << "size_bicliques: " << size_bicliques << endl;
+    cout << "size_bicliques S: " << size_bicliques_S << endl;
+    cout << "size_bicliques C: " << size_bicliques_C << endl;
 }
 
 

@@ -29,7 +29,7 @@ class BicliqueExtractor{
         int numb_clusters = 0;
         uint16_t num_signatures;
         uint32_t biclique_size; 
-        uint32_t minClusterSize = 3;
+        uint32_t minClusterSize = 10;
         uint32_t minAdyNodes = 3; // = num_signatures? 
 
         string path; 
