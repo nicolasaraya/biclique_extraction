@@ -7,25 +7,29 @@
 #include <cstdint>
 #include <vector>
 #include <sstream> 
+#include <chrono>
+#include <algorithm>
 #include "Utils.hpp"
 
 using namespace std;
 
 class AdjencyMatrix{
     public:
-        AdjencyMatrix();
+        AdjencyMatrix(const string);
         ~AdjencyMatrix();
         void insert(Node*);
-        void sort();
         uint64_t size();
         Node* getNode(uint64_t);
         void print();
+        void makeAdjencyList();
+        void reWork();
 
     private:
         /*
             vars
         */
         vector<Node*> matrix; 
+        string path;
         
         /*
             methods
