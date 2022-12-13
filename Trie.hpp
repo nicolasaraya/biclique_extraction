@@ -11,7 +11,7 @@ class Trie{
         ~Trie();
 
         void create(vector<Node*>*);
-        Biclique getBiclique();
+        Biclique* getBiclique();
         void printTrie();
 
     private:

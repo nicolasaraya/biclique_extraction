@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <omp.h>
+#include <math.h>
 
 #include "AdjencyMatrix.hpp"
 #include "Cluster.hpp"
@@ -26,7 +27,6 @@ class BicliqueExtractor{
         */
         bool withAutoCycle = false;
         bool adjencyMatrixLoaded = false;
-        
         int numb_clusters = 0;
         uint16_t num_signatures;
         uint32_t biclique_size; 
@@ -40,7 +40,6 @@ class BicliqueExtractor{
         AdjencyMatrix* adjMatrix;
         vector<Cluster*> clusters;
         Shingle* shingle;
-
         vector<SignNode*> signatures;
         vector< vector< SignNode* >* > posClusters;
         /*
@@ -53,7 +52,7 @@ class BicliqueExtractor{
 
         void makeAdjencyMatrix();
 
-        void computeClusters();
+        uint32_t computeClusters();
         int computeClusters2(vector<SignNode*>*,int);
         void computeTree();
         void computeShingles();

@@ -26,26 +26,28 @@ void Trie::create(vector<Node*>* nodes){
         insert(nodes->at(i));
     }
 }
-Biclique Trie::getBiclique(){
+Biclique* Trie::getBiclique(){
     //printTrie();
-    Biclique b;
+    Biclique* b = new Biclique();
     computeCandidateBiclique(root);
     if(candidateBiclique != NULL){
-        computeBiclique(&b, candidateBiclique);
-        
+        computeBiclique(b, candidateBiclique);
+        /*
         cout << "Biclique: ";
         cout << "S: ";
-        for(uint64_t i = 0; i < b.first->size(); i++){
-            cout << b.first->at(i)->nodeID << " ";
+        for(uint64_t i = 0; i < b->first->size(); i++){
+            cout << b->first->at(i)->nodeID << " ";
         }
         cout << endl;
         cout << "C: ";
-        for(uint64_t i = 0; i < b.second.size(); i++){
-            cout << *(b.second[i]) << " ";
+        for(uint64_t i = 0; i < b->second.size(); i++){
+            cout << *(b->second[i]) << " ";
         }
         cout << endl;
-        cout << "coeficiente con -1: " << (b.first->size()-1)*(b.second.size()-1) << endl;
-        cout << "coeficiente: " << (b.first->size())*(b.second.size()) << endl;
+        cout << "coeficiente con -1: " << (b->first->size()-1) * (b->second.size()-1) << endl;
+        cout << "coeficiente: " << (b->first->size())*(b->second.size()) << endl;
+        */
+        
     }
     return b;
     

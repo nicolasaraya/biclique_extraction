@@ -42,7 +42,7 @@ void Cluster::computeTrie(){
     //t->printTrie();
 }
 
-Biclique Cluster::getBiclique(){
+Biclique* Cluster::getBiclique(){
     return t->getBiclique();
 }
 
