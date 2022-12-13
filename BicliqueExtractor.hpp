@@ -33,6 +33,7 @@ class BicliqueExtractor{
         uint32_t minClusterSize = 50;
         uint32_t minAdyNodes = 3; // = num_signatures? 
         uint16_t iteration = 1;
+        uint16_t decrem = 10;
 
         string path; 
         string name;

@@ -27,6 +27,7 @@ void BicliqueExtractor::extract(){
     int clust_size = 0; 
     while(1){
         cout << "Iteracion: " << iteration << endl;
+        cout << "Min Cluster Size: " << minClusterSize << endl;
         shingle = new Shingle(num_signatures);
         computeShingles();
         delete shingle;
@@ -42,11 +43,19 @@ void BicliqueExtractor::extract(){
         //adjMatrix->print();
         for(auto i : clusters) delete i;
         clusters.clear();
-        if(abs(clust_size - temp) < 30) break; 
+
+
+        if(abs(clust_size - temp) < 30) {
+            if(minClusterSize == decrem) break;
+            else {
+                minClusterSize -= decrem;
+            }
+           
+        }
+        if(minClusterSize < decrem) minClusterSize = decrem;
         clust_size = temp;
         iteration++;
-        minClusterSize-=10; 
-        if(minClusterSize < 10) minClusterSize = 10;
+        
         //break;
     }
     adjMatrix->makeAdjencyList();
@@ -232,8 +241,8 @@ void BicliqueExtractor::extractBicliques(){
         vector<uint64_t*>* C = &bicliques.at(i)->second;
         vector<Node*>* S = bicliques.at(i)->first;
         if(S == NULL || C == NULL) continue;
-        cout << *(C->front()) << " , " << *(C->back()) << endl;
-        cout << S->front()->nodeID << " , " << S->back()->nodeID << endl;
+        //cout << *(C->front()) << " , " << *(C->back()) << endl;
+        //cout << S->front()->nodeID << " , " << S->back()->nodeID << endl;
         sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2 ));
         sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortNodes, this, placeholders::_1, placeholders::_2));
 
