@@ -24,7 +24,6 @@ void BicliqueExtractor::extract(){
     if(!adjencyMatrixLoaded) makeAdjencyMatrix();
     //cout << "Adjency Matrix Size: " << adjMatrix->size() << endl;
     //adjMatrix->print();
-    int clust_size = 0; 
     while(1){
         cout << "Iteracion: " << iteration << endl;
         cout << "Min Cluster Size: " << minClusterSize << endl;
@@ -45,14 +44,14 @@ void BicliqueExtractor::extract(){
         clusters.clear();
 
 
-        if(abs(clust_size - temp) < 30) {
+        if(temp < 100) {
             if(minClusterSize == decrem) break;
             else {
                 minClusterSize -= decrem;
             }
            
         }
-        if(minClusterSize < decrem) minClusterSize = decrem;
+        if(minClusterSize < 20) minClusterSize = 20;
         clust_size = temp;
         iteration++;
         
