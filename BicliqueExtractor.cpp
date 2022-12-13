@@ -45,7 +45,7 @@ void BicliqueExtractor::extract(){
 
 
         if(temp < 100) {
-            if(minClusterSize == decrem) break;
+            if(minClusterSize == 20) break;
             else {
                 minClusterSize -= decrem;
             }
