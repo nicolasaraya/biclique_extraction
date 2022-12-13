@@ -52,7 +52,6 @@ void BicliqueExtractor::extract(){
            
         }
         if(minClusterSize < 20) minClusterSize = 20;
-        clust_size = temp;
         iteration++;
         
         //break;
