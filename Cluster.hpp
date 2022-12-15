@@ -15,15 +15,16 @@ using namespace std;
 class Cluster{
     public:
         Trie *t;
-
+        vector<Node*>* nodes;
         Cluster(vector<Node*>*);
         ~Cluster();
 
         void computeTrie();
         Biclique* getBiclique();
+        void printCluster();
 
     private:
-        vector<Node*>* nodes;
+        //vector<Node*>* nodes;
 
         unordered_map<uint64_t, uint32_t> mapFrecuency; //Valor Nodo, Frecuencia
 
@@ -32,7 +33,7 @@ class Cluster{
 
         void computeFrecuency();
         void computeHistogram();
-        void printCluster();
+        //void printCluster();
 };
 
 

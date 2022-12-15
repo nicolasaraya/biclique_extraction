@@ -73,6 +73,9 @@ void Trie::computeCandidateBiclique(TrieNode* node){
 void Trie::computeBiclique(Biclique* b, TrieNode* node){
     if(node == candidateBiclique){
         b->first = node->indices;
+        if(b->first == NULL){
+            printTrie();
+        }
     }
     b->second.push_back(&node->vertex);
 
