@@ -7,11 +7,11 @@ Shingle::Shingle(uint16_t num_signatures){
     this->num_signatures = num_signatures;
     shingle_size = 1;
     prime = (1ULL << 61ULL) - 1ULL;
-    cout << "Prime " << prime << endl;
+    //cout << "Prime " << prime << endl;
     for (size_t i = 0; i < num_signatures; i++){
         A.push_back( rand() % prime + 1);
         B.push_back( rand() % prime + 1); 
-        cout << "A: " << A[i] << ", B: " << B[i] << endl;
+        //cout << "A: " << A[i] << ", B: " << B[i] << endl;
     }    
     
     // allocate the space for the comparison of shingles
