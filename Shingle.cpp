@@ -2,10 +2,11 @@
 
 using namespace std; 
 
-Shingle::Shingle(uint16_t num_signatures){
+Shingle::Shingle(uint16_t num_signatures, uint32_t minAN){
     srand(time(NULL));
     this->num_signatures = num_signatures;
     shingle_size = 1;
+    minAdyNodes = minAN;
     prime = (1ULL << 61ULL) - 1ULL;
     //cout << "Prime " << prime << endl;
     for (size_t i = 0; i < num_signatures; i++){
@@ -65,7 +66,8 @@ SignNode* Shingle::computeShingle(Node* _node){
 
 SignNode* Shingle::computeShingle(Node* _node){
 
-    if (_node->adyNodes.size() == 0){
+    if (_node->adyNodes.size() == 0 || _node->adyNodes.size() < minAdyNodes){
+        //cout << "entre al primer if / size: " <<  _node->adyNodes.size() << " / minAdyNodes: "  <<  minAdyNodes << endl;
         return NULL; 
     }
     /*
@@ -77,6 +79,7 @@ SignNode* Shingle::computeShingle(Node* _node){
     //if(ady_nodes->size() < shingle_size ) return NULL;
 
     //vector<uint64_t> MIN; 
+
     SignNode* s = new SignNode();
     s->ptrNode = _node;
 

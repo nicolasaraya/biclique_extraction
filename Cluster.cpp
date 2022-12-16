@@ -19,11 +19,11 @@ void Cluster::computeHistogram(){
 
         sort(i->adyNodes.begin(), i->adyNodes.end(), bind(&Cluster::sortFrecuencyComp, this, placeholders::_1, placeholders::_2));
         
-        for(size_t j = i->adyNodes.size()-1 ; j >= 0; j--){ //eliminar freq 1
+        for(int64_t j = i->adyNodes.size()-1 ; j >= 0; j--){ //eliminar freq 1
             if(mapFrecuency[ i->adyNodes.at(j) ] <= 1){
                 i->cacheAdyNodes.push_back(i->adyNodes.at(j)); //backup de los nodos descartados.
                 i->adyNodes.pop_back();
-                //if(adyNodes->size() == 0) break;
+                //if(i->adyNodes.size() == 0) break;
             }
             else break;
         }

@@ -5,6 +5,7 @@
 Trie::Trie(){
     root = NULL;
     candidateBiclique = NULL;
+    file.open("trie-error.txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
     
 }
 
@@ -15,12 +16,23 @@ Trie::~Trie(){
 }
 
 void Trie::create(vector<Node*>* nodes){
+    cout << "nodes size: " << nodes->size() << endl;
     for(size_t i = 0; i < nodes->size();i++){
+        //cout << "i: " << i << endl;
         if( root != NULL){
             if(nodes->at(i)->adyNodes[0] != root->vertex ){
+                //cout << nodes->at(i)->adyNodes[0]  << " != " <<  root->vertex << endl;
                 //cout << "entre a la condicion" << endl;
                 //cout << nodes->at(i)->second[0] << " " << root->vertex << endl;
-                return;
+                //return;
+                continue;
+            }
+            else{
+                /*
+                cout << "********************************" << endl;
+                cout << nodes->at(i)->adyNodes[0]  << " == " <<  root->vertex << endl;
+                cout << nodes->at(i)->nodeID << endl;
+                cout << "********************************" << endl;*/
             }
         }
         insert(nodes->at(i));
@@ -45,9 +57,14 @@ Biclique* Trie::getBiclique(){
         }
         cout << endl;
         cout << "coeficiente con -1: " << (b->first->size()-1) * (b->second.size()-1) << endl;
-        cout << "coeficiente: " << (b->first->size())*(b->second.size()) << endl;
-        */
+        cout << "coeficiente: " << (b->first->size())*(b->second.size()) << endl;*/
         
+        
+    }
+    else{
+        return NULL;
+        //cout << "el candidato es nulo" << endl;
+        //printTrie();
     }
     return b;
     
@@ -73,9 +90,6 @@ void Trie::computeCandidateBiclique(TrieNode* node){
 void Trie::computeBiclique(Biclique* b, TrieNode* node){
     if(node == candidateBiclique){
         b->first = node->indices;
-        if(b->first == NULL){
-            printTrie();
-        }
     }
     b->second.push_back(&node->vertex);
 
@@ -89,12 +103,12 @@ void Trie::computeBiclique(Biclique* b, TrieNode* node){
 
 void Trie::printTrie(){
     if(root == NULL){
-        cout << "root is NULL" << endl;
+        file << "root is NULL" << endl;
     }
     else{
-        cout << "print trie" << endl;
+        file << "print trie" << endl;
         print(root);
-        cout << "finish print" << endl;
+        file << "finish print" << endl;
     }
 }
 
@@ -161,12 +175,12 @@ void Trie::insert(Node* node){
 }
 
 void Trie::print(TrieNode* node){
-    cout << "Nodo: " << node->vertex << endl;
-    cout << "Indices: ";
+    file << "Nodo: " << node->vertex << endl;
+    file << "Indices: ";
     for(size_t i = 0; i < node->indices->size();i++){
-        cout << node->indices->at(i)->nodeID << " ";
+        file << node->indices->at(i)->nodeID << " ";
     }
-    cout <<endl;
+    file <<endl;
     for(size_t i = 0; i < node->childrens->size();i++){
         print(node->childrens->at(i));
     }

@@ -1,6 +1,7 @@
 #ifndef TRIE_HPP
 #define TRIE_HPP
 
+#include <fstream>
 #include "Utils.hpp"
 
 using namespace std; 
@@ -9,7 +10,7 @@ class Trie{
     public:
         Trie();
         ~Trie();
-
+        ofstream file;
         void create(vector<Node*>*);
         Biclique* getBiclique();
         void printTrie();

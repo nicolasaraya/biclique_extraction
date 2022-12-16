@@ -11,10 +11,11 @@ using namespace std;
 
 class Shingle{
     public:
-        Shingle(uint16_t num_signatures);
+        Shingle(uint16_t num_signatures, uint32_t minAN);
         ~Shingle();
         SignNode* computeShingle(Node*);
     private:
+        uint32_t minAdyNodes;
         uint16_t num_signatures;
         uint32_t shingle_size;
         uint64_t prime;
