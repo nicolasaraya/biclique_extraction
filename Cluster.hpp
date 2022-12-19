@@ -15,7 +15,7 @@ using namespace std;
 class Cluster{
     public:
         Trie *t;
-        vector<Node*>* nodes;
+        
         Cluster(vector<Node*>*);
         ~Cluster();
 
@@ -24,7 +24,7 @@ class Cluster{
         void printCluster();
 
     private:
-        //vector<Node*>* nodes;
+        vector<Node*>* nodes;
 
         unordered_map<uint64_t, uint32_t> mapFrecuency; //Valor Nodo, Frecuencia
 

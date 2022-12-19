@@ -16,23 +16,10 @@ Trie::~Trie(){
 }
 
 void Trie::create(vector<Node*>* nodes){
-    cout << "nodes size: " << nodes->size() << endl;
     for(size_t i = 0; i < nodes->size();i++){
-        //cout << "i: " << i << endl;
         if( root != NULL){
             if(nodes->at(i)->adyNodes[0] != root->vertex ){
-                //cout << nodes->at(i)->adyNodes[0]  << " != " <<  root->vertex << endl;
-                //cout << "entre a la condicion" << endl;
-                //cout << nodes->at(i)->second[0] << " " << root->vertex << endl;
-                //return;
                 continue;
-            }
-            else{
-                /*
-                cout << "********************************" << endl;
-                cout << nodes->at(i)->adyNodes[0]  << " == " <<  root->vertex << endl;
-                cout << nodes->at(i)->nodeID << endl;
-                cout << "********************************" << endl;*/
             }
         }
         insert(nodes->at(i));

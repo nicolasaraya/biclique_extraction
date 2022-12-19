@@ -73,10 +73,10 @@ bool Cluster::sortFrecuencyComp(const uint64_t& a, const uint64_t& b ){
 }
 
 bool Cluster::sortSizeComp(const Node* a, const Node* b){
-    if(a->adyNodes.size() + a->cacheAdyNodes.size() > b->adyNodes.size() + b->cacheAdyNodes.size()){
+    if(a->adyNodes.size() > b->adyNodes.size()){
         return true; 
     }
-    else if(a->adyNodes.size() + a->cacheAdyNodes.size() == b->adyNodes.size() + b->cacheAdyNodes.size()){
+    else if(a->adyNodes.size() == b->adyNodes.size() ){
         return (a->nodeID < b->nodeID);
     }
     else return false;

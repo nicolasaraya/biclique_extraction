@@ -15,34 +15,40 @@ BicliqueExtractor::BicliqueExtractor(const string path, uint16_t num_signatures,
 
 BicliqueExtractor::~BicliqueExtractor(){
     delete adjMatrix;
-    clearSignatures();
     //if(shingle != NULL) delete shingle;
-    for(auto i : clusters) delete i;
 }
 
 void BicliqueExtractor::extract(){
     if(!adjencyMatrixLoaded) makeAdjencyMatrix();
-    //cout << "Adjency Matrix Size: " << adjMatrix->size() << endl;
-    //adjMatrix->print();
-    //adjMatrix->print();
+
     while(1){
+        cout << "****************************************************************" << endl;
         cout << "Adjency Matrix Size: " << adjMatrix->size() << endl;
         cout << "Iteracion: " << iteration << endl;
         cout << "Min Cluster Size: " << minClusterSize << endl;
+
         shingle = new Shingle(num_signatures, minAdyNodes);
         computeShingles();
         delete shingle;
         cout << "Shingles" << endl;
-        int temp = computeClusters();
+
+        uint32_t n_clusters = computeClusters();
 
         clearSignatures();
+
         computeTree();
-        extractBicliques();
+
+        uint32_t n_bicliques = extractBicliques();
+
         adjMatrix->reWork();
+
+        cout << "Clusters encontrados: " << n_clusters << endl;
+        cout << "Bilciques encontrados: " << n_bicliques << endl;
+
         for(auto i : clusters) delete i;
         clusters.clear();
 
-        if(temp < 100) {
+        if(n_clusters < 100) {
             if(minClusterSize == 20) break;
             else {
                 minClusterSize -= decrem;
@@ -51,12 +57,10 @@ void BicliqueExtractor::extract(){
         }
         if(minClusterSize < 20) minClusterSize = 20;
         iteration++;
-        /*if(iteration == 4){
-            break;
-        }*/
-        
-        //break;
+
+        cout << "****************************************************************" << endl;
     }
+    cout << "****************************************************************" << endl;
     adjMatrix->makeAdjencyList();
 
 
@@ -149,12 +153,11 @@ void BicliqueExtractor::makeAdjencyMatrix(){
         //if(countAux%1000 == 0) cout << countAux <<"Nodos leidos" << endl; //10 nodos
     }
     adjencyMatrixLoaded = true; 
+    file.close();
 }
 
 uint32_t BicliqueExtractor::computeClusters(){
-    //printSignatures();
     int size_cluster = computeClusters2(&signatures,0);
-    cout << "Clusters encontrados: " << size_cluster << endl;
     return size_cluster;
 }
 
@@ -231,53 +234,34 @@ void BicliqueExtractor::computeShingles(){
 
 }
 
-void BicliqueExtractor::extractBicliques(){
-    
-    ofstream file;
-  	file.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
+uint32_t BicliqueExtractor::extractBicliques(){
+
+    ofstream file2;
+    uint32_t n_bicliques = 0;
+  	//file2.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
+    file2.open("askdad.txt");
+    file2 << "S: ";
+    //file2.open(name+"_bicliques-"+to_string(n_bicliques)+".txt"); //limpia el contenido del fichero
     for(size_t i = 0; i < clusters.size(); i++){
         Biclique* btemp = clusters[i]->getBiclique();
         if(btemp == NULL) continue;
+        else n_bicliques+=1;
         vector<uint64_t*>* C = &btemp->second;
         vector<Node*>* S = btemp->first;
-        //if(S == NULL || C == NULL) continue;
-        //cout << *(C->front()) << " , " << *(C->back()) << endl;
-        //cout << S->front()->nodeID << " , " << S->back()->nodeID << endl;
-        if(S==NULL){
-            ofstream file2;
-            file2.open("clusters-error.txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
-            cout << " s es nulo" << endl;
-            file2 << "muero en el cluster " << i+1 << endl;
-            for(size_t i = 0; i < clusters.size(); i++){
-                file2 << "cluster " << i+1 << endl;
-                file2 << endl << "***************" << endl;
-                for(size_t j = 0; j < clusters[i]->nodes->size(); j++){
-                    file2 << clusters[i]->nodes->at(j)->nodeID << ": ";
-                    for(size_t k = 0; k < clusters[i]->nodes->at(j)->adyNodes.size(); k++){
-                        file2 << clusters[i]->nodes->at(j)->adyNodes[k] /*<< "(" << mapFrecuency[nodes->at(i)->second[j] ] << ")"*/<< " ";
-                    }
-                    file2 << endl;
-                }
-                file2 << "***************" << endl << endl;
-            }
 
-        }
-        if(C == NULL){  
-            cout << " c es nulo" << endl;
-        }
         sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2 ));
         sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortNodes, this, placeholders::_1, placeholders::_2));
 
-        file << "S: ";
+        file2 << "S: ";
         for(size_t j = 0; j < S->size(); j++){
-            file << S->at(j)->nodeID; 
-            if(j != S->size()-1) file << " ";
+            file2 << S->at(j)->nodeID; 
+            if(j != S->size()-1) file2 << " ";
         }
-        file << endl << "C: ";
+        file2 << endl << "C: ";
 
         for(size_t j = 0; j < C->size(); j++){
-            file << *(C->at(j));
-            if(j != C->size()-1) file << " ";
+            file2 << *(C->at(j));
+            if(j != C->size()-1) file2 << " ";
             for(size_t k = 0; k < S->size(); k++){
                 //cout <<"C: " <<  *(C->at(j)) << endl;
                 vector<uint64_t>* t_adyNodes = &(S->at(k)->adyNodes);
@@ -287,14 +271,11 @@ void BicliqueExtractor::extractBicliques(){
                 }
             }
         }
-        file << endl;
+        file2 << endl;
         //delete clusters[i]; 
     }
-    /*
-    for(size_t i = 0; i< clusters.size(); i++){
-        delete clusters[i];
-    }
-    clusters.clear();*/
+    file2.close();
+    return n_bicliques;
 }
 
 
