@@ -10,12 +10,12 @@ class Trie{
     public:
         Trie();
         ~Trie();
-        ofstream file;
+
+        uint64_t size_bicliques = 0;
+        
         void create(vector<Node*>*);
         Biclique* getBiclique();
         void printTrie();
-
-        uint64_t size_bicliques = 0;
 
     private:
         TrieNode* root;

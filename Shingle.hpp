@@ -13,13 +13,16 @@ class Shingle{
     public:
         Shingle(uint16_t num_signatures, uint32_t minAN);
         ~Shingle();
+        
         SignNode* computeShingle(Node*);
     private:
         uint32_t minAdyNodes;
         uint16_t num_signatures;
         uint32_t shingle_size;
         uint64_t prime;
+
         std::hash<string> hash_nodes;
+
         vector<uint64_t> A;
         vector<uint64_t> B;
 };

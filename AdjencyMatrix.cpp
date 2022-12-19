@@ -14,6 +14,14 @@ uint64_t AdjencyMatrix::size(){
     return matrix.size();
 }
 
+uint64_t AdjencyMatrix::all_edges_size(){
+	uint64_t size = 0;
+    for(uint64_t i = 0; i < matrix.size(); i++){
+		size+= matrix[i]->adyNodes.size();
+	}
+	return size; 
+}
+
 void AdjencyMatrix::insert(Node* node){
     matrix.push_back(node);
 }

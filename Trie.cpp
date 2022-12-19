@@ -5,8 +5,6 @@
 Trie::Trie(){
     root = NULL;
     candidateBiclique = NULL;
-    file.open("trie-error.txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
-    
 }
 
 Trie::~Trie(){
@@ -26,32 +24,14 @@ void Trie::create(vector<Node*>* nodes){
     }
 }
 Biclique* Trie::getBiclique(){
-    //printTrie();
     Biclique* b = new Biclique();
     computeCandidateBiclique(root);
     if(candidateBiclique != NULL){
         computeBiclique(b, candidateBiclique);
-        /*
-        cout << "Biclique: ";
-        cout << "S: ";
-        for(uint64_t i = 0; i < b->first->size(); i++){
-            cout << b->first->at(i)->nodeID << " ";
-        }
-        cout << endl;
-        cout << "C: ";
-        for(uint64_t i = 0; i < b->second.size(); i++){
-            cout << *(b->second[i]) << " ";
-        }
-        cout << endl;
-        cout << "coeficiente con -1: " << (b->first->size()-1) * (b->second.size()-1) << endl;
-        cout << "coeficiente: " << (b->first->size())*(b->second.size()) << endl;*/
-        
         
     }
     else{
         return NULL;
-        //cout << "el candidato es nulo" << endl;
-        //printTrie();
     }
     return b;
     
@@ -90,12 +70,12 @@ void Trie::computeBiclique(Biclique* b, TrieNode* node){
 
 void Trie::printTrie(){
     if(root == NULL){
-        file << "root is NULL" << endl;
+        cout << "root is NULL" << endl;
     }
     else{
-        file << "print trie" << endl;
+        cout << "print trie" << endl;
         print(root);
-        file << "finish print" << endl;
+        cout << "finish print" << endl;
     }
 }
 
@@ -162,12 +142,12 @@ void Trie::insert(Node* node){
 }
 
 void Trie::print(TrieNode* node){
-    file << "Nodo: " << node->vertex << endl;
-    file << "Indices: ";
+    cout << "Nodo: " << node->vertex << endl;
+    cout << "Indices: ";
     for(size_t i = 0; i < node->indices->size();i++){
-        file << node->indices->at(i)->nodeID << " ";
+        cout << node->indices->at(i)->nodeID << " ";
     }
-    file <<endl;
+    cout <<endl;
     for(size_t i = 0; i < node->childrens->size();i++){
         print(node->childrens->at(i));
     }

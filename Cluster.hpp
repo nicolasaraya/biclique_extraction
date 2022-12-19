@@ -14,10 +14,10 @@ using namespace std;
 
 class Cluster{
     public:
-        Trie *t;
-        
         Cluster(vector<Node*>*);
         ~Cluster();
+
+        Trie *t;
 
         void computeTrie();
         Biclique* getBiclique();

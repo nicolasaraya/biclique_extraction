@@ -17,8 +17,10 @@ class AdjencyMatrix{
     public:
         AdjencyMatrix(const string);
         ~AdjencyMatrix();
+
         void insert(Node*);
         uint64_t size();
+        uint64_t all_edges_size();
         Node* getNode(uint64_t);
         void print();
         void makeAdjencyList();

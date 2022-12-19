@@ -16,7 +16,7 @@ using namespace std;
 
 class BicliqueExtractor{
     public:
-        BicliqueExtractor(const string, uint16_t, uint32_t);
+        BicliqueExtractor(const string, uint16_t, uint16_t, uint16_t,  uint32_t, uint16_t);
         ~BicliqueExtractor();
 
         void extract();
@@ -27,13 +27,17 @@ class BicliqueExtractor{
         */
         bool withAutoCycle = false;
         bool adjencyMatrixLoaded = false;
-        int numb_clusters = 0;
         uint16_t num_signatures;
         uint32_t biclique_size; 
-        uint32_t minClusterSize = 10;
-        uint32_t minAdyNodes = 3; // = num_signatures? 
-        uint16_t iteration = 1;
-        uint16_t decrem = 10;
+        uint32_t minClusterSize;
+        uint32_t minAdyNodes;
+        uint16_t iteration;
+        uint16_t bs_decrease;
+
+        uint64_t total_biclique;
+        uint64_t biclique_s_size;
+        uint64_t biclique_c_size;
+        uint64_t biclique_sxc_size;
 
         string path; 
         string name;
