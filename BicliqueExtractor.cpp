@@ -74,7 +74,6 @@ void BicliqueExtractor::extract(){
         }
         iteration++;
         total_biclique += n_bicliques;
-        break;
     }
     TIMERSTOP(extraction_biclique);
 

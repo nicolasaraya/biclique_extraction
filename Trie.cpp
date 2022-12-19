@@ -31,6 +31,7 @@ Biclique* Trie::getBiclique(){
         
     }
     else{
+        delete b;
         return NULL;
     }
     return b;
