@@ -2,725 +2,611 @@
 Adjency Matrix Size: 933258
 Iteracion: 1
 Min Bilcique Size: 500
-Clusters encontrados: 7693
-Bilciques encontrados: 18
+Clusters encontrados: 7735
+Bilciques encontrados: 15
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 2
 Min Bilcique Size: 500
-Clusters encontrados: 7674
-Bilciques encontrados: 13
+Clusters encontrados: 7635
+Bilciques encontrados: 10
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 3
 Min Bilcique Size: 500
-Clusters encontrados: 7681
-Bilciques encontrados: 8
+Clusters encontrados: 7555
+Bilciques encontrados: 10
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 4
 Min Bilcique Size: 500
-Clusters encontrados: 7612
+Clusters encontrados: 7637
 Bilciques encontrados: 5
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 5
 Min Bilcique Size: 500
-Clusters encontrados: 7572
-Bilciques encontrados: 4
+Clusters encontrados: 7648
+Bilciques encontrados: 1
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 6
 Min Bilcique Size: 500
-Clusters encontrados: 7567
-Bilciques encontrados: 2
+Clusters encontrados: 7634
+Bilciques encontrados: 5
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 7
 Min Bilcique Size: 500
-Clusters encontrados: 7724
+Clusters encontrados: 7667
 Bilciques encontrados: 2
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 8
 Min Bilcique Size: 500
-Clusters encontrados: 7628
-Bilciques encontrados: 0
+Clusters encontrados: 7674
+Bilciques encontrados: 1
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 9
-Min Bilcique Size: 400
-Clusters encontrados: 7730
-Bilciques encontrados: 17
+Min Bilcique Size: 500
+Clusters encontrados: 7689
+Bilciques encontrados: 2
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 10
-Min Bilcique Size: 400
-Clusters encontrados: 7672
-Bilciques encontrados: 8
+Min Bilcique Size: 500
+Clusters encontrados: 7653
+Bilciques encontrados: 0
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 11
 Min Bilcique Size: 400
-Clusters encontrados: 7632
-Bilciques encontrados: 2
+Clusters encontrados: 7624
+Bilciques encontrados: 17
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 12
 Min Bilcique Size: 400
-Clusters encontrados: 7636
-Bilciques encontrados: 2
+Clusters encontrados: 7683
+Bilciques encontrados: 6
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 13
 Min Bilcique Size: 400
-Clusters encontrados: 7730
+Clusters encontrados: 7630
 Bilciques encontrados: 3
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 14
 Min Bilcique Size: 400
-Clusters encontrados: 7735
-Bilciques encontrados: 2
+Clusters encontrados: 7761
+Bilciques encontrados: 3
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 15
 Min Bilcique Size: 400
-Clusters encontrados: 7647
+Clusters encontrados: 7641
 Bilciques encontrados: 1
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 16
 Min Bilcique Size: 400
-Clusters encontrados: 7656
-Bilciques encontrados: 1
+Clusters encontrados: 7722
+Bilciques encontrados: 5
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 17
 Min Bilcique Size: 400
-Clusters encontrados: 7554
-Bilciques encontrados: 1
+Clusters encontrados: 7583
+Bilciques encontrados: 2
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 18
 Min Bilcique Size: 400
-Clusters encontrados: 7679
-Bilciques encontrados: 1
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 19
-Min Bilcique Size: 400
-Clusters encontrados: 7699
-Bilciques encontrados: 2
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 20
-Min Bilcique Size: 400
-Clusters encontrados: 7674
-Bilciques encontrados: 1
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 21
-Min Bilcique Size: 400
-Clusters encontrados: 7623
-Bilciques encontrados: 1
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 22
-Min Bilcique Size: 400
-Clusters encontrados: 7663
-Bilciques encontrados: 1
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 23
-Min Bilcique Size: 400
-Clusters encontrados: 7749
-Bilciques encontrados: 0
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 24
-Min Bilcique Size: 300
-Clusters encontrados: 7635
-Bilciques encontrados: 16
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 25
-Min Bilcique Size: 300
-Clusters encontrados: 7621
-Bilciques encontrados: 13
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 26
-Min Bilcique Size: 300
 Clusters encontrados: 7617
 Bilciques encontrados: 2
 ****************************************************************
 Adjency Matrix Size: 933258
-Iteracion: 27
-Min Bilcique Size: 300
-Clusters encontrados: 7594
+Iteracion: 19
+Min Bilcique Size: 400
+Clusters encontrados: 7698
+Bilciques encontrados: 1
+****************************************************************
+Adjency Matrix Size: 933258
+Iteracion: 20
+Min Bilcique Size: 400
+Clusters encontrados: 7545
 Bilciques encontrados: 0
 ****************************************************************
 Adjency Matrix Size: 933258
-Iteracion: 28
-Min Bilcique Size: 200
-Clusters encontrados: 7726
-Bilciques encontrados: 56
+Iteracion: 21
+Min Bilcique Size: 300
+Clusters encontrados: 7569
+Bilciques encontrados: 19
 ****************************************************************
 Adjency Matrix Size: 933258
-Iteracion: 29
-Min Bilcique Size: 200
-Clusters encontrados: 7750
-Bilciques encontrados: 28
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 30
-Min Bilcique Size: 200
-Clusters encontrados: 7649
-Bilciques encontrados: 14
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 31
-Min Bilcique Size: 200
-Clusters encontrados: 7729
-Bilciques encontrados: 7
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 32
-Min Bilcique Size: 200
-Clusters encontrados: 7674
+Iteracion: 22
+Min Bilcique Size: 300
+Clusters encontrados: 7701
 Bilciques encontrados: 10
 ****************************************************************
 Adjency Matrix Size: 933258
-Iteracion: 33
-Min Bilcique Size: 200
-Clusters encontrados: 7712
-Bilciques encontrados: 8
+Iteracion: 23
+Min Bilcique Size: 300
+Clusters encontrados: 7764
+Bilciques encontrados: 5
 ****************************************************************
 Adjency Matrix Size: 933258
-Iteracion: 34
-Min Bilcique Size: 200
-Clusters encontrados: 7667
-Bilciques encontrados: 11
+Iteracion: 24
+Min Bilcique Size: 300
+Clusters encontrados: 7655
+Bilciques encontrados: 5
 ****************************************************************
 Adjency Matrix Size: 933258
-Iteracion: 35
-Min Bilcique Size: 200
-Clusters encontrados: 7728
-Bilciques encontrados: 6
+Iteracion: 25
+Min Bilcique Size: 300
+Clusters encontrados: 7700
+Bilciques encontrados: 2
 ****************************************************************
 Adjency Matrix Size: 933258
-Iteracion: 36
-Min Bilcique Size: 200
+Iteracion: 26
+Min Bilcique Size: 300
+Clusters encontrados: 7693
+Bilciques encontrados: 4
+****************************************************************
+Adjency Matrix Size: 933258
+Iteracion: 27
+Min Bilcique Size: 300
 Clusters encontrados: 7637
 Bilciques encontrados: 3
 ****************************************************************
 Adjency Matrix Size: 933258
+Iteracion: 28
+Min Bilcique Size: 300
+Clusters encontrados: 7705
+Bilciques encontrados: 1
+****************************************************************
+Adjency Matrix Size: 933258
+Iteracion: 29
+Min Bilcique Size: 300
+Clusters encontrados: 7529
+Bilciques encontrados: 1
+****************************************************************
+Adjency Matrix Size: 933258
+Iteracion: 30
+Min Bilcique Size: 300
+Clusters encontrados: 7666
+Bilciques encontrados: 0
+****************************************************************
+Adjency Matrix Size: 933258
+Iteracion: 31
+Min Bilcique Size: 200
+Clusters encontrados: 7612
+Bilciques encontrados: 44
+****************************************************************
+Adjency Matrix Size: 933258
+Iteracion: 32
+Min Bilcique Size: 200
+Clusters encontrados: 7708
+Bilciques encontrados: 28
+****************************************************************
+Adjency Matrix Size: 933258
+Iteracion: 33
+Min Bilcique Size: 200
+Clusters encontrados: 7646
+Bilciques encontrados: 14
+****************************************************************
+Adjency Matrix Size: 933258
+Iteracion: 34
+Min Bilcique Size: 200
+Clusters encontrados: 7770
+Bilciques encontrados: 14
+****************************************************************
+Adjency Matrix Size: 933258
+Iteracion: 35
+Min Bilcique Size: 200
+Clusters encontrados: 7696
+Bilciques encontrados: 8
+****************************************************************
+Adjency Matrix Size: 933258
+Iteracion: 36
+Min Bilcique Size: 200
+Clusters encontrados: 7774
+Bilciques encontrados: 5
+****************************************************************
+Adjency Matrix Size: 933258
 Iteracion: 37
 Min Bilcique Size: 200
-Clusters encontrados: 7732
-Bilciques encontrados: 3
+Clusters encontrados: 7634
+Bilciques encontrados: 4
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 38
 Min Bilcique Size: 200
-Clusters encontrados: 7585
-Bilciques encontrados: 2
+Clusters encontrados: 7745
+Bilciques encontrados: 5
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 39
 Min Bilcique Size: 200
-Clusters encontrados: 7648
+Clusters encontrados: 7656
 Bilciques encontrados: 3
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 40
 Min Bilcique Size: 200
-Clusters encontrados: 7700
-Bilciques encontrados: 2
+Clusters encontrados: 7643
+Bilciques encontrados: 5
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 41
 Min Bilcique Size: 200
-Clusters encontrados: 7621
-Bilciques encontrados: 3
+Clusters encontrados: 7696
+Bilciques encontrados: 2
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 42
 Min Bilcique Size: 200
-Clusters encontrados: 7645
-Bilciques encontrados: 5
+Clusters encontrados: 7689
+Bilciques encontrados: 3
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 43
 Min Bilcique Size: 200
-Clusters encontrados: 7709
-Bilciques encontrados: 3
+Clusters encontrados: 7645
+Bilciques encontrados: 1
 ****************************************************************
 Adjency Matrix Size: 933258
 Iteracion: 44
 Min Bilcique Size: 200
-Clusters encontrados: 7753
-Bilciques encontrados: 3
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 45
-Min Bilcique Size: 200
-Clusters encontrados: 7658
-Bilciques encontrados: 2
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 46
-Min Bilcique Size: 200
-Clusters encontrados: 7703
-Bilciques encontrados: 3
-****************************************************************
-Adjency Matrix Size: 933258
-Iteracion: 47
-Min Bilcique Size: 200
-Clusters encontrados: 7665
+Clusters encontrados: 7610
 Bilciques encontrados: 0
 ****************************************************************
 Adjency Matrix Size: 933258
-Iteracion: 48
+Iteracion: 45
 Min Bilcique Size: 100
-Clusters encontrados: 7817
-Bilciques encontrados: 248
+Clusters encontrados: 7681
+Bilciques encontrados: 270
 ****************************************************************
 Adjency Matrix Size: 933258
+Iteracion: 46
+Min Bilcique Size: 100
+Clusters encontrados: 7581
+Bilciques encontrados: 148
+****************************************************************
+Adjency Matrix Size: 933258
+Iteracion: 47
+Min Bilcique Size: 100
+Clusters encontrados: 7699
+Bilciques encontrados: 85
+****************************************************************
+Adjency Matrix Size: 933257
+Iteracion: 48
+Min Bilcique Size: 100
+Clusters encontrados: 7828
+Bilciques encontrados: 64
+****************************************************************
+Adjency Matrix Size: 933256
 Iteracion: 49
 Min Bilcique Size: 100
-Clusters encontrados: 7706
-Bilciques encontrados: 150
+Clusters encontrados: 7638
+Bilciques encontrados: 43
 ****************************************************************
 Adjency Matrix Size: 933256
 Iteracion: 50
 Min Bilcique Size: 100
-Clusters encontrados: 7641
-Bilciques encontrados: 89
+Clusters encontrados: 7667
+Bilciques encontrados: 43
 ****************************************************************
 Adjency Matrix Size: 933256
 Iteracion: 51
 Min Bilcique Size: 100
-Clusters encontrados: 7686
-Bilciques encontrados: 62
+Clusters encontrados: 7674
+Bilciques encontrados: 21
 ****************************************************************
 Adjency Matrix Size: 933256
 Iteracion: 52
 Min Bilcique Size: 100
-Clusters encontrados: 7648
-Bilciques encontrados: 37
+Clusters encontrados: 7712
+Bilciques encontrados: 29
 ****************************************************************
 Adjency Matrix Size: 933256
 Iteracion: 53
 Min Bilcique Size: 100
-Clusters encontrados: 7692
-Bilciques encontrados: 37
+Clusters encontrados: 7709
+Bilciques encontrados: 19
 ****************************************************************
 Adjency Matrix Size: 933256
 Iteracion: 54
 Min Bilcique Size: 100
-Clusters encontrados: 7647
-Bilciques encontrados: 20
+Clusters encontrados: 7603
+Bilciques encontrados: 15
 ****************************************************************
 Adjency Matrix Size: 933256
 Iteracion: 55
 Min Bilcique Size: 100
-Clusters encontrados: 7635
-Bilciques encontrados: 28
+Clusters encontrados: 7571
+Bilciques encontrados: 15
 ****************************************************************
-Adjency Matrix Size: 933256
+Adjency Matrix Size: 933255
 Iteracion: 56
 Min Bilcique Size: 100
-Clusters encontrados: 7630
-Bilciques encontrados: 17
+Clusters encontrados: 7707
+Bilciques encontrados: 13
 ****************************************************************
 Adjency Matrix Size: 933255
 Iteracion: 57
 Min Bilcique Size: 100
-Clusters encontrados: 7633
-Bilciques encontrados: 25
+Clusters encontrados: 7600
+Bilciques encontrados: 14
 ****************************************************************
 Adjency Matrix Size: 933255
 Iteracion: 58
 Min Bilcique Size: 100
-Clusters encontrados: 7660
-Bilciques encontrados: 20
+Clusters encontrados: 7540
+Bilciques encontrados: 17
 ****************************************************************
 Adjency Matrix Size: 933255
 Iteracion: 59
 Min Bilcique Size: 100
-Clusters encontrados: 7584
-Bilciques encontrados: 18
+Clusters encontrados: 7648
+Bilciques encontrados: 15
 ****************************************************************
 Adjency Matrix Size: 933255
 Iteracion: 60
 Min Bilcique Size: 100
-Clusters encontrados: 7595
-Bilciques encontrados: 14
+Clusters encontrados: 7594
+Bilciques encontrados: 8
 ****************************************************************
 Adjency Matrix Size: 933255
 Iteracion: 61
 Min Bilcique Size: 100
-Clusters encontrados: 7635
-Bilciques encontrados: 14
+Clusters encontrados: 7657
+Bilciques encontrados: 11
 ****************************************************************
 Adjency Matrix Size: 933255
 Iteracion: 62
 Min Bilcique Size: 100
-Clusters encontrados: 7638
-Bilciques encontrados: 13
+Clusters encontrados: 7640
+Bilciques encontrados: 10
 ****************************************************************
 Adjency Matrix Size: 933255
 Iteracion: 63
 Min Bilcique Size: 100
-Clusters encontrados: 7641
+Clusters encontrados: 7662
 Bilciques encontrados: 14
 ****************************************************************
 Adjency Matrix Size: 933255
 Iteracion: 64
 Min Bilcique Size: 100
-Clusters encontrados: 7521
-Bilciques encontrados: 11
+Clusters encontrados: 7611
+Bilciques encontrados: 17
 ****************************************************************
-Adjency Matrix Size: 933255
+Adjency Matrix Size: 933252
 Iteracion: 65
 Min Bilcique Size: 100
-Clusters encontrados: 7658
-Bilciques encontrados: 14
+Clusters encontrados: 7567
+Bilciques encontrados: 5
 ****************************************************************
 Adjency Matrix Size: 933252
 Iteracion: 66
 Min Bilcique Size: 100
-Clusters encontrados: 7664
-Bilciques encontrados: 9
+Clusters encontrados: 7604
+Bilciques encontrados: 13
 ****************************************************************
 Adjency Matrix Size: 933252
 Iteracion: 67
 Min Bilcique Size: 100
-Clusters encontrados: 7675
-Bilciques encontrados: 11
+Clusters encontrados: 7663
+Bilciques encontrados: 10
 ****************************************************************
 Adjency Matrix Size: 933252
 Iteracion: 68
 Min Bilcique Size: 100
-Clusters encontrados: 7630
-Bilciques encontrados: 8
+Clusters encontrados: 7626
+Bilciques encontrados: 10
 ****************************************************************
 Adjency Matrix Size: 933252
 Iteracion: 69
 Min Bilcique Size: 100
-Clusters encontrados: 7513
-Bilciques encontrados: 9
+Clusters encontrados: 7633
+Bilciques encontrados: 7
 ****************************************************************
 Adjency Matrix Size: 933252
 Iteracion: 70
 Min Bilcique Size: 100
-Clusters encontrados: 7583
-Bilciques encontrados: 8
+Clusters encontrados: 7624
+Bilciques encontrados: 3
 ****************************************************************
 Adjency Matrix Size: 933252
 Iteracion: 71
 Min Bilcique Size: 100
-Clusters encontrados: 7638
-Bilciques encontrados: 7
+Clusters encontrados: 7692
+Bilciques encontrados: 10
 ****************************************************************
 Adjency Matrix Size: 933252
 Iteracion: 72
 Min Bilcique Size: 100
-Clusters encontrados: 7635
-Bilciques encontrados: 8
+Clusters encontrados: 7613
+Bilciques encontrados: 11
 ****************************************************************
 Adjency Matrix Size: 933252
 Iteracion: 73
 Min Bilcique Size: 100
-Clusters encontrados: 7583
+Clusters encontrados: 7730
 Bilciques encontrados: 6
 ****************************************************************
-Adjency Matrix Size: 933251
+Adjency Matrix Size: 933252
 Iteracion: 74
 Min Bilcique Size: 100
-Clusters encontrados: 7685
-Bilciques encontrados: 9
+Clusters encontrados: 7642
+Bilciques encontrados: 11
 ****************************************************************
-Adjency Matrix Size: 933251
+Adjency Matrix Size: 933252
 Iteracion: 75
 Min Bilcique Size: 100
-Clusters encontrados: 7583
-Bilciques encontrados: 5
+Clusters encontrados: 7578
+Bilciques encontrados: 7
 ****************************************************************
-Adjency Matrix Size: 933251
+Adjency Matrix Size: 933252
 Iteracion: 76
 Min Bilcique Size: 100
-Clusters encontrados: 7565
-Bilciques encontrados: 8
+Clusters encontrados: 7613
+Bilciques encontrados: 7
 ****************************************************************
-Adjency Matrix Size: 933251
+Adjency Matrix Size: 933252
 Iteracion: 77
 Min Bilcique Size: 100
-Clusters encontrados: 7696
-Bilciques encontrados: 5
+Clusters encontrados: 7709
+Bilciques encontrados: 3
 ****************************************************************
-Adjency Matrix Size: 933251
+Adjency Matrix Size: 933252
 Iteracion: 78
 Min Bilcique Size: 100
-Clusters encontrados: 7624
+Clusters encontrados: 7544
+Bilciques encontrados: 10
+****************************************************************
+Adjency Matrix Size: 933252
+Iteracion: 79
+Min Bilcique Size: 100
+Clusters encontrados: 7643
+Bilciques encontrados: 13
+****************************************************************
+Adjency Matrix Size: 933250
+Iteracion: 80
+Min Bilcique Size: 100
+Clusters encontrados: 7686
 Bilciques encontrados: 6
 ****************************************************************
 Adjency Matrix Size: 933250
-Iteracion: 79
-Min Bilcique Size: 100
-Clusters encontrados: 7664
-Bilciques encontrados: 7
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 80
-Min Bilcique Size: 100
-Clusters encontrados: 7663
-Bilciques encontrados: 4
-****************************************************************
-Adjency Matrix Size: 933247
 Iteracion: 81
 Min Bilcique Size: 100
-Clusters encontrados: 7651
-Bilciques encontrados: 4
+Clusters encontrados: 7693
+Bilciques encontrados: 5
 ****************************************************************
-Adjency Matrix Size: 933247
+Adjency Matrix Size: 933250
 Iteracion: 82
 Min Bilcique Size: 100
-Clusters encontrados: 7588
-Bilciques encontrados: 4
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 83
-Min Bilcique Size: 100
-Clusters encontrados: 7577
-Bilciques encontrados: 11
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 84
-Min Bilcique Size: 100
-Clusters encontrados: 7618
-Bilciques encontrados: 5
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 85
-Min Bilcique Size: 100
-Clusters encontrados: 7656
-Bilciques encontrados: 7
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 86
-Min Bilcique Size: 100
-Clusters encontrados: 7538
-Bilciques encontrados: 4
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 87
-Min Bilcique Size: 100
-Clusters encontrados: 7654
-Bilciques encontrados: 5
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 88
-Min Bilcique Size: 100
-Clusters encontrados: 7599
-Bilciques encontrados: 3
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 89
-Min Bilcique Size: 100
-Clusters encontrados: 7616
-Bilciques encontrados: 5
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 90
-Min Bilcique Size: 100
-Clusters encontrados: 7478
-Bilciques encontrados: 1
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 91
-Min Bilcique Size: 100
-Clusters encontrados: 7616
-Bilciques encontrados: 4
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 92
-Min Bilcique Size: 100
-Clusters encontrados: 7525
-Bilciques encontrados: 3
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 93
-Min Bilcique Size: 100
-Clusters encontrados: 7602
-Bilciques encontrados: 9
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 94
-Min Bilcique Size: 100
-Clusters encontrados: 7590
-Bilciques encontrados: 8
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 95
-Min Bilcique Size: 100
-Clusters encontrados: 7660
-Bilciques encontrados: 3
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 96
-Min Bilcique Size: 100
-Clusters encontrados: 7542
+Clusters encontrados: 7546
 Bilciques encontrados: 6
 ****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 97
+Adjency Matrix Size: 933250
+Iteracion: 83
 Min Bilcique Size: 100
-Clusters encontrados: 7557
-Bilciques encontrados: 1
+Clusters encontrados: 7647
+Bilciques encontrados: 2
 ****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 98
+Adjency Matrix Size: 933250
+Iteracion: 84
 Min Bilcique Size: 100
-Clusters encontrados: 7630
+Clusters encontrados: 7728
+Bilciques encontrados: 2
+****************************************************************
+Adjency Matrix Size: 933250
+Iteracion: 85
+Min Bilcique Size: 100
+Clusters encontrados: 7605
+Bilciques encontrados: 2
+****************************************************************
+Adjency Matrix Size: 933250
+Iteracion: 86
+Min Bilcique Size: 100
+Clusters encontrados: 7663
 Bilciques encontrados: 5
 ****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 99
+Adjency Matrix Size: 933250
+Iteracion: 87
 Min Bilcique Size: 100
-Clusters encontrados: 7692
-Bilciques encontrados: 5
+Clusters encontrados: 7612
+Bilciques encontrados: 3
 ****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 100
+Adjency Matrix Size: 933250
+Iteracion: 88
+Min Bilcique Size: 100
+Clusters encontrados: 7601
+Bilciques encontrados: 2
+****************************************************************
+Adjency Matrix Size: 933250
+Iteracion: 89
+Min Bilcique Size: 100
+Clusters encontrados: 7621
+Bilciques encontrados: 3
+****************************************************************
+Adjency Matrix Size: 933250
+Iteracion: 90
+Min Bilcique Size: 100
+Clusters encontrados: 7727
+Bilciques encontrados: 4
+****************************************************************
+Adjency Matrix Size: 933250
+Iteracion: 91
+Min Bilcique Size: 100
+Clusters encontrados: 7531
+Bilciques encontrados: 4
+****************************************************************
+Adjency Matrix Size: 933250
+Iteracion: 92
+Min Bilcique Size: 100
+Clusters encontrados: 7506
+Bilciques encontrados: 2
+****************************************************************
+Adjency Matrix Size: 933250
+Iteracion: 93
+Min Bilcique Size: 100
+Clusters encontrados: 7605
+Bilciques encontrados: 4
+****************************************************************
+Adjency Matrix Size: 933250
+Iteracion: 94
+Min Bilcique Size: 100
+Clusters encontrados: 7550
+Bilciques encontrados: 3
+****************************************************************
+Adjency Matrix Size: 933250
+Iteracion: 95
+Min Bilcique Size: 100
+Clusters encontrados: 7567
+Bilciques encontrados: 3
+****************************************************************
+Adjency Matrix Size: 933250
+Iteracion: 96
 Min Bilcique Size: 100
 Clusters encontrados: 7613
-Bilciques encontrados: 2
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 101
-Min Bilcique Size: 100
-Clusters encontrados: 7651
-Bilciques encontrados: 2
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 102
-Min Bilcique Size: 100
-Clusters encontrados: 7512
-Bilciques encontrados: 3
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 103
-Min Bilcique Size: 100
-Clusters encontrados: 7608
-Bilciques encontrados: 5
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 104
-Min Bilcique Size: 100
-Clusters encontrados: 7553
-Bilciques encontrados: 3
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 105
-Min Bilcique Size: 100
-Clusters encontrados: 7649
-Bilciques encontrados: 2
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 106
-Min Bilcique Size: 100
-Clusters encontrados: 7578
-Bilciques encontrados: 3
-****************************************************************
-Adjency Matrix Size: 933247
-Iteracion: 107
-Min Bilcique Size: 100
-Clusters encontrados: 7626
-Bilciques encontrados: 9
-****************************************************************
-Adjency Matrix Size: 933246
-Iteracion: 108
-Min Bilcique Size: 100
-Clusters encontrados: 7560
 Bilciques encontrados: 4
 ****************************************************************
-Adjency Matrix Size: 933246
-Iteracion: 109
-Min Bilcique Size: 100
-Clusters encontrados: 7487
-Bilciques encontrados: 5
-****************************************************************
-Adjency Matrix Size: 933246
-Iteracion: 110
-Min Bilcique Size: 100
-Clusters encontrados: 7659
-Bilciques encontrados: 1
-****************************************************************
-Adjency Matrix Size: 933246
-Iteracion: 111
-Min Bilcique Size: 100
-Clusters encontrados: 7536
-Bilciques encontrados: 3
-****************************************************************
-Adjency Matrix Size: 933246
-Iteracion: 112
+Adjency Matrix Size: 933250
+Iteracion: 97
 Min Bilcique Size: 100
 Clusters encontrados: 7575
-Bilciques encontrados: 2
+Bilciques encontrados: 6
 ****************************************************************
-Adjency Matrix Size: 933246
-Iteracion: 113
+Adjency Matrix Size: 933250
+Iteracion: 98
 Min Bilcique Size: 100
-Clusters encontrados: 7627
+Clusters encontrados: 7545
 Bilciques encontrados: 4
 ****************************************************************
-Adjency Matrix Size: 933246
-Iteracion: 114
+Adjency Matrix Size: 933250
+Iteracion: 99
 Min Bilcique Size: 100
-Clusters encontrados: 7673
-Bilciques encontrados: 3
+Clusters encontrados: 7488
+Bilciques encontrados: 6
 ****************************************************************
-Adjency Matrix Size: 933246
-Iteracion: 115
+Adjency Matrix Size: 933250
+Iteracion: 100
 Min Bilcique Size: 100
-Clusters encontrados: 7617
-Bilciques encontrados: 5
-****************************************************************
-Adjency Matrix Size: 933246
-Iteracion: 116
-Min Bilcique Size: 100
-Clusters encontrados: 7681
-Bilciques encontrados: 2
-****************************************************************
-Adjency Matrix Size: 933246
-Iteracion: 117
-Min Bilcique Size: 100
-Clusters encontrados: 7594
-Bilciques encontrados: 2
-****************************************************************
-Adjency Matrix Size: 933246
-Iteracion: 118
-Min Bilcique Size: 100
-Clusters encontrados: 7676
-Bilciques encontrados: 1
-****************************************************************
-Adjency Matrix Size: 933246
-Iteracion: 119
-Min Bilcique Size: 100
-Clusters encontrados: 7590
+Clusters encontrados: 7696
 Bilciques encontrados: 0
 ****************************************************************
 Original Size AdjencyMatrix: 933258
-Current Size AdjencyMatrix: 933246
+Current Size AdjencyMatrix: 933250
 
 Original Edges Size AdjencyMatrix: 6707236
-Current Edges Size AdjencyMatrix: 6452056
+Current Edges Size AdjencyMatrix: 6457616
 
-Number of Bicliques Extracted: 1393
-Sum of S: 19641
-Sum of C: 24783
-Sum of S + C: 44424
-Sum of Multiplication of S x C: 255180
+Number of Bicliques Extracted: 1350
+Sum of S: 18606
+Sum of C: 24095
+Sum of S + C: 42701
+Sum of Multiplication of S x C: 249620

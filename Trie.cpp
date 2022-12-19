@@ -8,6 +8,7 @@ Trie::Trie(){
 }
 
 Trie::~Trie(){
+    candidateBiclique = NULL;
     if(root != NULL){
         clear(root);
     }

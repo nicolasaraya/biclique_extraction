@@ -30,7 +30,7 @@ void BicliqueExtractor::extract(){
     if(!adjencyMatrixLoaded) makeAdjencyMatrix();
     uint64_t adjencyMatrixOriginalSize = adjMatrix->size();
     uint64_t adjencyMatrixOriginalEdgesSize = adjMatrix->all_edges_size();
-
+    
     ofstream file;
     file.open("log.txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero log
     file.close();
@@ -74,7 +74,9 @@ void BicliqueExtractor::extract(){
         }
         iteration++;
         total_biclique += n_bicliques;
+
     }
+    
     TIMERSTOP(extraction_biclique);
 
     file.open("log.txt",fstream::app);
@@ -230,13 +232,13 @@ int BicliqueExtractor::computeClusters2(vector<SignNode*>* sign_cluster,int colu
 }
 
 void BicliqueExtractor::computeTree(){
-    //omp_set_num_threads(NUM_THREADS);
-    int counter = 0;
+    omp_set_num_threads(NUM_THREADS);
+    //int counter = 0;
     TIMERSTART(create_trie);
 
-    //#pragma omp parallel for
+    #pragma omp parallel for
     for(auto i : clusters){
-        counter++;
+        //counter++;
         //cout << counter << endl;
         i->computeTrie();
         
@@ -270,7 +272,10 @@ uint32_t BicliqueExtractor::extractBicliques(){
         vector<uint64_t*>* C = &btemp->second;
         vector<Node*>* S = btemp->first;
 
-        if( S->size()*C->size() < biclique_size ) continue;
+        if( S->size()*C->size() < biclique_size ){
+            delete btemp;
+            continue;
+        }
         else n_bicliques+=1;
 
         biclique_s_size += S->size();
@@ -300,6 +305,7 @@ uint32_t BicliqueExtractor::extractBicliques(){
             }
         }
         file << endl;
+        delete btemp;
     }
     file.close();
     return n_bicliques;
