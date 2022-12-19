@@ -1,7 +1,7 @@
 CC=g++
-CFLAGS=-g -O0 -fopenmp -lm -Wall
+CFLAGS=-O3 -fopenmp -lm -Wall
 EXECUTABLE=main.o
-CONFIGURE=clear mk
+CONFIGURE=clear mk download
 OBJECTS = main.cpp AdjencyMatrix.cpp AdjencyMatrix.hpp BicliqueExtractor.hpp BicliqueExtractor.cpp Shingle.hpp Shingle.cpp Cluster.hpp Cluster.cpp Trie.hpp Trie.cpp Utils.hpp
 
 all: $(EXECUTABLE)
@@ -17,3 +17,8 @@ main.o:
  
 clear:
 	rm -fr biclique_extrator
+
+download:
+	cd data && wget http://www.inf.udec.cl/~chernand/sources/kais2014/dsextract/dblp-2011.graph-txt.gz
+	cd data && gzip -d dblp-2011.graph-txt.gz
+	cd data && mv dblp-2011.graph-txt dblp-2011.txt

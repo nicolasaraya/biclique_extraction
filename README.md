@@ -20,6 +20,19 @@ make
 
 Execute
 
+
+```bash
+./biclique_extractor filename num_sign min_cluster_size min_adyacency_nodes biclique_size biclique_size_decrease
+```
+
+    * `filename`: file in Data folder
+    * `num_sign`: number of Min hashes
+    * `min_cluster_size`: minimum number of nodes in each cluster
+    * `min_adyency_nodes`: minimum number of adyancy nodes per node to make cluster
+    * `biclique_size`: minimum number of SxC per biclique
+    * `biclique_size_decrease`: discount factor 
+
+Execution example 
 ```bash
 bash run.sh
 ```
