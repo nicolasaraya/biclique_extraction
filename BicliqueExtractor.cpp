@@ -232,11 +232,11 @@ int BicliqueExtractor::computeClusters2(vector<SignNode*>* sign_cluster,int colu
 }
 
 void BicliqueExtractor::computeTree(){
-    omp_set_num_threads(NUM_THREADS);
+    //omp_set_num_threads(NUM_THREADS);
     //int counter = 0;
     TIMERSTART(create_trie);
 
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for(auto i : clusters){
         //counter++;
         //cout << counter << endl;
@@ -253,7 +253,7 @@ void BicliqueExtractor::computeShingles(){
     Node* node_;
     for(uint64_t i = 0 ; i < adjMatrix->size() ; i++){
         node_ = adjMatrix->getNode(i);
-        SignNode* sn; 
+        SignNode* sn = NULL; 
         if(node_ != NULL) sn = shingle->computeShingle(adjMatrix->getNode(i));
         if(sn != NULL) signatures.push_back(sn);
     }
