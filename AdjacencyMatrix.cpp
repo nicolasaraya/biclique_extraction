@@ -1,20 +1,20 @@
-#include "AdjencyMatrix.hpp"
+#include "AdjacencyMatrix.hpp"
 
-AdjencyMatrix::AdjencyMatrix(const string path){
+AdjacencyMatrix::AdjacencyMatrix(const string path){
 	this->path = path;
 }
-AdjencyMatrix::~AdjencyMatrix(){
+AdjacencyMatrix::~AdjacencyMatrix(){
 	for(unsigned int i=0; i < matrix.size(); i++){
 		delete matrix[i];
 	}	
 	matrix.clear();
 }
 
-uint64_t AdjencyMatrix::size(){
+uint64_t AdjacencyMatrix::size(){
     return matrix.size();
 }
 
-uint64_t AdjencyMatrix::all_edges_size(){
+uint64_t AdjacencyMatrix::all_edges_size(){
 	uint64_t size = 0;
     for(uint64_t i = 0; i < matrix.size(); i++){
 		size+= matrix[i]->adyNodes.size();
@@ -22,15 +22,15 @@ uint64_t AdjencyMatrix::all_edges_size(){
 	return size; 
 }
 
-void AdjencyMatrix::insert(Node* node){
+void AdjacencyMatrix::insert(Node* node){
     matrix.push_back(node);
 }
 
-Node* AdjencyMatrix::getNode(uint64_t i){
+Node* AdjacencyMatrix::getNode(uint64_t i){
     return matrix.at(i);
 }
 
-void AdjencyMatrix::print(){
+void AdjacencyMatrix::print(){
 	for(auto i : matrix){
 		cout << i->nodeID << ": ";
 		
@@ -42,7 +42,7 @@ void AdjencyMatrix::print(){
 	}
 }
 
-void AdjencyMatrix::makeAdjencyList(){
+void AdjacencyMatrix::makeAdjacencyList(){
 	std::time_t t = std::time(0);   // get time now
     std::tm* t_now = std::localtime(&t);
 	string now =  to_string(t_now->tm_year + 1900) + '-' + to_string(t_now->tm_mon + 1) + '-' + to_string(t_now->tm_mday) + "-" + to_string(t_now->tm_hour) +to_string(t_now->tm_min) +to_string(t_now->tm_sec)  ;
@@ -63,7 +63,7 @@ void AdjencyMatrix::makeAdjencyList(){
 
 }
 
-void AdjencyMatrix::reWork(){
+void AdjacencyMatrix::reWork(){
 	for(vector<Node*>::iterator i = matrix.begin(); i != matrix.end(); i++){
 		Node* aux = *i;
 		

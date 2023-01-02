@@ -8,7 +8,7 @@
 #include <omp.h>
 #include <math.h>
 
-#include "AdjencyMatrix.hpp"
+#include "AdjacencyMatrix.hpp"
 #include "Cluster.hpp"
 #include "Shingle.hpp"
 
@@ -26,7 +26,7 @@ class BicliqueExtractor{
             VARIABLES
         */
         bool withAutoCycle = false;
-        bool adjencyMatrixLoaded = false;
+        bool adjacencyMatrixLoaded = false;
         uint16_t num_signatures;
         uint32_t biclique_size; 
         uint32_t minClusterSize;
@@ -42,7 +42,7 @@ class BicliqueExtractor{
         string path; 
         string name;
 
-        AdjencyMatrix* adjMatrix;
+        AdjacencyMatrix* adjMatrix;
         vector<Cluster*> clusters;
         Shingle* shingle;
         vector<SignNode*> signatures;
@@ -55,7 +55,7 @@ class BicliqueExtractor{
         vector<vector<SignNode*>*> makeGroups(vector<SignNode*>*,int );
         vector<uint64_t> splitString(string, string);
 
-        void makeAdjencyMatrix();
+        void makeAdjacencyMatrix();
 
         uint32_t computeClusters();
         int computeClusters2(vector<SignNode*>*,int);

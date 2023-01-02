@@ -13,17 +13,17 @@
 
 using namespace std;
 
-class AdjencyMatrix{
+class AdjacencyMatrix{
     public:
-        AdjencyMatrix(const string);
-        ~AdjencyMatrix();
+        AdjacencyMatrix(const string);
+        ~AdjacencyMatrix();
 
         void insert(Node*);
         uint64_t size();
         uint64_t all_edges_size();
         Node* getNode(uint64_t);
         void print();
-        void makeAdjencyList();
+        void makeAdjacencyList();
         void reWork();
 
     private:

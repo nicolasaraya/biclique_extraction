@@ -19,7 +19,7 @@ BicliqueExtractor::BicliqueExtractor(const string path, uint16_t num_signatures,
     biclique_c_size = 0;
     biclique_sxc_size = 0;
 
-    adjMatrix = new AdjencyMatrix(name);
+    adjMatrix = new AdjacencyMatrix(name);
 }
 
 BicliqueExtractor::~BicliqueExtractor(){
@@ -27,9 +27,9 @@ BicliqueExtractor::~BicliqueExtractor(){
 }
 
 void BicliqueExtractor::extract(){
-    if(!adjencyMatrixLoaded) makeAdjencyMatrix();
-    uint64_t adjencyMatrixOriginalSize = adjMatrix->size();
-    uint64_t adjencyMatrixOriginalEdgesSize = adjMatrix->all_edges_size();
+    if(!adjacencyMatrixLoaded) makeAdjacencyMatrix();
+    uint64_t adjacencyMatrixOriginalSize = adjMatrix->size();
+    uint64_t adjacencyMatrixOriginalEdgesSize = adjMatrix->all_edges_size();
     
     ofstream file;
     file.open("log.txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero log
@@ -56,7 +56,7 @@ void BicliqueExtractor::extract(){
 
         file.open("log.txt",fstream::app);
         file << "****************************************************************" << endl;
-        file << "Adjency Matrix Size: " << adjMatrix->size() << endl;
+        file << "Adjacency Matrix Size: " << adjMatrix->size() << endl;
         file << "Iteracion: " << iteration << endl;
         file << "Min Bilcique Size: " << biclique_size << endl;
         file << "Clusters encontrados: " << n_clusters << endl;
@@ -81,10 +81,10 @@ void BicliqueExtractor::extract(){
 
     file.open("log.txt",fstream::app);
     file << "****************************************************************" << endl;
-    file << "Original Size AdjencyMatrix: " << adjencyMatrixOriginalSize << endl;
-    file << "Current Size AdjencyMatrix: " << adjMatrix->size() << endl << endl;
-    file << "Original Edges Size AdjencyMatrix: " << adjencyMatrixOriginalEdgesSize << endl;
-    file << "Current Edges Size AdjencyMatrix: " << adjMatrix->all_edges_size() << endl << endl;
+    file << "Original Size AdjacencyMatrix: " << adjacencyMatrixOriginalSize << endl;
+    file << "Current Size AdjacencyMatrix: " << adjMatrix->size() << endl << endl;
+    file << "Original Edges Size AdjacencyMatrix: " << adjacencyMatrixOriginalEdgesSize << endl;
+    file << "Current Edges Size AdjacencyMatrix: " << adjMatrix->all_edges_size() << endl << endl;
     file << "Number of Bicliques Extracted: " << total_biclique << endl;
     file << "Sum of S: " << biclique_s_size << endl;
     file << "Sum of C: " << biclique_c_size << endl;
@@ -92,7 +92,7 @@ void BicliqueExtractor::extract(){
     file << "Sum of Multiplication of S x C: " << biclique_sxc_size << endl;
     file.close();
 
-    adjMatrix->makeAdjencyList();
+    adjMatrix->makeAdjacencyList();
 
 
 }
@@ -145,7 +145,7 @@ vector<uint64_t> BicliqueExtractor::splitString(string line, string delims){
     return nodes;
 }
 
-void BicliqueExtractor::makeAdjencyMatrix(){
+void BicliqueExtractor::makeAdjacencyMatrix(){
     ifstream file; 
     file.open(path); 
     if (!file.is_open()){
@@ -183,7 +183,7 @@ void BicliqueExtractor::makeAdjencyMatrix(){
         countAux++;
         //if(countAux%1000 == 0) cout << countAux <<"Nodos leidos" << endl; //10 nodos
     }
-    adjencyMatrixLoaded = true; 
+    adjacencyMatrixLoaded = true; 
     file.close();
 }
 

@@ -2,7 +2,7 @@ CC=g++
 CFLAGS=-O3 -fopenmp -lm -Wall
 EXECUTABLE=main.o
 CONFIGURE=clear mk download
-OBJECTS = main.cpp AdjencyMatrix.cpp AdjencyMatrix.hpp BicliqueExtractor.hpp BicliqueExtractor.cpp Shingle.hpp Shingle.cpp Cluster.hpp Cluster.cpp Trie.hpp Trie.cpp Utils.hpp
+OBJECTS = main.cpp AdjacencyMatrix.cpp AdjacencyMatrix.hpp BicliqueExtractor.hpp BicliqueExtractor.cpp Shingle.hpp Shingle.cpp Cluster.hpp Cluster.cpp Trie.hpp Trie.cpp Utils.hpp
 addV = addVertex
 
 all: $(EXECUTABLE)
@@ -26,4 +26,4 @@ download:
 	
 
 addVertex:
-	awk -F " " '{if(NR==1){printf("%d\n",$1);}else{printf("%d %s\n", NR-2, $0);}}' dblp-2011.graph-txt > dblp-2011.net
+	awk -F " " '{if( NR==1 ){printf("%d\n",$1);}else{printf("%d %s\n", NR-2, $0);}}' dblp-2011.graph-txt > dblp-2011.net
