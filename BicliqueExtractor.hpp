@@ -57,8 +57,8 @@ class BicliqueExtractor{
 
         void makeAdjacencyMatrix();
 
-        uint32_t computeClusters();
-        int computeClusters2(vector<SignNode*>*,int);
+        void computeClusters();
+        void computeClusters2(vector<SignNode*>*,int);
         void computeTree();
         void computeShingles();
         void computeShinglesInline();

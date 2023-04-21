@@ -46,7 +46,7 @@ void BicliqueExtractor::extract(){
         computeShingles();
         delete shingle;
 
-        uint32_t n_clusters = computeClusters();
+        computeClusters();
 
         clearSignatures();
 
@@ -59,7 +59,7 @@ void BicliqueExtractor::extract(){
         file << "Adjacency Matrix Size: " << adjMatrix->size() << endl;
         file << "Iteracion: " << iteration << endl;
         file << "Min Bilcique Size: " << biclique_size << endl;
-        file << "Clusters encontrados: " << n_clusters << endl;
+        file << "Clusters encontrados: " << clusters.size() << endl;
         file << "Bilciques encontrados: " << n_bicliques << endl;
         file.close();
 
@@ -187,26 +187,25 @@ void BicliqueExtractor::makeAdjacencyMatrix(){
     file.close();
 }
 
-uint32_t BicliqueExtractor::computeClusters(){
-    int size_cluster = computeClusters2(&signatures,0);
-    return size_cluster;
+void BicliqueExtractor::computeClusters(){
+    computeClusters2(&signatures,0);
 }
 
 
-int BicliqueExtractor::computeClusters2(vector<SignNode*>* sign_cluster,int column){
-    int size_cluster = 0;
+void BicliqueExtractor::computeClusters2(vector<SignNode*>* sign_cluster,int column){
+
     sortSignatures(sign_cluster,column);
-    
     vector<vector<SignNode*>*> groups = makeGroups(sign_cluster,column);
+
+    vector< Node* >* new_cluster_single_elements = new vector<Node*>();
 
     for(size_t i = 0 ; i < groups.size(); i++){
         uint32_t numberEntries = groups[i]->size();
 
         if( numberEntries > minClusterSize && column < num_signatures-1){
-            size_cluster += computeClusters2(groups[i],column+1);
+            computeClusters2(groups[i],column+1);
         }
         else if(numberEntries > minClusterSize ){
-            size_cluster++;
             vector< Node* >* new_cluster = new vector<Node*>(); 
             for(size_t j = 0; j < groups[i]->size(); j++){
                 new_cluster->push_back(groups[i]->at(j)->ptrNode);
@@ -215,20 +214,16 @@ int BicliqueExtractor::computeClusters2(vector<SignNode*>* sign_cluster,int colu
             Cluster *c = new Cluster(new_cluster);
             clusters.push_back(c);
         }
+        else if(numberEntries == 1){
+            new_cluster_single_elements->push_back(groups[i]->at(0)->ptrNode);
+        }
         delete groups[i];
     }
-    if(size_cluster == 0 && sign_cluster->size() > minClusterSize){
-        size_cluster++;
-        vector< Node* >* new_cluster = new vector<Node*>(); 
-        for(size_t j = 0; j < sign_cluster->size(); j++){
-            new_cluster->push_back(sign_cluster->at(j)->ptrNode);
-        }
-
-        Cluster *c = new Cluster(new_cluster);
+    
+    if(new_cluster_single_elements->size() > 1){
+        Cluster *c = new Cluster(new_cluster_single_elements);
         clusters.push_back(c);
     }
-    return size_cluster;
-    
 }
 
 void BicliqueExtractor::computeTree(){

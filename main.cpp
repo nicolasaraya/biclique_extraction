@@ -1,7 +1,7 @@
 #include <iostream>
 #include "BicliqueExtractor.hpp"
 
-const string path = "./data/";
+const string path = "../data/";
 
 using namespace std;
 
