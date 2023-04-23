@@ -74,6 +74,7 @@ void BicliqueExtractor::extract(){
         }
         iteration++;
         total_biclique += n_bicliques;
+        break;
 
     }
     
@@ -223,6 +224,9 @@ void BicliqueExtractor::computeClusters2(vector<SignNode*>* sign_cluster,int col
     if(new_cluster_single_elements->size() > 1){
         Cluster *c = new Cluster(new_cluster_single_elements);
         clusters.push_back(c);
+    }
+    else{
+        delete new_cluster_single_elements;
     }
 }
 
