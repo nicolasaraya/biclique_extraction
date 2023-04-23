@@ -14,7 +14,8 @@ class Trie{
         uint64_t size_bicliques = 0;
         
         void create(vector<Node*>*);
-        Biclique* getBiclique();
+        //Biclique* getBiclique();
+        vector<Biclique*> getBicliques();
         void printTrie();
 
     private:
@@ -24,8 +25,9 @@ class Trie{
 
         TrieNode* find(uint64_t&, TrieNode*);
         void clear(TrieNode*);
-        void computeCandidateBiclique(TrieNode*);
-        void computeBiclique(Biclique*, TrieNode*);
+        void computeCandidatesBicliques(TrieNode*, vector<Biclique*> &);
+        //void computeCandidateBiclique(TrieNode*);
+        //void computeBiclique(Biclique*, TrieNode*);
         void insert(Node*);
         void print(TrieNode*);
 

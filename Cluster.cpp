@@ -42,8 +42,8 @@ void Cluster::computeTrie(){
     //t->printTrie();
 }
 
-Biclique* Cluster::getBiclique(){
-    return t->getBiclique();
+vector<Biclique*> Cluster::getBicliques(){
+    return t->getBicliques();
 }
 
 

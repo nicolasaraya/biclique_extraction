@@ -24,6 +24,49 @@ void Trie::create(vector<Node*>* nodes){
         insert(nodes->at(i));
     }
 }
+
+vector<Biclique*> Trie::getBicliques(){
+    vector<Biclique*> potential_bicliques;
+
+    computeCandidatesBicliques(root, potential_bicliques);
+
+    return potential_bicliques;
+}
+
+void Trie::computeCandidatesBicliques(TrieNode* node, vector<Biclique*> &potential_bicliques){
+    if( node->childrens->size() > 0 ){
+        for( size_t i = 0; i < node->childrens->size(); i++ ){
+            computeCandidatesBicliques( node->childrens->at(i), potential_bicliques );
+        }
+    }
+
+    int index = ( node->depth - 1 ) * ( node->indices->size() - 1 );
+    if( index > 0 ){
+        //comprobar en el vector
+        int p_b_size = potential_bicliques.size();
+        if( p_b_size > 0 ){
+            if( potential_bicliques[p_b_size - 1]->first->size() ==  node->indices->size()){
+                if( potential_bicliques[p_b_size - 1]->first->at(0) == node->indices->at(0)){
+                    return;
+                }
+            }
+        }
+
+        Biclique* b = new Biclique();
+        b->first = node->indices;
+        b->second.push_back( &node->vertex );
+
+        TrieNode* parent_node = node->parent;
+        while( parent_node != NULL ){
+            b->second.push_back( &parent_node->vertex );
+            parent_node = parent_node->parent;
+        }
+        potential_bicliques.push_back( b );
+    }
+}
+
+//vector de bicliques
+/*
 Biclique* Trie::getBiclique(){
     Biclique* b = new Biclique();
     computeCandidateBiclique(root);
@@ -68,7 +111,7 @@ void Trie::computeBiclique(Biclique* b, TrieNode* node){
 
     computeBiclique(b, node->parent);
 
-}
+}*/
 
 void Trie::printTrie(){
     if(root == NULL){

@@ -261,46 +261,55 @@ uint32_t BicliqueExtractor::extractBicliques(){
   	//file.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
     file.open(name+"_bicliques.txt", fstream::app);
     for(size_t i = 0; i < clusters.size(); i++){
-        Biclique* btemp = clusters[i]->getBiclique();
-        if(btemp == NULL) continue;
+        vector<Biclique*> vector_btemp = clusters[i]->getBicliques();
+        if(vector_btemp.empty()) continue;
 
-        vector<uint64_t*>* C = &btemp->second;
-        vector<Node*>* S = btemp->first;
+        //sort by size
+        sortBicliques(&vector_btemp);
 
-        if( S->size()*C->size() < biclique_size ){
-            delete btemp;
-            continue;
-        }
-        else n_bicliques+=1;
+        for(size_t k = 0; k < vector_btemp.size(); k++){
+            Biclique* btemp = vector_btemp.at(k);
 
-        biclique_s_size += S->size();
-        biclique_c_size += C->size();
-        biclique_sxc_size+= S->size() * C->size();
+            vector<uint64_t*>* C = &btemp->second;
+            vector<Node*>* S = btemp->first;
 
-        sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2 ));
-        sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortNodes, this, placeholders::_1, placeholders::_2));
+            //si el biclique no cumple con el tamaño deseado o es 2x2 se descarta
+            if( (S->size()*C->size() < biclique_size ) || ( (S->size()-1) * (C->size()-1) == 1 )){
+                delete btemp;
+                continue;
+            }
+            else n_bicliques+=1;
 
-        file << "S: ";
-        for(size_t j = 0; j < S->size(); j++){
-            file << S->at(j)->nodeID; 
-            if(j != S->size()-1) file << " ";
-        }
-        file << endl << "C: ";
+            biclique_s_size += S->size();
+            biclique_c_size += C->size();
+            biclique_sxc_size+= S->size() * C->size();
 
-        for(size_t j = 0; j < C->size(); j++){
-            file << *(C->at(j));
-            if(j != C->size()-1) file << " ";
-            for(size_t k = 0; k < S->size(); k++){
-                //cout <<"C: " <<  *(C->at(j)) << endl;
-                vector<uint64_t>* t_adyNodes = &(S->at(k)->adyNodes);
-                auto temp = find(t_adyNodes->begin(), t_adyNodes->end(), *(C->at(j))); //buscamos el elemento de C en la lista del Nodo
-                if(temp != S->at(k)->adyNodes.end()){ //si se encuentra se elimina
-                    S->at(k)->adyNodes.erase(temp);
+            sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2 ));
+            sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortNodes, this, placeholders::_1, placeholders::_2));
+
+            file << "S: ";
+            for(size_t j = 0; j < S->size(); j++){
+                file << S->at(j)->nodeID; 
+                if(j != S->size()-1) file << " ";
+            }
+            file << endl << "C: ";
+
+            for(size_t j = 0; j < C->size(); j++){
+                file << *(C->at(j));
+                if(j != C->size()-1) file << " ";
+                for(size_t k = 0; k < S->size(); k++){
+                    //cout <<"C: " <<  *(C->at(j)) << endl;
+                    vector<uint64_t>* t_adyNodes = &(S->at(k)->adyNodes);
+                    auto temp = find(t_adyNodes->begin(), t_adyNodes->end(), *(C->at(j))); //buscamos el elemento de C en la lista del Nodo
+                    if(temp != S->at(k)->adyNodes.end()){ //si se encuentra se elimina
+                        S->at(k)->adyNodes.erase(temp);
+                    }
                 }
             }
+            file << endl;
+            delete btemp;
         }
-        file << endl;
-        delete btemp;
+        vector_btemp.clear();
     }
     file.close();
     return n_bicliques;
@@ -337,6 +346,10 @@ void BicliqueExtractor::sortSignatures(vector<SignNode*>* signs, int signature_i
     sort(signs->begin(), signs->end(), bind(&BicliqueExtractor::compareMinHash, this, placeholders::_1, placeholders::_2, signature_index));
 }
 
+void BicliqueExtractor::sortBicliques(vector<Biclique*>* bicliques){
+    sort(bicliques->begin(), bicliques->end(), bind(&BicliqueExtractor::compareBIndex, this, placeholders::_1, placeholders::_2));
+}
+
 bool BicliqueExtractor::sortC(uint64_t* a,uint64_t* b){
     return *a < *b;
 }
@@ -347,4 +360,8 @@ bool BicliqueExtractor::sortNodes(Node* a, Node* b){
 
 bool BicliqueExtractor::compareMinHash(const SignNode* a, const SignNode* b, int signature_index){
     return (a->minHash.at(signature_index) < b->minHash.at(signature_index)); //signNode->vector->minHash
+}
+
+bool BicliqueExtractor::compareBIndex(const Biclique* a, const Biclique* b){
+    return a->first->size()*a->second.size() > b->first->size()*b->second.size();
 }

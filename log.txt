@@ -2,11 +2,125 @@
 Adjacency Matrix Size: 933258
 Iteracion: 1
 Min Bilcique Size: 100
-Clusters encontrados: 152788
-Bilciques encontrados: 501
+Clusters encontrados: 153038
+Bilciques encontrados: 4210
 ****************************************************************
 Adjacency Matrix Size: 933258
 Iteracion: 2
 Min Bilcique Size: 100
-Clusters encontrados: 152949
-Bilciques encontrados: 344
+Clusters encontrados: 152924
+Bilciques encontrados: 1147
+****************************************************************
+Adjacency Matrix Size: 932873
+Iteracion: 3
+Min Bilcique Size: 100
+Clusters encontrados: 153212
+Bilciques encontrados: 315
+****************************************************************
+Adjacency Matrix Size: 932790
+Iteracion: 4
+Min Bilcique Size: 100
+Clusters encontrados: 153361
+Bilciques encontrados: 215
+****************************************************************
+Adjacency Matrix Size: 932762
+Iteracion: 5
+Min Bilcique Size: 100
+Clusters encontrados: 153054
+Bilciques encontrados: 126
+****************************************************************
+Adjacency Matrix Size: 932727
+Iteracion: 6
+Min Bilcique Size: 100
+Clusters encontrados: 153552
+Bilciques encontrados: 106
+****************************************************************
+Adjacency Matrix Size: 932718
+Iteracion: 7
+Min Bilcique Size: 100
+Clusters encontrados: 153182
+Bilciques encontrados: 63
+****************************************************************
+Adjacency Matrix Size: 932715
+Iteracion: 8
+Min Bilcique Size: 100
+Clusters encontrados: 153973
+Bilciques encontrados: 47
+****************************************************************
+Adjacency Matrix Size: 932706
+Iteracion: 9
+Min Bilcique Size: 100
+Clusters encontrados: 153616
+Bilciques encontrados: 48
+****************************************************************
+Adjacency Matrix Size: 932704
+Iteracion: 10
+Min Bilcique Size: 100
+Clusters encontrados: 153458
+Bilciques encontrados: 45
+****************************************************************
+Adjacency Matrix Size: 932702
+Iteracion: 11
+Min Bilcique Size: 100
+Clusters encontrados: 153432
+Bilciques encontrados: 28
+****************************************************************
+Adjacency Matrix Size: 932701
+Iteracion: 12
+Min Bilcique Size: 100
+Clusters encontrados: 153766
+Bilciques encontrados: 27
+****************************************************************
+Adjacency Matrix Size: 932699
+Iteracion: 13
+Min Bilcique Size: 100
+Clusters encontrados: 153750
+Bilciques encontrados: 34
+****************************************************************
+Adjacency Matrix Size: 932697
+Iteracion: 14
+Min Bilcique Size: 100
+Clusters encontrados: 153311
+Bilciques encontrados: 31
+****************************************************************
+Adjacency Matrix Size: 932697
+Iteracion: 15
+Min Bilcique Size: 100
+Clusters encontrados: 153469
+Bilciques encontrados: 15
+****************************************************************
+Adjacency Matrix Size: 932696
+Iteracion: 16
+Min Bilcique Size: 100
+Clusters encontrados: 153092
+Bilciques encontrados: 25
+****************************************************************
+Adjacency Matrix Size: 932696
+Iteracion: 17
+Min Bilcique Size: 100
+Clusters encontrados: 153514
+Bilciques encontrados: 14
+****************************************************************
+Adjacency Matrix Size: 932696
+Iteracion: 18
+Min Bilcique Size: 100
+Clusters encontrados: 153530
+Bilciques encontrados: 21
+****************************************************************
+Adjacency Matrix Size: 932692
+Iteracion: 19
+Min Bilcique Size: 100
+Clusters encontrados: 153213
+Bilciques encontrados: 22
+****************************************************************
+Adjacency Matrix Size: 932686
+Iteracion: 20
+Min Bilcique Size: 100
+Clusters encontrados: 154022
+Bilciques encontrados: 18
+****************************************************************
+Adjacency Matrix Size: 932682
+Iteracion: 21
+Min Bilcique Size: 100
+Clusters encontrados: 153066
+Bilciques encontrados: 5

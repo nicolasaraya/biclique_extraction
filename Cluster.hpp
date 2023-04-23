@@ -20,7 +20,7 @@ class Cluster{
         Trie *t;
 
         void computeTrie();
-        Biclique* getBiclique();
+        vector<Biclique*> getBicliques();
         void printCluster();
 
     private:
