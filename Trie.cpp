@@ -54,11 +54,11 @@ void Trie::computeCandidatesBicliques(TrieNode* node, vector<Biclique*> &potenti
 
         Biclique* b = new Biclique();
         b->first = node->indices;
-        b->second.push_back( &node->vertex );
+        b->second.push_back( node->vertex );
 
         TrieNode* parent_node = node->parent;
         while( parent_node != NULL ){
-            b->second.push_back( &parent_node->vertex );
+            b->second.push_back( parent_node->vertex );
             parent_node = parent_node->parent;
         }
         potential_bicliques.push_back( b );

@@ -51,7 +51,7 @@ class BicliqueExtractor{
             METHODS
         */
         bool compareMinHash(const SignNode*, const SignNode*, int);
-        bool compareBIndex(const Biclique*, const Biclique*);
+        bool compareBicliqueRank(const Biclique*, const Biclique*);
 
         vector<vector<SignNode*>*> makeGroups(vector<SignNode*>*,int );
         vector<uint64_t> splitString(string, string);
@@ -72,7 +72,7 @@ class BicliqueExtractor{
 
         void sortSignatures(vector<SignNode*>*, int);
         void sortBicliques(vector<Biclique*>*);
-        bool sortC(uint64_t*, uint64_t*);
+        bool sortC(uint64_t, uint64_t);
         bool sortNodes(Node*,Node*);
 
         

@@ -23,3 +23,6 @@ int main(int argc, char *argv[]){
 
     return 0;
  }
+
+ // ./biclique_extractor dblp-2011.txt 2 1 3 100 100
+ //./biclique_extractor ej1.txt 2 1 3 1 100

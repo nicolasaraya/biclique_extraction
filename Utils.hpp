@@ -27,7 +27,7 @@ struct SignNode{
 
 //typedef pair<Node*, vector<uint64_t>> SignNode; 
 //typedef pair<uint64_t, vector<uint64_t>> Node;
-typedef pair<vector<Node*>*, vector<uint64_t*>> Biclique;
+typedef pair<vector<Node*>*, vector<uint64_t>> Biclique;
 
 struct TrieNode{
     TrieNode *parent;
