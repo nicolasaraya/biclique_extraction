@@ -7,7 +7,8 @@
 #include <functional>
 
 #include "Trie.hpp"
-#include "Utils.hpp"
+#include "Define.hpp"
+#include "Node.hpp"
 
 using namespace std;
 
@@ -27,9 +28,10 @@ class Cluster{
         vector<Node*>* nodes;
 
         unordered_map<uint64_t, uint32_t> mapFrecuency; //Valor Nodo, Frecuencia
+        uint16_t minFreq = 1;
 
         bool sortFrecuencyComp(const uint64_t&, const uint64_t&);
-        bool sortSizeComp(const Node*, const Node*);
+        bool sortSizeComp(Node*, Node*);
 
         void computeFrecuency();
         void computeHistogram();

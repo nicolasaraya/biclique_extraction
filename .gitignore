@@ -3,3 +3,5 @@ biclique_extractor
 20first.txt
 /data
 /output
+.vscode/settings.json
+biclique_extractor-debug

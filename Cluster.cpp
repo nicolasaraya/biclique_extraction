@@ -17,13 +17,17 @@ void Cluster::computeHistogram(){
     for(auto i : *nodes){
         //vector<uint64_t>* adyNodes = &i->second;
 
-        sort(i->adyNodes.begin(), i->adyNodes.end(), bind(&Cluster::sortFrecuencyComp, this, placeholders::_1, placeholders::_2));
+        sort(i->getAdjacents().begin(), i->getAdjacents().end(), bind(&Cluster::sortFrecuencyComp, this, placeholders::_1, placeholders::_2));
         
-        for(int64_t j = i->adyNodes.size()-1 ; j >= 0; j--){ //eliminar freq 1
-            if(mapFrecuency[ i->adyNodes.at(j) ] <= 1){
+
+        for(auto j = i->getAdjacents().end() ; j != i->getAdjacents().begin(); j--){ //eliminar freq 1
+            if(mapFrecuency[ *j ] <= minFreq){
+                i->moveToCache(*j);
+                /*
                 i->cacheAdyNodes.push_back(i->adyNodes.at(j)); //backup de los nodos descartados.
                 i->adyNodes.pop_back();
                 //if(i->adyNodes.size() == 0) break;
+                */
             }
             else break;
         }
@@ -50,9 +54,9 @@ vector<Biclique*> Cluster::getBicliques(){
 void Cluster::printCluster(){
     cout << endl << "***************" << endl;
     for(size_t i = 0; i < nodes->size(); i++){
-        cout << nodes->at(i)->nodeID << ": ";
-        for(size_t j = 0; j < nodes->at(i)->adyNodes.size(); j++){
-            cout << nodes->at(i)->adyNodes[j] /*<< "(" << mapFrecuency[nodes->at(i)->second[j] ] << ")"*/<< " ";
+        cout << nodes->at(i)->getId() << ": ";
+        for(auto j = nodes->at(i)->getAdjacents().begin(); j != nodes->at(i)->getAdjacents().end(); j++){
+            cout << *j /*<< "(" << mapFrecuency[nodes->at(i)->second[j] ] << ")"*/<< " ";
         }
         cout << endl;
     }
@@ -72,12 +76,12 @@ bool Cluster::sortFrecuencyComp(const uint64_t& a, const uint64_t& b ){
     }
 }
 
-bool Cluster::sortSizeComp(const Node* a, const Node* b){
-    if(a->adyNodes.size() > b->adyNodes.size()){
+bool Cluster::sortSizeComp(Node* a, Node* b){
+    if(a->getAdjacents().size() > b->getAdjacents().size()){
         return true; 
     }
-    else if(a->adyNodes.size() == b->adyNodes.size() ){
-        return (a->nodeID < b->nodeID);
+    else if(a->getAdjacents().size() == b->getAdjacents().size() ){
+        return (a->getId() < b->getId());
     }
     else return false;
 }
@@ -86,7 +90,7 @@ void Cluster::computeFrecuency(){
     for(auto i : *nodes){
         //vector<uint64_t>* adyNodes = &i->second;
 
-        for(auto j : (i->adyNodes)){
+        for(auto j : i->getAdjacents()){
             auto aux = mapFrecuency.find(j);
             if(aux != mapFrecuency.end()){ //existe
                 mapFrecuency[j]++;

@@ -17,7 +17,7 @@ Trie::~Trie(){
 void Trie::create(vector<Node*>* nodes){
     for(size_t i = 0; i < nodes->size();i++){
         if( root != NULL){
-            if(nodes->at(i)->adyNodes[0] != root->vertex ){
+            if(*(nodes->at(i)->getAdjacents().begin()) != root->vertex ){
                 continue;
             }
         }
@@ -159,8 +159,8 @@ void Trie::insert(Node* node){
     TrieNode* t_node;
     TrieNode* ptr = root;
 
-    for(size_t i = 0; i < node->adyNodes.size();i++){
-        t_node = find(node->adyNodes[i], ptr);
+    for(size_t i = 0; i < node->getAdjacents().size();i++){
+        t_node = find(node->getAdjacents()[i], ptr);
 
         if(t_node != NULL){  // Si ya existe
             t_node->indices->push_back(node);
@@ -169,7 +169,7 @@ void Trie::insert(Node* node){
             t_node = new TrieNode();
             t_node->indices = new vector<Node*>();
             t_node->childrens = new vector<TrieNode*>();
-            t_node->vertex = node->adyNodes[i];
+            t_node->vertex = node->getAdjacents()[i];
             t_node->indices->push_back(node);
             t_node->depth = i+1;
 
@@ -190,7 +190,7 @@ void Trie::print(TrieNode* node){
     cout << "Nodo: " << node->vertex << endl;
     cout << "Indices: ";
     for(size_t i = 0; i < node->indices->size();i++){
-        cout << node->indices->at(i)->nodeID << " ";
+        cout << node->indices->at(i)->getId() << " ";
     }
     cout <<endl;
     for(size_t i = 0; i < node->childrens->size();i++){

@@ -1,43 +1,32 @@
 #ifndef ADJ_MATRIX
 #define ADJ_MATRIX
 
-#include <iostream>
-#include <fstream> 
-#include <string>
-#include <cstdint>
-#include <vector>
-#include <sstream> 
-#include <chrono>
-#include <algorithm>
-#include "Utils.hpp"
+#include "Node.hpp"
 
 using namespace std;
 
+typedef vector<Node*>::iterator AdjMatrixIterator;
+
 class AdjacencyMatrix{
     public:
-        AdjacencyMatrix(const string);
+        AdjacencyMatrix(const string, bool);
+        AdjacencyMatrix();
         ~AdjacencyMatrix();
-
+        void build();
         void insert(Node*);
         uint64_t size();
         uint64_t all_edges_size();
-        Node* getNode(uint64_t);
         void print();
-        void makeAdjacencyList();
-        void reWork();
-
+        void writeAdjacencyList();
+        void restoreNodes();
+        AdjMatrixIterator begin();
+        AdjMatrixIterator end();
+        AdjMatrixIterator find(Node*);
+        
     private:
-        /*
-            vars
-        */
         vector<Node*> matrix; 
         string path;
-        
-        /*
-            methods
-        */
-        vector<uint64_t> splitString(string, string);
-        
+        bool selfLoops = false; 
 };
 
 #endif

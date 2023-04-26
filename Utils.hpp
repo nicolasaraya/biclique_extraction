@@ -1,44 +1,27 @@
-#ifndef UTILS 
-#define UTILS 
+#ifndef UTILS_HPP
+#define UTILS_HPP
+
+#define NUM_THREADS 8
+#define DEBUG_LEVEL 2
 
 #include <vector>
 #include <cstdint>
 #include <iostream>
 #include <cstdint>
 #include <chrono>
-
-using namespace std; 
-
-#define NUM_THREADS 8
-
-
-struct Node{
-    uint64_t nodeID; 
-    bool autoCycle = false;
-    vector<uint64_t> adyNodes;
-    vector<uint64_t> cacheAdyNodes;  
-};
-
-struct SignNode{
-    Node* ptrNode;
-    vector<uint64_t> minHash; 
-};
-
-
-//typedef pair<Node*, vector<uint64_t>> SignNode; 
-//typedef pair<uint64_t, vector<uint64_t>> Node;
-typedef pair<vector<Node*>*, vector<uint64_t>> Biclique;
-
-struct TrieNode{
-    TrieNode *parent;
-    //Node* ptrNode;
-    uint64_t vertex;
-    //vector<uint64_t> indices;
-    vector<Node*>* indices;
-    vector<TrieNode*>* childrens;
-    uint32_t depth;
-};
-
+#include <iostream>
+#include <fstream> 
+#include <string>
+#include <cstdint>
+#include <vector>
+#include <sstream> 
+#include <chrono>
+#include <algorithm>
+#include <iterator>
+#include <cassert>
+#include <functional>
+#include <omp.h>
+#include <math.h>
 
 #define TIMERSTART(label)                                                  \
     std::chrono::time_point<std::chrono::high_resolution_clock> a##label, b##label; \
@@ -50,5 +33,10 @@ struct TrieNode{
     std::chrono::duration<double> delta##label = b##label-a##label;        \
     std::cout << "# elapsed time ("<< #label <<"): "                       \
                   << delta##label.count()  << "s" << std::endl;
+
+
+std::string now_time();
+std::vector<std::string> splitString(std::string line, std::string delims);
+
 
 #endif 

@@ -2,7 +2,7 @@
 #define TRIE_HPP
 
 #include <fstream>
-#include "Utils.hpp"
+#include "Define.hpp"
 
 using namespace std; 
 

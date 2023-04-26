@@ -2,20 +2,19 @@
 
 using namespace std;
 
-Shingle::Shingle(uint16_t num_signatures, uint32_t minAN)
+Shingle::Shingle(uint16_t num_signatures, uint32_t minAN, uint32_t shingle_size) : 
+    num_signatures(num_signatures), 
+    minAdyNodes(minAN),
+    shingle_size(shingle_size)
 {
     srand(time(NULL));
-    this->num_signatures = num_signatures;
-    shingle_size = 1;
-    minAdyNodes = minAN;
-    prime = (1ULL << 61ULL) - 1ULL;
-    // cout << "Prime " << prime << endl;
+    if (DEBUG_LEVEL > 1) cout << "Prime " << prime << endl;
     for (size_t i = 0; i < num_signatures; i++)
     {
         A.push_back(rand() % prime + 1);
         B.push_back(rand() % prime + 1);
 
-        cout << A[i] << " " << B[i] << endl;
+        if(DEBUG_LEVEL > 1) cout << A[i] << " " << B[i] << endl;
     }
 }
 Shingle::~Shingle()
@@ -27,10 +26,10 @@ Shingle::~Shingle()
 SignNode *Shingle::computeShingle(Node *_node)
 {
 
-    if (_node->adyNodes.size() == 0 || _node->adyNodes.size() < minAdyNodes)
+    if (_node->getAdjacents().size() == 0 || _node->getAdjacents().size() < minAdyNodes)
     {
         // cout << "entre al primer if / size: " <<  _node->adyNodes.size() << " / minAdyNodes: "  <<  minAdyNodes << endl;
-        return NULL;
+        return nullptr;
     }
 
     SignNode *s = new SignNode();
@@ -61,9 +60,9 @@ SignNode *Shingle::computeShingle(Node *_node)
     uint64_t shingleID;
     uint64_t shingleHash;
 
-    for (size_t i = 0; i < _node->adyNodes.size(); i++)
+    for (auto i = _node->getAdjacents().begin(); i != _node->getAdjacents().end(); i++)
     {
-        string shingle_ = to_string(_node->adyNodes.at(i));
+        string shingle_ = to_string(*i);
 
         shingleID = hash_nodes(shingle_);
 
