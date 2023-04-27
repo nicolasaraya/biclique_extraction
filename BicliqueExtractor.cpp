@@ -11,7 +11,7 @@ BicliqueExtractor::BicliqueExtractor(const string path, uint16_t num_signatures,
 
 {
     adjMatrix = new AdjacencyMatrix(path, selfLoop);
-    adjMatrix->print();
+    if (DEBUG_LEVEL > 2) adjMatrix->print();
 }
 
 BicliqueExtractor::~BicliqueExtractor()
@@ -34,9 +34,6 @@ void BicliqueExtractor::extract()
 
     TIMERSTART(extraction_biclique);
     while (iteration++) {
-        if(DEBUG_LEVEL > 1) {
-            adjMatrix->print();
-        }
         cout << "Iteracion: " << iteration << endl;
 
         auto signatures = computeShingles();
@@ -185,7 +182,7 @@ void BicliqueExtractor::computeTree()
 Signatures* BicliqueExtractor::computeShingles()
 {
     auto shingle = new Shingle(num_signatures, minAdyNodes, shingleSize);
-    
+
     Signatures* sg = new Signatures();
 
     for(auto i = adjMatrix->begin() ; i != adjMatrix->end() ; i++){
@@ -194,7 +191,7 @@ Signatures* BicliqueExtractor::computeShingles()
         else delete sn;
     }
 
-    if(DEBUG_LEVEL > 0){
+    if(DEBUG_LEVEL > 2){
         printSignatures(sg);
     }
     delete shingle;

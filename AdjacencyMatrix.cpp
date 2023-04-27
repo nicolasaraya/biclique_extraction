@@ -82,11 +82,11 @@ void AdjacencyMatrix::writeAdjacencyList()
 	
 	cout << path + now_time() << endl;
 	ofstream file;
-	file.open(path + now_time() +".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
+	file.open("/output/graph_"+ now_time() +".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
 
 	for(auto i : matrix){
 		file << i->getId() << ": ";
-		
+
 		for(auto j : i->getAdjacents()) file << j << " ";
 		file << endl;
 	}
