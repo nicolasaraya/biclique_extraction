@@ -12,14 +12,10 @@ class BicliqueExtractor{
     public:
         BicliqueExtractor(const string, uint16_t, uint16_t, uint16_t,  uint32_t, uint16_t, uint32_t);
         ~BicliqueExtractor();
-
         void extract();
 
     private:
-        /*
-            VARIABLES
-        */
-        bool selfLoop = false;
+        bool selfLoop = true;
         bool adjacencyMatrixLoaded = false;
         string path; 
         uint16_t num_signatures;
@@ -33,34 +29,19 @@ class BicliqueExtractor{
         uint64_t biclique_s_size = 0;
         uint64_t biclique_c_size = 0;
         uint64_t biclique_sxc_size = 0;
-
-        
-
         AdjacencyMatrix* adjMatrix;
         vector<Cluster*> clusters;
-        Shingle* shingle;
         vector< vector< SignNode* >* > posClusters;
-        /*
-            METHODS
-        */
+        //
         bool compareMinHash(const SignNode*, const SignNode*, int);
         bool compareBicliqueRank(const Biclique*, const Biclique*);
-
         vector<Signatures*> makeGroups(Signatures*, int);
-        //vector<uint64_t> splitString(string, string);
-
-        void makeAdjacencyMatrix();
-
-        //void computeClusters();
         void computeClusters(Signatures*, unsigned int);
         void computeTree();
         Signatures* computeShingles();
         void computeShinglesInline();
-
         uint32_t extractBicliques();
-
         void printSignatures(Signatures*);
-
         void sortSignatures(Signatures*, int);
         void sortBicliques(vector<Biclique*>*);
         bool sortC(uint64_t, uint64_t);

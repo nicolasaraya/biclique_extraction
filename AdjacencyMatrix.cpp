@@ -36,9 +36,8 @@ void AdjacencyMatrix::build()
 			if(adjId == tempNode->getId() and not selfLoops) continue; 
         	tempNode->addAdjacent(atoi(i.c_str())); 
         }
-
         matrix.push_back(tempNode);
-		if(count++ == 100 and DEBUG_LEVEL > 3) break;
+		//if(count++ == 100 and DEBUG_LEVEL > 3) break;
     }
     file.close();
 }
@@ -98,23 +97,6 @@ void AdjacencyMatrix::restoreNodes()
 	for (auto i : matrix) {
 		i->restore();
 	}
-	/*
-	for(vector<Node*>::iterator i = matrix.begin(); i != matrix.end(); i++){
-		Node* aux = *i;
-		
-		if(aux->adyNodes.size() + aux->cacheAdyNodes.size() < 1) {
-			matrix.erase(i);
-			i--;
-			delete aux;
-			continue; 
-		}
-		for(auto j : aux->cacheAdyNodes){
-			aux->adyNodes.push_back(j);
-		}
-		sort(aux->adyNodes.begin(), aux->adyNodes.end());
-		aux->cacheAdyNodes.clear();
-	}
-	*/
 }
 
 AdjMatrixIterator AdjacencyMatrix::begin()

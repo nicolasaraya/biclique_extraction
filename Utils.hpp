@@ -2,7 +2,7 @@
 #define UTILS_HPP
 
 #define NUM_THREADS 8
-#define DEBUG_LEVEL 2
+#define DEBUG_LEVEL 5
 
 #include <vector>
 #include <cstdint>

@@ -68,5 +68,6 @@ bool Node::restore()
 		adjacentNodes.push_back(cacheNodes.back());
 		cacheNodes.pop_back();
 	}
+	sort(adjacentNodes.begin(), adjacentNodes.end());
 	return true; 
 } 

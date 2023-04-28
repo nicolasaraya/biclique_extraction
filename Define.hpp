@@ -13,6 +13,7 @@ struct SignNode{
 
 typedef pair<vector<Node*>*, vector<uint64_t>> Biclique;
 typedef vector<SignNode*> Signatures; 
+typedef vector<SignNode*>::iterator SignatureIterator;
 
 struct TrieNode{
     TrieNode *parent;

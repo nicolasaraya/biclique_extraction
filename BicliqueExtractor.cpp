@@ -26,40 +26,54 @@ void BicliqueExtractor::extract()
     uint64_t adjacencyMatrixOriginalSize = adjMatrix->size();
     uint64_t adjacencyMatrixOriginalEdgesSize = adjMatrix->all_edges_size();
     
+/*
     ofstream file;
     file.open("log.txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero log
     file.close();
     file.open(path + "_bicliques.txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero bicliques y se cierra
     file.close();
-
+*/
     TIMERSTART(extraction_biclique);
     while (iteration++) {
         cout << "Iteracion: " << iteration << endl;
-
         auto signatures = computeShingles();
 
-        if(signatures->empty()){
-            break;
+        assert(not signatures->empty());
+
+        //printSignatures(signatures); 
+
+        //sortSignatures(signatures, 0); 
+
+        if(DEBUG_LEVEL > 3){
+            std::cout << "***signatures sorted***" << std::endl;
+            //printSignatures(signatures);
+            auto group = makeGroups(signatures,0);
+            int count = 0;
+            for(auto g : group){
+                std::cout << "***group(" << count++ << ")***" << std::endl;
+                printSignatures(g);
+            }
+            std::cout << "Groups: " << count << std::endl;
         }
-
-        computeClusters(signatures, 0);
-
+        computeClusters(signatures, 1);
+        std::cout << clusters.size() << std::endl;
         delete(signatures);
+        break; 
+        //computeTree();
 
-        computeTree();
+        //uint32_t n_bicliques = extractBicliques();
+        //total_biclique += n_bicliques;
 
-        uint32_t n_bicliques = extractBicliques();
-        total_biclique += n_bicliques;
-
-        file.open("log.txt",fstream::app);
+        /*file.open("log.txt",fstream::app);
         file << "****************************************************************" << endl;
         file << "Adjacency Matrix Size: " << adjMatrix->size() << endl;
         file << "Iteracion: " << iteration << endl;
         file << "Min Bilcique Size: " << biclique_size << endl;
         file << "Clusters encontrados: " << clusters.size() << endl;
         file << "Bilciques encontrados: " << n_bicliques << endl;
-        file.close();
+        file.close();*/
 
+/*
         adjMatrix->restoreNodes();
 
         for(auto i : clusters) delete i;
@@ -70,12 +84,12 @@ void BicliqueExtractor::extract()
             if(biclique_size < 99) break;
         }
 
-        if(DEBUG_LEVEL > 3) break;
+        if(DEBUG_LEVEL > 3) break;*/
     }
     
     TIMERSTOP(extraction_biclique);
 
-    file.open("log.txt",fstream::app);
+   /* file.open("log.txt",fstream::app);
     file << "****************************************************************" << endl;
     file << "Original Size AdjacencyMatrix: " << adjacencyMatrixOriginalSize << endl;
     file << "Current Size AdjacencyMatrix: " << adjMatrix->size() << endl << endl;
@@ -87,51 +101,66 @@ void BicliqueExtractor::extract()
     file << "Sum of S + C: " << biclique_s_size + biclique_c_size << endl;
     file << "Sum of Multiplication of S x C: " << biclique_sxc_size << endl;
     file.close();
-
-    adjMatrix->writeAdjacencyList();
+*/
+    //adjMatrix->writeAdjacencyList();
 
 
 }
 
 
-vector<Signatures*> BicliqueExtractor::makeGroups(Signatures* sign_cluster, int column)
+vector<Signatures*> BicliqueExtractor::makeGroups(Signatures* signatures, int column)
 {
-    vector<Signatures*> groups;
-    Signatures* new_group = new Signatures();
+    vector<Signatures*> group;
+    Signatures* partition = new Signatures();
+    group.push_back(partition);
 
-    auto signNode = sign_cluster->at(0);
-    auto minHash = signNode->minHash;
-    uint64_t element = minHash.at(column);
-    new_group->push_back(sign_cluster->at(0));
-
-    for(size_t i = 1; i < sign_cluster->size(); i++){
-        auto signNode_i = sign_cluster->at(i);
-        auto minHash_i = signNode_i->minHash;
-        auto element_i = minHash.at(column);
-        if(element_i != element){
-            element = element_i;
-            groups.push_back(new_group);
-
-            new_group = new Signatures();
-            new_group->push_back(signNode_i);
-        }
-        else{
-            new_group->push_back(signNode_i);
+    for(SignatureIterator signNode = signatures->begin(); signNode != signatures->end(); signNode++){
+        if (partition->empty()){
+            partition->push_back(*signNode); 
+        } else if (partition->front()->minHash.at(column) == (*signNode)->minHash.at(column)){
+            partition->push_back(*signNode);
+        }  else {
+            partition = new Signatures();
+            group.push_back(partition);
         }
     }
-    groups.push_back(new_group);
 
-    return groups;
+    return group;
 }
 
 
 void BicliqueExtractor::computeClusters(Signatures* sign_cluster, unsigned int column)
 {
-    sortSignatures(sign_cluster,column);
-    vector<Signatures*> groups = makeGroups(sign_cluster,column);
+    sortSignatures(sign_cluster, column);
+    vector<Signatures*> candidates = makeGroups(sign_cluster, column);
 
-    auto new_cluster_single_elements = new vector<Node*>(); 
+    auto discarted = new vector<Node*>(); 
 
+    for(auto cluster : candidates){
+        auto clusterSize = cluster->size();
+
+        if(clusterSize > minClusterSize and (int)column < num_signatures-1){
+            computeClusters(cluster, column + 1);
+        } else if (clusterSize > 1){
+            auto newCluster = new vector<Node*>();
+
+            for(auto node : *cluster){
+                newCluster->push_back(node->ptrNode);
+            } 
+            clusters.push_back(new Cluster(newCluster));
+        } else if (clusterSize == 1){
+            discarted->push_back(cluster->front()->ptrNode);
+        }
+    }
+
+    if(discarted->size() > 1) {
+        clusters.push_back(new Cluster(discarted));
+    } else {
+        delete discarted;
+    }
+
+
+    /*
     for(size_t i = 0 ; i < groups.size(); i++){
         uint32_t numberEntries = groups[i]->size();
 
@@ -158,23 +187,17 @@ void BicliqueExtractor::computeClusters(Signatures* sign_cluster, unsigned int c
     } else {
         delete new_cluster_single_elements;
     }
+    */
 }
 
 void BicliqueExtractor::computeTree()
 {
     //omp_set_num_threads(NUM_THREADS);
-    //int counter = 0;
     TIMERSTART(create_trie);
-
     //#pragma omp parallel for
     for(auto i : clusters){
-        //counter++;
-        //cout << counter << endl;
         i->computeTrie();
-        
-    }
-    
-    
+    }   
     TIMERSTOP(create_trie);
     return;
 }
@@ -182,16 +205,14 @@ void BicliqueExtractor::computeTree()
 Signatures* BicliqueExtractor::computeShingles()
 {
     auto shingle = new Shingle(num_signatures, minAdyNodes, shingleSize);
-
     Signatures* sg = new Signatures();
-
     for(auto i = adjMatrix->begin() ; i != adjMatrix->end() ; i++){
         SignNode* sn = shingle->computeShingle(*i);
         if(sn != nullptr) sg->push_back(sn);
         else delete sn;
     }
 
-    if(DEBUG_LEVEL > 2){
+    if(DEBUG_LEVEL > 3){
         printSignatures(sg);
     }
     delete shingle;
