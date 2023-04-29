@@ -8,10 +8,9 @@ BicliqueExtractor::BicliqueExtractor(const string path, uint16_t num_signatures,
     minAdyNodes(minAdyNodes),
     bs_decrease(bs_decrease), 
     shingleSize(shingleSize)
-
 {
     adjMatrix = new AdjacencyMatrix(path, selfLoop);
-    if (DEBUG_LEVEL > 2) adjMatrix->print();
+    if (DEBUG_LEVEL > 10) adjMatrix->print();
 }
 
 BicliqueExtractor::~BicliqueExtractor()
@@ -35,16 +34,17 @@ void BicliqueExtractor::extract()
 */
     TIMERSTART(extraction_biclique);
     while (iteration++) {
-        cout << "Iteracion: " << iteration << endl;
+        cout << "Iteracion: " << iteration-1 << endl;
         auto signatures = computeShingles();
 
         assert(not signatures->empty());
 
         //printSignatures(signatures); 
 
-        //sortSignatures(signatures, 0); 
+        sortSignatures(signatures, 0); 
 
-        if(DEBUG_LEVEL > 3){
+        /**/
+        if(DEBUG_LEVEL > 4){
             std::cout << "***signatures sorted***" << std::endl;
             //printSignatures(signatures);
             auto group = makeGroups(signatures,0);
@@ -58,11 +58,13 @@ void BicliqueExtractor::extract()
         computeClusters(signatures, 1);
         std::cout << clusters.size() << std::endl;
         delete(signatures);
-        break; 
-        //computeTree();
+       // break; 
+        computeTree();
 
-        //uint32_t n_bicliques = extractBicliques();
-        //total_biclique += n_bicliques;
+        uint32_t n_bicliques = extractBicliques();
+        total_biclique += n_bicliques;
+        std::cout << "biclique iteracion: " << n_bicliques << std::endl; 
+        std::cout << "total: " << total_biclique << std::endl; 
 
         /*file.open("log.txt",fstream::app);
         file << "****************************************************************" << endl;
@@ -73,18 +75,19 @@ void BicliqueExtractor::extract()
         file << "Bilciques encontrados: " << n_bicliques << endl;
         file.close();*/
 
-/*
+
         adjMatrix->restoreNodes();
 
         for(auto i : clusters) delete i;
         clusters.clear();
-
-        if(n_bicliques < biclique_size){
-            biclique_size -= bs_decrease;
-            if(biclique_size < 99) break;
+      
+        if(iteration == 3) break;
+        if(n_bicliques < 50){ //cambiar a num minimo de bilciques
+            biclique_size -= 50;
+            if(biclique_size < 20) break;
         }
 
-        if(DEBUG_LEVEL > 3) break;*/
+        if(DEBUG_LEVEL > 3) break;
     }
     
     TIMERSTOP(extraction_biclique);
@@ -220,11 +223,11 @@ Signatures* BicliqueExtractor::computeShingles()
 }
 
 uint32_t BicliqueExtractor::extractBicliques()
-{
+{ 
     ofstream file;
     uint32_t n_bicliques = 0;
   	//file.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
-    file.open(path + "_bicliques.txt", fstream::app);
+    file.open("./_bicliques.txt", fstream::app);
     for(size_t i = 0; i < clusters.size(); i++){
         vector<Biclique*> vector_btemp = clusters[i]->getBicliques();
         if(vector_btemp.empty()) continue;

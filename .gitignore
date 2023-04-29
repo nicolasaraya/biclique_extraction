@@ -6,3 +6,6 @@ biclique_extractor-debug
 /output
 *.o
 *.out
+_bicliques.txt
+log.out
+log.out

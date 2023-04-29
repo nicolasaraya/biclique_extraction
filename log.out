@@ -1,1 +1,0 @@
-g++  -O0 -g -Wall -lm -fopenmp -std=c++17 -o biclique_extractor-debug main.cpp Utils.cpp Utils.hpp Node.hpp Node.cpp Define.hpp AdjacencyMatrix.cpp AdjacencyMatrix.hpp BicliqueExtractor.hpp BicliqueExtractor.cpp Shingle.hpp Shingle.cpp Cluster.hpp Cluster.cpp Trie.hpp Trie.cpp  
