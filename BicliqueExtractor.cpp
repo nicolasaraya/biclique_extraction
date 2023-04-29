@@ -1,16 +1,16 @@
 #include "BicliqueExtractor.hpp"
 
-BicliqueExtractor::BicliqueExtractor(const string path, uint16_t num_signatures, uint16_t minClusterSize , uint16_t minAdyNodes ,uint32_t biclique_size, uint16_t bs_decrease, uint32_t shingleSize) :
-    path(path),
-    num_signatures(num_signatures),
-    minClusterSize(minClusterSize),
-    biclique_size(biclique_size),
-    minAdyNodes(minAdyNodes),
-    bs_decrease(bs_decrease), 
-    shingleSize(shingleSize)
+BicliqueExtractor::BicliqueExtractor(const string path, uint16_t num_signatures, uint16_t minClusterSize, uint16_t minAdyNodes, uint32_t biclique_size, uint16_t bs_decrease, uint32_t shingleSize) : path(path),
+                                                                                                                                                                                                      num_signatures(num_signatures),
+                                                                                                                                                                                                      minClusterSize(minClusterSize),
+                                                                                                                                                                                                      biclique_size(biclique_size),
+                                                                                                                                                                                                      minAdyNodes(minAdyNodes),
+                                                                                                                                                                                                      bs_decrease(bs_decrease),
+                                                                                                                                                                                                      shingleSize(shingleSize)
 {
     adjMatrix = new AdjacencyMatrix(path, selfLoop);
-    if (DEBUG_LEVEL > 10) adjMatrix->print();
+    if (DEBUG_LEVEL > 10)
+        adjMatrix->print();
 }
 
 BicliqueExtractor::~BicliqueExtractor()
@@ -20,36 +20,38 @@ BicliqueExtractor::~BicliqueExtractor()
 
 void BicliqueExtractor::extract()
 {
-    assert(adjMatrix); 
+    assert(adjMatrix);
 
     uint64_t adjacencyMatrixOriginalSize = adjMatrix->size();
     uint64_t adjacencyMatrixOriginalEdgesSize = adjMatrix->all_edges_size();
-    
-/*
+
     ofstream file;
-    file.open("log.txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero log
+    file.open("log.txt", std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero log
     file.close();
-    file.open(path + "_bicliques.txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero bicliques y se cierra
+    file.open(path + "_bicliques.txt", std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero bicliques y se cierra
     file.close();
-*/
+
     TIMERSTART(extraction_biclique);
-    while (iteration++) {
-        cout << "Iteracion: " << iteration-1 << endl;
+    while (iteration++)
+    {
+        cout << "Iteracion: " << iteration - 1 << endl;
         auto signatures = computeShingles();
 
         assert(not signatures->empty());
 
-        //printSignatures(signatures); 
+        // printSignatures(signatures);
 
-        sortSignatures(signatures, 0); 
+        sortSignatures(signatures, 0);
 
         /**/
-        if(DEBUG_LEVEL > 4){
+        if (DEBUG_LEVEL > 4)
+        {
             std::cout << "***signatures sorted***" << std::endl;
-            //printSignatures(signatures);
-            auto group = makeGroups(signatures,0);
+            // printSignatures(signatures);
+            auto group = makeGroups(signatures, 0);
             int count = 0;
-            for(auto g : group){
+            for (auto g : group)
+            {
                 std::cout << "***group(" << count++ << ")***" << std::endl;
                 printSignatures(g);
             }
@@ -57,72 +59,82 @@ void BicliqueExtractor::extract()
         }
         computeClusters(signatures, 1);
         std::cout << clusters.size() << std::endl;
-        delete(signatures);
-       // break; 
+        delete (signatures);
+        // break;
         computeTree();
 
         uint32_t n_bicliques = extractBicliques();
         total_biclique += n_bicliques;
-        std::cout << "biclique iteracion: " << n_bicliques << std::endl; 
-        std::cout << "total: " << total_biclique << std::endl; 
+        std::cout << "biclique iteracion: " << n_bicliques << std::endl;
+        std::cout << "total: " << total_biclique << std::endl;
 
-        /*file.open("log.txt",fstream::app);
+        file.open("log.txt", fstream::app);
         file << "****************************************************************" << endl;
+        file << "Iteracion: " << iteration - 1 << endl;
         file << "Adjacency Matrix Size: " << adjMatrix->size() << endl;
-        file << "Iteracion: " << iteration << endl;
+        file << "Current Edges Size AdjacencyMatrix: " << adjMatrix->all_edges_size() << endl;
         file << "Min Bilcique Size: " << biclique_size << endl;
         file << "Clusters encontrados: " << clusters.size() << endl;
         file << "Bilciques encontrados: " << n_bicliques << endl;
-        file.close();*/
-
+        file.close();
 
         adjMatrix->restoreNodes();
 
-        for(auto i : clusters) delete i;
+        for (auto i : clusters)
+            delete i;
         clusters.clear();
-      
-        if(iteration == 3) break;
-        if(n_bicliques < 50){ //cambiar a num minimo de bilciques
-            biclique_size -= 50;
-            if(biclique_size < 20) break;
+
+        if (iteration == 10)
+            break;
+        if (n_bicliques < 100)
+        { // cambiar a num minimo de bilciques
+            biclique_size -= bs_decrease;
+            if (biclique_size < 20)
+                break;
         }
 
-        if(DEBUG_LEVEL > 3) break;
+        if (DEBUG_LEVEL > 3)
+            break;
     }
-    
+
     TIMERSTOP(extraction_biclique);
 
-   /* file.open("log.txt",fstream::app);
+    file.open("log.txt", fstream::app);
     file << "****************************************************************" << endl;
     file << "Original Size AdjacencyMatrix: " << adjacencyMatrixOriginalSize << endl;
-    file << "Current Size AdjacencyMatrix: " << adjMatrix->size() << endl << endl;
+    file << "Current Size AdjacencyMatrix: " << adjMatrix->size() << endl
+         << endl;
     file << "Original Edges Size AdjacencyMatrix: " << adjacencyMatrixOriginalEdgesSize << endl;
-    file << "Current Edges Size AdjacencyMatrix: " << adjMatrix->all_edges_size() << endl << endl;
+    file << "Current Edges Size AdjacencyMatrix: " << adjMatrix->all_edges_size() << endl
+         << endl;
     file << "Number of Bicliques Extracted: " << total_biclique << endl;
     file << "Sum of S: " << biclique_s_size << endl;
     file << "Sum of C: " << biclique_c_size << endl;
     file << "Sum of S + C: " << biclique_s_size + biclique_c_size << endl;
     file << "Sum of Multiplication of S x C: " << biclique_sxc_size << endl;
     file.close();
-*/
-    //adjMatrix->writeAdjacencyList();
 
-
+    // adjMatrix->writeAdjacencyList();
 }
 
-
-vector<Signatures*> BicliqueExtractor::makeGroups(Signatures* signatures, int column)
+vector<Signatures *> BicliqueExtractor::makeGroups(Signatures *signatures, int column)
 {
-    vector<Signatures*> group;
-    Signatures* partition = new Signatures();
+    vector<Signatures *> group;
+    Signatures *partition = new Signatures();
     group.push_back(partition);
 
-    for(SignatureIterator signNode = signatures->begin(); signNode != signatures->end(); signNode++){
-        if (partition->empty()){
-            partition->push_back(*signNode); 
-        } else if (partition->front()->minHash.at(column) == (*signNode)->minHash.at(column)){
+    for (SignatureIterator signNode = signatures->begin(); signNode != signatures->end(); signNode++)
+    {
+        if (partition->empty())
+        {
             partition->push_back(*signNode);
-        }  else {
+        }
+        else if (partition->front()->minHash.at(column) == (*signNode)->minHash.at(column))
+        {
+            partition->push_back(*signNode);
+        }
+        else
+        {
             partition = new Signatures();
             group.push_back(partition);
         }
@@ -131,91 +143,75 @@ vector<Signatures*> BicliqueExtractor::makeGroups(Signatures* signatures, int co
     return group;
 }
 
-
-void BicliqueExtractor::computeClusters(Signatures* sign_cluster, unsigned int column)
+void BicliqueExtractor::computeClusters(Signatures *sign_cluster, unsigned int column)
 {
     sortSignatures(sign_cluster, column);
-    vector<Signatures*> candidates = makeGroups(sign_cluster, column);
+    vector<Signatures *> candidates = makeGroups(sign_cluster, column);
 
-    auto discarted = new vector<Node*>(); 
+    auto discarted = new vector<Node *>();
 
-    for(auto cluster : candidates){
+    for (auto cluster : candidates)
+    {
         auto clusterSize = cluster->size();
 
-        if(clusterSize > minClusterSize and (int)column < num_signatures-1){
+        if (clusterSize > minClusterSize and (int) column < num_signatures - 1)
+        {
             computeClusters(cluster, column + 1);
-        } else if (clusterSize > 1){
-            auto newCluster = new vector<Node*>();
+        }
+        else if (clusterSize > 1)
+        {
+            auto newCluster = new vector<Node *>();
 
-            for(auto node : *cluster){
+            for (auto node : *cluster)
+            {
                 newCluster->push_back(node->ptrNode);
-            } 
+            }
             clusters.push_back(new Cluster(newCluster));
-        } else if (clusterSize == 1){
+        }
+        else if (clusterSize == 1)
+        {
             discarted->push_back(cluster->front()->ptrNode);
         }
     }
 
-    if(discarted->size() > 1) {
+    if (discarted->size() > 1)
+    {
         clusters.push_back(new Cluster(discarted));
-    } else {
+    }
+    else
+    {
         delete discarted;
     }
-
-
-    /*
-    for(size_t i = 0 ; i < groups.size(); i++){
-        uint32_t numberEntries = groups[i]->size();
-
-        if( numberEntries > minClusterSize && (int)column < num_signatures-1){
-            computeClusters(groups[i], column+1);
-        } else if (numberEntries > 1 ) {
-            auto new_cluster = new vector<Node*>(); 
-            
-            for (size_t j = 0; j < groups[i]->size(); j++) {
-                new_cluster->push_back(groups[i]->at(j)->ptrNode);
-            }
-
-            auto c = new Cluster(new_cluster);
-            clusters.push_back(c);
-        } else if(numberEntries == 1) {
-            new_cluster_single_elements->push_back(groups[i]->at(0)->ptrNode);
-        }
-        delete groups[i];
-    }
-    
-    if (new_cluster_single_elements->size() > 1) {
-        Cluster *c = new Cluster(new_cluster_single_elements);
-        clusters.push_back(c);
-    } else {
-        delete new_cluster_single_elements;
-    }
-    */
 }
 
 void BicliqueExtractor::computeTree()
 {
-    //omp_set_num_threads(NUM_THREADS);
+    // omp_set_num_threads(NUM_THREADS);
     TIMERSTART(create_trie);
-    //#pragma omp parallel for
-    for(auto i : clusters){
+    // #pragma omp parallel for
+    for (auto i : clusters)
+    {
         i->computeTrie();
-    }   
+    }
     TIMERSTOP(create_trie);
     return;
 }
 
-Signatures* BicliqueExtractor::computeShingles()
+Signatures *BicliqueExtractor::computeShingles()
 {
     auto shingle = new Shingle(num_signatures, minAdyNodes, shingleSize);
-    Signatures* sg = new Signatures();
-    for(auto i = adjMatrix->begin() ; i != adjMatrix->end() ; i++){
-        SignNode* sn = shingle->computeShingle(*i);
-        if(sn != nullptr) sg->push_back(sn);
-        else delete sn;
+    Signatures *sg = new Signatures();
+    for (auto i = adjMatrix->begin(); i != adjMatrix->end(); i++)
+    {
+        SignNode *sn = shingle->computeShingle(*i);
+        if (sn != nullptr)
+            sg->push_back(sn);
+        else
+            delete sn;
     }
 
-    if(DEBUG_LEVEL > 3){
+    if (DEBUG_LEVEL > 3)
+    {
         printSignatures(sg);
     }
     delete shingle;
@@ -223,149 +219,160 @@ Signatures* BicliqueExtractor::computeShingles()
 }
 
 uint32_t BicliqueExtractor::extractBicliques()
-{ 
+{
     ofstream file;
     uint32_t n_bicliques = 0;
-  	//file.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
+    // file.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
     file.open("./_bicliques.txt", fstream::app);
-    for(size_t i = 0; i < clusters.size(); i++){
-        vector<Biclique*> vector_btemp = clusters[i]->getBicliques();
-        if(vector_btemp.empty()) continue;
+    for (size_t i = 0; i < clusters.size(); i++)
+    {
+        vector<Biclique *> possible_bicliques = clusters[i]->getBicliques();
+        if (possible_bicliques.empty())
+            continue;
 
-        vector<uint64_t> modified_nodes;
-        vector<uint64_t>::iterator m_n_iterator;
+        while (!possible_bicliques.empty())
+        {
+            // sort by size/rank
+            sortBicliques(&possible_bicliques);
 
-        while(!vector_btemp.empty()){
-            //sort by size/rank
-            sortBicliques(&vector_btemp);
+            // se elije el biclique con mayor rank
+            Biclique *best_biclique = possible_bicliques.at(0);
 
-            // se elije el con mayor rank
-            Biclique* btemp = vector_btemp.at(0);
-
-            vector<Node*>* S = btemp->first;
-            vector<uint64_t>* C = &btemp->second;
+            vector<Node *> *S = best_biclique->first;
+            vector<uint64_t> *C = &best_biclique->second;
 
             // si el biclique no cumple con el tamaño deseado o es 2x2, significa que no hay mas bicliques que cumplan la condicion
-            if( (S->size()*C->size() < biclique_size ) || ( (S->size()-1) * (C->size()-1) == 1 )){
-                for(size_t j = 0; j < vector_btemp.size(); j++){
-                    btemp = vector_btemp.at(j);
-                    delete btemp;
+            if ((S->size() * C->size() < biclique_size) || ((S->size() - 1) * (C->size() - 1) == 1))
+            {
+                for (size_t j = 0; j < possible_bicliques.size(); j++)
+                {
+                    best_biclique = possible_bicliques.at(j);
+                    delete best_biclique;
                 }
-                vector_btemp.clear();
+                possible_bicliques.clear();
                 continue;
             }
-            else n_bicliques+=1;
+            else
+                n_bicliques += 1;
 
-            // se comienza a extraer el biclique 
+            // se comienza a extraer el biclique
             biclique_s_size += S->size();
             biclique_c_size += C->size();
-            biclique_sxc_size+= S->size() * C->size();
+            biclique_sxc_size += S->size() * C->size();
 
-            sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2 ));
+            sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
             sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortNodes, this, placeholders::_1, placeholders::_2));
 
             file << "S: ";
-            for(size_t j = 0; j < S->size(); j++){
-                file << S->at(j)->getId(); 
-                if(j != S->size()-1) file << " ";
-
-                modified_nodes.push_back(S->at(j)->getId());
+            for (size_t j = 0; j < S->size(); j++)
+            {
+                file << S->at(j)->getId();
+                if (j != S->size() - 1)
+                    file << " ";
+                S->at(j)->setModified(true);
             }
-            file << endl << "C: ";
+            file << endl
+                 << "C: ";
 
-            for(size_t j = 0; j < C->size(); j++){
+            for (size_t j = 0; j < C->size(); j++)
+            {
                 file << C->at(j);
-                if(j != C->size()-1) file << " ";
-                for(size_t k = 0; k < S->size(); k++){
-                    //cout <<"C: " <<  *(C->at(j)) << endl;
-                    auto t_AdjNodes = S->at(k)->getAdjacents();
-                    //vector<uint64_t>* t_adyNodes = &(S->at(k)->adyNodes);
-                    auto temp = std::find(t_AdjNodes.begin(), t_AdjNodes.end(),C->at(j)); //buscamos el elemento de C en la lista del Nodo
-                    if(temp != t_AdjNodes.end()){ //si se encuentra se elimina
+                if (j != C->size() - 1)
+                    file << " ";
+                for (size_t k = 0; k < S->size(); k++)
+                {
+                    // cout <<"C: " <<  *(C->at(j)) << endl;
+                    vector<uint64_t> &t_AdjNodes = S->at(k)->getAdjacents();
+
+                    // vector<uint64_t>* t_adyNodes = &(S->at(k)->adyNodes);
+                    auto temp = std::find(t_AdjNodes.begin(), t_AdjNodes.end(), C->at(j)); // buscamos el elemento de C en la lista del Nodo
+                    if (temp != t_AdjNodes.end())
+                    { // si se encuentra se elimina
                         t_AdjNodes.erase(temp);
                     }
                 }
             }
             file << endl;
 
-            delete btemp;
+            delete best_biclique;
 
-            vector_btemp.erase(vector_btemp.begin());
+            possible_bicliques.erase(possible_bicliques.begin());
 
             // se limpian el resto de bicliques
-            Biclique* btemp_to_erase;
-            vector<Node*>* S_to_erase;
-            vector<uint64_t>* C_to_erase;
+            Biclique *best_biclique_to_erase;
+            vector<Node *> *S_to_erase;
+            vector<uint64_t> *C_to_erase;
 
-            for(size_t j = 0; j < vector_btemp.size(); j++){
-                btemp_to_erase = vector_btemp.at(j);
+            for (size_t j = 0; j < possible_bicliques.size(); j++)
+            {
+                best_biclique_to_erase = possible_bicliques.at(j);
 
-                S_to_erase = btemp_to_erase->first;
-                C_to_erase = &btemp_to_erase->second;
+                S_to_erase = best_biclique_to_erase->first;
+                C_to_erase = &best_biclique_to_erase->second;
 
-                for(size_t k = 0; k < S_to_erase->size(); k++){
-                    m_n_iterator = find(modified_nodes.begin(), modified_nodes.end() ,S_to_erase->at(k)->getId());
-
-                    if( m_n_iterator != modified_nodes.end() ){
-                        if( !includes(S_to_erase->at(k)->getAdjacents().begin(),S_to_erase->at(k)->getAdjacents().end(), C_to_erase->begin(), C_to_erase->end() ) ){
-                            S_to_erase->erase(S_to_erase->begin()+k);
+                for (size_t k = 0; k < S_to_erase->size(); k++)
+                {
+                    if (S_to_erase->at(k)->isModified())
+                    {
+                        if (!includes(S_to_erase->at(k)->getAdjacents().begin(), S_to_erase->at(k)->getAdjacents().end(), C_to_erase->begin(), C_to_erase->end()))
+                        {
+                            S_to_erase->erase(S_to_erase->begin() + k);
                             k--;
                         }
                     }
                 }
             }
         }
-        modified_nodes.clear();
     }
     file.close();
     return n_bicliques;
 }
 
-
-void BicliqueExtractor::printSignatures(Signatures* signatures)
+void BicliqueExtractor::printSignatures(Signatures *signatures)
 {
-    for(auto i : *signatures){
-        cout << i->ptrNode->getId() ;
-        for(int j = 0; j < num_signatures; j++){
+    for (auto i : *signatures)
+    {
+        cout << i->ptrNode->getId();
+        for (int j = 0; j < num_signatures; j++)
+        {
             cout << " | MH[" << j << "]: " << i->minHash.at(j);
         }
         cout << endl;
     }
 }
 
-
 /*
-* 
-* sort
-*
-*/
+ *
+ * sort
+ *
+ */
 
-void BicliqueExtractor::sortSignatures(Signatures* signs, int signature_index)
+void BicliqueExtractor::sortSignatures(Signatures *signs, int signature_index)
 {
     sort(signs->begin(), signs->end(), bind(&BicliqueExtractor::compareMinHash, this, placeholders::_1, placeholders::_2, signature_index));
 }
 
-void BicliqueExtractor::sortBicliques(vector<Biclique*>* bicliques)
+void BicliqueExtractor::sortBicliques(vector<Biclique *> *bicliques)
 {
     sort(bicliques->begin(), bicliques->end(), bind(&BicliqueExtractor::compareBicliqueRank, this, placeholders::_1, placeholders::_2));
 }
 
-bool BicliqueExtractor::sortC(uint64_t a,uint64_t b)
+bool BicliqueExtractor::sortC(uint64_t a, uint64_t b)
 {
     return a < b;
 }
 
-bool BicliqueExtractor::sortNodes(Node* a, Node* b)
+bool BicliqueExtractor::sortNodes(Node *a, Node *b)
 {
     return a->getId() < b->getId();
 }
 
-bool BicliqueExtractor::compareMinHash(const SignNode* a, const SignNode* b, int signature_index)
+bool BicliqueExtractor::compareMinHash(const SignNode *a, const SignNode *b, int signature_index)
 {
-    return (a->minHash.at(signature_index) < b->minHash.at(signature_index)); //signNode->vector->minHash
+    return (a->minHash.at(signature_index) < b->minHash.at(signature_index)); // signNode->vector->minHash
 }
 
-bool BicliqueExtractor::compareBicliqueRank(const Biclique* a, const Biclique* b)
+bool BicliqueExtractor::compareBicliqueRank(const Biclique *a, const Biclique *b)
 {
-    return a->first->size()*a->second.size() > b->first->size()*b->second.size();
+    return a->first->size() * a->second.size() > b->first->size() * b->second.size();
 }
