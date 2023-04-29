@@ -37,7 +37,7 @@ void Node::setModified(bool modified)
 
 void Node::addAdjacent(uint64_t id_adj)
 {
-	if (not selfLoop and id_adj == id)
+	if (selfLoop and id_adj == id)
 		return;
 	else
 		adjacentNodes.push_back(id_adj);

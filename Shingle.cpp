@@ -15,7 +15,7 @@ Shingle::Shingle(uint16_t num_signatures, uint32_t minAN, uint32_t shingle_size)
         B.push_back(rand() % prime + 1);
 
         if (DEBUG_LEVEL > 1)
-            cout << A[i] << " " << B[i] << endl;
+            cout << "A: " << A[i] << " B: " << B[i] << endl;
     }
 }
 Shingle::~Shingle()

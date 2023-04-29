@@ -34,6 +34,7 @@ void BicliqueExtractor::extract()
     TIMERSTART(extraction_biclique);
     while (iteration++)
     {
+        // adjMatrix->print();
         cout << "Iteracion: " << iteration - 1 << endl;
         auto signatures = computeShingles();
 
@@ -57,7 +58,10 @@ void BicliqueExtractor::extract()
             }
             std::cout << "Groups: " << count << std::endl;
         }
-        computeClusters(signatures, 1);
+        // vector<Signatures *> group = makeGroups(signatures, 0);
+        // computeClusters(&group, 1);
+        computeClusters(signatures, 0);
+
         std::cout << clusters.size() << std::endl;
         delete (signatures);
         // break;
@@ -183,6 +187,60 @@ void BicliqueExtractor::computeClusters(Signatures *sign_cluster, unsigned int c
         delete discarted;
     }
 }
+
+/*
+void BicliqueExtractor::computeClusters(vector<Signatures *> *groups, unsigned int column)
+{
+    for (size_t i = 0; i < groups->size(); i++)
+    {
+        uint64_t numberEntries = groups->at(i)->size();
+        // if (1 < numberEntries)
+        if ((num_signatures + (uint64_t)1) < numberEntries)
+        {
+            sortSignatures(groups->at(i), column);
+            vector<Signatures *> new_groups = makeGroups(groups->at(i), column);
+
+            vector<Node *> *new_cluster_single_elements = new vector<Node *>();
+
+            for (size_t j = 0; j < new_groups.size(); j++)
+            {
+                uint64_t numberEntries_new_group = new_groups[j]->size();
+
+                if (numberEntries_new_group > minClusterSize && column < num_signatures - (unsigned int)1)
+                {
+                    vector<Signatures *> groups_new_cluster;
+                    groups_new_cluster.push_back(new_groups[j]);
+                    computeClusters(&groups_new_cluster, column + 1);
+                }
+                else if (numberEntries_new_group > 1)
+                {
+                    vector<Node *> *new_cluster = new vector<Node *>();
+                    for (size_t k = 0; k < new_groups[j]->size(); k++)
+                    {
+                        new_cluster->push_back(new_groups[j]->at(k)->ptrNode);
+                    }
+
+                    Cluster *c = new Cluster(new_cluster);
+                    clusters.push_back(c);
+                }
+                else if (numberEntries_new_group == 1)
+                    new_cluster_single_elements->push_back(new_groups[j]->at(0)->ptrNode);
+
+                delete new_groups[j];
+            }
+            if (new_cluster_single_elements->size() > 1)
+            {
+                Cluster *c = new Cluster(new_cluster_single_elements);
+                clusters.push_back(c);
+            }
+            else
+            {
+                delete new_cluster_single_elements;
+            }
+        }
+        delete groups->at(i);
+    }
+}*/
 
 void BicliqueExtractor::computeTree()
 {
