@@ -262,9 +262,9 @@ void BicliqueExtractor::computeClusters(vector<Signatures *> *groups, unsigned i
 
 void BicliqueExtractor::computeTree()
 {
-    // omp_set_num_threads(NUM_THREADS);
+    omp_set_num_threads(NUM_THREADS);
     TIMERSTART(create_trie);
-    // #pragma omp parallel for
+    #pragma omp parallel for
     for (auto i : clusters)
     {
         i->computeTrie();
