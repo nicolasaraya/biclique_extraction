@@ -3,8 +3,10 @@
 
 using namespace std;
 
-int main(int argc, char *argv[]){
-    if(argc != 8){
+int main(int argc, char *argv[])
+{
+    if (argc != 8)
+    {
         cout << "uso ./biclique_extractor filename num_sign min_cluster_size min_adyacency_nodes biclique_size biclique_size_decrease shingleSize" << endl;
         return 0;
     }
@@ -20,7 +22,7 @@ int main(int argc, char *argv[]){
     be.extract();
 
     return 0;
- }
+}
 
- // ./biclique_extractor dblp-2011.txt 2 1 3 100 100
- //./biclique_extractor ej1.txt 2 1 3 1 100
+// ./biclique_extractor ../data/dblp-2011.txt 2 10 2 500 400 1
+//./biclique_extractor ../data/ej1.txt 2 1 2 2 400 1

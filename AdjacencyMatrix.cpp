@@ -1,5 +1,7 @@
 #include "AdjacencyMatrix.hpp"
 
+// PUBLIC METHODS
+
 AdjacencyMatrix::AdjacencyMatrix(const string path, bool selfLoops) : path(path), selfLoops(selfLoops)
 {
 	build();
@@ -17,7 +19,7 @@ AdjacencyMatrix::~AdjacencyMatrix()
 
 void AdjacencyMatrix::build()
 {
-	int count = 0;
+	// int count = 0;
 	ifstream file;
 	file.open(path);
 	if (!file.is_open())
@@ -31,7 +33,7 @@ void AdjacencyMatrix::build()
 	{
 		getline(file, line);
 		auto adjacents = splitString(line, " ");
-		if (adjacents.size() == 0 || adjacents.size() == 1)
+		if (adjacents.size() < 2)
 			continue;
 
 		Node *tempNode = new Node(atoi(adjacents.at(0).c_str()), selfLoops);
@@ -59,7 +61,7 @@ uint64_t AdjacencyMatrix::all_edges_size()
 	uint64_t size = 0;
 	for (auto it : matrix)
 	{
-		size += it->getAdjacents().size();
+		size += it->edgesSize();
 	}
 	return size;
 }
@@ -71,19 +73,9 @@ void AdjacencyMatrix::insert(Node *node)
 
 void AdjacencyMatrix::print()
 {
-	for (auto i : matrix)
+	for (size_t i = 0; i < matrix.size(); i++)
 	{
-		cout << i->getId() << ": ";
-		auto adj = i->getAdjacents();
-		auto cache = i->getCache();
-		for (auto j : adj)
-			cout << j << " ";
-		if (cache.size() > 0)
-			cout << " || ";
-		for (auto j : cache)
-			cout << j << " ";
-
-		cout << endl;
+		matrix[i]->print();
 	}
 }
 
@@ -94,12 +86,12 @@ void AdjacencyMatrix::writeAdjacencyList()
 	ofstream file;
 	file.open("/output/graph_" + now_time() + ".txt", std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero
 
-	for (auto i : matrix)
+	for (size_t i = 0; i < matrix.size(); i++)
 	{
-		file << i->getId() << ": ";
-
-		for (auto j : i->getAdjacents())
-			file << j << " ";
+		file << matrix[i]->getId() << ": ";
+		auto node_adjacents = matrix[i]->getAdjacents();
+		for (size_t j = 0; j < node_adjacents.size(); j++)
+			file << node_adjacents[j] << " ";
 		file << endl;
 	}
 	file.close();
@@ -107,9 +99,9 @@ void AdjacencyMatrix::writeAdjacencyList()
 
 void AdjacencyMatrix::restoreNodes()
 {
-	for (auto i : matrix)
+	for (size_t i = 0; i < matrix.size(); i++)
 	{
-		i->restore();
+		matrix[i]->restore();
 	}
 }
 

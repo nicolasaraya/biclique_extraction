@@ -11,11 +11,14 @@ using namespace std;
 class BicliqueExtractor
 {
 public:
+    // PUBLIC METHODS
     BicliqueExtractor(const string, uint16_t, uint16_t, uint16_t, uint32_t, uint16_t, uint32_t);
     ~BicliqueExtractor();
+
     void extract();
 
 private:
+    // PRIVATE VARIABLES
     bool selfLoop = true;
     bool adjacencyMatrixLoaded = false;
     string path;
@@ -32,8 +35,8 @@ private:
     uint64_t biclique_sxc_size = 0;
     AdjacencyMatrix *adjMatrix;
     vector<Cluster *> clusters;
-    vector<vector<SignNode *> *> posClusters;
-    //
+
+    // PRIVATE METHODS
     bool compareMinHash(const SignNode *, const SignNode *, int);
     bool compareBicliqueRank(const Biclique *, const Biclique *);
     vector<Signatures *> makeGroups(Signatures *, int);
@@ -47,7 +50,7 @@ private:
     void sortSignatures(Signatures *, int);
     void sortBicliques(vector<Biclique *> *);
     bool sortC(uint64_t, uint64_t);
-    bool sortNodes(Node *, Node *);
+    bool sortS(Node *, Node *);
 };
 
 #endif

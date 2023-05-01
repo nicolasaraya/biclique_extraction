@@ -1,6 +1,6 @@
 #include "Trie.hpp"
 
-////////////////////////////////////////////////////////////////PUBLIC METHODS //////////////////////////////////////////////////////////////////
+// PUBLIC METHODS
 
 Trie::Trie()
 {
@@ -20,12 +20,9 @@ void Trie::create(vector<Node *> *nodes)
     for (size_t i = 0; i < nodes->size(); i++)
     {
         if (root != NULL)
-        {
-            if (*(nodes->at(i)->getAdjacents().begin()) != root->vertex)
-            {
+            if (nodes->at(i)->getFirstAdjacent() != root->vertex)
                 continue;
-            }
-        }
+
         insert(nodes->at(i));
     }
 }
@@ -63,6 +60,22 @@ vector<Biclique *> Trie::getBicliques()
     return potential_bicliques;
 }
 
+void Trie::printTrie()
+{
+    if (root == NULL)
+    {
+        cout << "root is NULL" << endl;
+    }
+    else
+    {
+        cout << "print trie" << endl;
+        print(root);
+        cout << "finish print" << endl;
+    }
+}
+
+// PRIVATE METHODS
+
 void Trie::computeCandidatesBicliques(TrieNode *node, map<vector<Node *> *, TrieNode *> *candidate_bicliques)
 {
     if (node->childrens->size() > 0)
@@ -92,22 +105,6 @@ void Trie::computeCandidatesBicliques(TrieNode *node, map<vector<Node *> *, Trie
         }
     }
 }
-
-void Trie::printTrie()
-{
-    if (root == NULL)
-    {
-        cout << "root is NULL" << endl;
-    }
-    else
-    {
-        cout << "print trie" << endl;
-        print(root);
-        cout << "finish print" << endl;
-    }
-}
-
-////////////////////////////////////////////////////////////////PRIVATE METHODS //////////////////////////////////////////////////////////////////
 
 TrieNode *Trie::find(uint64_t &vertex, TrieNode *ptr)
 {
@@ -149,9 +146,11 @@ void Trie::insert(Node *node)
     TrieNode *t_node;
     TrieNode *ptr = root;
 
-    for (size_t i = 0; i < node->getAdjacents().size(); i++)
+    auto node_adjacents = node->getAdjacents(); // modificado
+
+    for (size_t i = 0; i < node->edgesSize(); i++)
     {
-        t_node = find(node->getAdjacents()[i], ptr);
+        t_node = find(node_adjacents[i], ptr);
 
         if (t_node != NULL)
         { // Si ya existe
@@ -162,7 +161,7 @@ void Trie::insert(Node *node)
             t_node = new TrieNode();
             t_node->indices = new vector<Node *>();
             t_node->childrens = new vector<TrieNode *>();
-            t_node->vertex = node->getAdjacents()[i];
+            t_node->vertex = node_adjacents[i];
             t_node->indices->push_back(node);
             t_node->depth = i + 1;
 
@@ -190,6 +189,7 @@ void Trie::print(TrieNode *node)
         cout << node->indices->at(i)->getId() << " ";
     }
     cout << endl;
+    cout << "Hijos de " << node->vertex << endl;
     for (size_t i = 0; i < node->childrens->size(); i++)
     {
         print(node->childrens->at(i));

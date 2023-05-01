@@ -1,6 +1,7 @@
 #include "Shingle.hpp"
-
 using namespace std;
+
+// PUBLIC METHODS
 
 Shingle::Shingle(uint16_t num_signatures, uint32_t minAN, uint32_t shingle_size) : num_signatures(num_signatures),
                                                                                    minAdyNodes(minAN),
@@ -27,7 +28,7 @@ Shingle::~Shingle()
 SignNode *Shingle::computeShingle(Node *node)
 {
 
-    if (node->getAdjacents().size() == 0 || node->getAdjacents().size() < minAdyNodes)
+    if (node->edgesSize() == 0 || node->edgesSize() < minAdyNodes)
     {
         return nullptr;
     }
@@ -42,9 +43,9 @@ SignNode *Shingle::computeShingle(Node *node)
     uint64_t shingleID;
     uint64_t shingleHash;
 
-    for (auto i = node->getAdjacents().begin(); i != node->getAdjacents().end(); i++)
+    for (auto adjacent : node->getAdjacents())
     {
-        string shingle_ = to_string(*i);
+        string shingle_ = to_string(adjacent);
         shingleID = hash_nodes(shingle_);
 
         for (uint16_t k = 0; k < num_signatures; k++)

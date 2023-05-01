@@ -1,6 +1,8 @@
 #include "Node.hpp"
 using namespace std;
 
+// PUBLIC METHODS
+
 Node::Node(uint64_t id, bool selfLoop) : id(id), selfLoop(selfLoop)
 {
 	if (selfLoop)
@@ -30,9 +32,9 @@ uint64_t Node::getId()
 	return id;
 }
 
-void Node::setModified(bool modified)
+uint64_t Node::edgesSize()
 {
-	this->modified = modified;
+	return adjacentNodes.size();
 }
 
 void Node::addAdjacent(uint64_t id_adj)
@@ -41,6 +43,28 @@ void Node::addAdjacent(uint64_t id_adj)
 		return;
 	else
 		adjacentNodes.push_back(id_adj);
+}
+
+void Node::find_to_erase(uint64_t id_adj)
+{
+	vector<uint64_t>::iterator it = std::find(adjacentNodes.begin(), adjacentNodes.end(), id_adj); // buscamos el elemento de C en la lista del Nodo
+	if (it != adjacentNodes.end())
+		adjacentNodes.erase(it); // si se encuentra se elimina
+}
+
+void Node::setModified(bool modified)
+{
+	this->modified = modified;
+}
+
+void Node::sortByFrecuency(unordered_map<uint64_t, uint32_t> *mapFrecuency)
+{
+	sort(adjacentNodes.begin(), adjacentNodes.end(), bind(&Node::sortFrecuencyComp, this, placeholders::_1, placeholders::_2, mapFrecuency));
+}
+
+bool Node::includes(vector<uint64_t> *c)
+{
+	return std::includes(adjacentNodes.begin(), adjacentNodes.end(), c->begin(), c->end());
 }
 
 bool Node::removeAdjacent(uint64_t id_adj)
@@ -57,27 +81,30 @@ bool Node::removeAdjacent(uint64_t id_adj)
 	}
 }
 
-bool Node::moveToCache(uint64_t id_adj)
+void Node::moveToCache(unordered_map<uint64_t, uint32_t> *mapFrecuency, uint16_t minFreq)
 {
-	auto f = std::find(adjacentNodes.begin(), adjacentNodes.end(), id_adj);
-	if (f == adjacentNodes.end())
-		return false;
-	else
-	{
-		adjacentNodes.erase(f);
-		cacheNodes.push_back(id_adj);
-		return true;
+	for (auto it = (adjacentNodes.end() - 1); it != adjacentNodes.begin(); it--)
+	{ // eliminar freq 1
+		if (mapFrecuency->at(*it) <= minFreq)
+		{
+			adjacentNodes.erase(it);
+			cacheNodes.push_back(*it);
+		}
+		else
+			break;
 	}
 }
 
-vector<uint64_t> &Node::getAdjacents()
+const vector<uint64_t> &Node::getAdjacents() const
 {
 	return adjacentNodes;
 }
 
-vector<uint64_t> &Node::getCache()
+uint64_t Node::getFirstAdjacent()
 {
-	return cacheNodes;
+	if (adjacentNodes.size() > 0)
+		return adjacentNodes[0];
+	return -1;
 }
 
 bool Node::restore()
@@ -89,4 +116,34 @@ bool Node::restore()
 	}
 	sort(adjacentNodes.begin(), adjacentNodes.end());
 	return true;
+}
+
+void Node::print()
+{
+	cout << "Node " << id << ": ";
+	for (size_t i = 0; i < adjacentNodes.size(); i++)
+		cout << adjacentNodes[i] << " ";
+	if (cacheNodes.size() > 0)
+		cout << " || ";
+	for (size_t j = 0; j < cacheNodes.size(); j++)
+		cout << cacheNodes[j] << " ";
+	cout << endl;
+}
+
+// PRIVATE METHODS
+
+bool Node::sortFrecuencyComp(const uint64_t &a, const uint64_t &b, unordered_map<uint64_t, uint32_t> *mapFrecuency)
+{
+	if (mapFrecuency->at(a) > mapFrecuency->at(b))
+	{
+		return true;
+	}
+	else if (mapFrecuency->at(a) == mapFrecuency->at(b))
+	{
+		return a < b;
+	}
+	else
+	{
+		return false;
+	}
 }
