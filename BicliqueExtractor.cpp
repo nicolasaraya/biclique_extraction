@@ -309,7 +309,7 @@ uint32_t BicliqueExtractor::extractBicliques()
             sortBicliques(&possible_bicliques);
 
             // se elije el biclique con mayor rank
-            Biclique *best_biclique = possible_bicliques.at(0);
+            Biclique *best_biclique = possible_bicliques.at(possible_bicliques.size() - 1);
 
             vector<Node *> *S = best_biclique->first;
             vector<uint64_t> *C = &best_biclique->second;
@@ -333,8 +333,8 @@ uint32_t BicliqueExtractor::extractBicliques()
             biclique_c_size += C->size();
             biclique_sxc_size += S->size() * C->size();
 
-            sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
             sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortS, this, placeholders::_1, placeholders::_2));
+            // sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
 
             file << "S: ";
             for (size_t j = 0; j < S->size(); j++)
@@ -362,31 +362,27 @@ uint32_t BicliqueExtractor::extractBicliques()
 
             delete best_biclique;
 
-            possible_bicliques.erase(possible_bicliques.begin());
+            possible_bicliques.pop_back();
 
             // se limpian el resto de bicliques
             Biclique *best_biclique_to_erase;
             vector<Node *> *S_to_erase;
             vector<uint64_t> *C_to_erase;
 
-            for (size_t j = 0; j < possible_bicliques.size(); j++)
+            for (auto it = possible_bicliques.rbegin(); it != possible_bicliques.rend(); it++)
             {
-                best_biclique_to_erase = possible_bicliques.at(j);
+                best_biclique_to_erase = *it;
 
                 S_to_erase = best_biclique_to_erase->first;
                 C_to_erase = &best_biclique_to_erase->second;
 
                 for (size_t k = 0; k < S_to_erase->size(); k++)
-                {
                     if (S_to_erase->at(k)->isModified())
-                    {
                         if (!S_to_erase->at(k)->includes(C_to_erase)) // modificado
                         {
                             S_to_erase->erase(S_to_erase->begin() + k);
                             k--;
                         }
-                    }
-                }
             }
         }
     }
@@ -440,5 +436,5 @@ bool BicliqueExtractor::compareMinHash(const SignNode *a, const SignNode *b, int
 
 bool BicliqueExtractor::compareBicliqueRank(const Biclique *a, const Biclique *b)
 {
-    return a->first->size() * a->second.size() > b->first->size() * b->second.size();
+    return a->first->size() * a->second.size() < b->first->size() * b->second.size();
 }

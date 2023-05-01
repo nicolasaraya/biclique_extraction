@@ -20,7 +20,7 @@ void Trie::create(vector<Node *> *nodes)
     for (size_t i = 0; i < nodes->size(); i++)
     {
         if (root != NULL)
-            if (nodes->at(i)->getFirstAdjacent() != root->vertex)
+            if (nodes->at(i)->getFrontAdjacent() != root->vertex)
                 continue;
 
         insert(nodes->at(i));
@@ -52,6 +52,9 @@ vector<Biclique *> Trie::getBicliques()
             b->second.push_back(parent_node->vertex);
             parent_node = parent_node->parent;
         }
+        for (auto it_node = b->first->begin(); it_node != b->first->end(); it_node++)
+            (*it_node)->sort();
+        sort(b->second.begin(), b->second.end());
         potential_bicliques.push_back(b);
     }
 

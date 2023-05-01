@@ -3,35 +3,35 @@ SOURCE	= main.cpp AdjacencyMatrix.cpp BicliqueExtractor.cpp Cluster.cpp Node.cpp
 HEADER	= AdjacencyMatrix.hpp BicliqueExtractor.hpp Cluster.hpp Node.hpp Shingle.hpp Trie.hpp Utils.hpp define.hpp
 OUT	= biclique_extractor
 CC	 = g++
-FLAGS	 = -c -Wall -O0 -g
+FLAGS	 = -c -Wall -O0 -g -std=c++17
 LFLAGS	 = -lm
 
 all: $(OBJS)
-	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
+	$(CC) $(OBJS) -o $(OUT) $(LFLAGS)
 
 main.o: main.cpp
-	$(CC) $(FLAGS) main.cpp -std=c++17
+	$(CC) $(FLAGS) main.cpp 
 
 AdjacencyMatrix.o: AdjacencyMatrix.cpp
-	$(CC) $(FLAGS) AdjacencyMatrix.cpp -std=c++17
+	$(CC) $(FLAGS) AdjacencyMatrix.cpp 
 
 BicliqueExtractor.o: BicliqueExtractor.cpp
-	$(CC) $(FLAGS) BicliqueExtractor.cpp -std=c++17
+	$(CC) $(FLAGS) BicliqueExtractor.cpp 
 
 Cluster.o: Cluster.cpp
-	$(CC) $(FLAGS) Cluster.cpp -std=c++17
+	$(CC) $(FLAGS) Cluster.cpp 
 
 Node.o: Node.cpp
-	$(CC) $(FLAGS) Node.cpp -std=c++17
+	$(CC) $(FLAGS) Node.cpp 
 
 Shingle.o: Shingle.cpp
-	$(CC) $(FLAGS) Shingle.cpp -std=c++17
+	$(CC) $(FLAGS) Shingle.cpp 
 
 Trie.o: Trie.cpp
-	$(CC) $(FLAGS) Trie.cpp -std=c++17
+	$(CC) $(FLAGS) Trie.cpp 
 
 Utils.o: Utils.cpp
-	$(CC) $(FLAGS) Utils.cpp -std=c++17
+	$(CC) $(FLAGS) Utils.cpp 
 
 clean:
 	rm -f $(OBJS) $(OUT)

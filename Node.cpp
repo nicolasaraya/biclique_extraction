@@ -45,7 +45,7 @@ void Node::addAdjacent(uint64_t id_adj)
 		adjacentNodes.push_back(id_adj);
 }
 
-void Node::find_to_erase(uint64_t id_adj)
+void Node::find_to_erase(uint64_t id_adj) // PODRIA SER BUSQUEDA BINARIA
 {
 	vector<uint64_t>::iterator it = std::find(adjacentNodes.begin(), adjacentNodes.end(), id_adj); // buscamos el elemento de C en la lista del Nodo
 	if (it != adjacentNodes.end())
@@ -57,9 +57,14 @@ void Node::setModified(bool modified)
 	this->modified = modified;
 }
 
+void Node::sort()
+{
+	std::sort(adjacentNodes.begin(), adjacentNodes.end());
+}
+
 void Node::sortByFrecuency(unordered_map<uint64_t, uint32_t> *mapFrecuency)
 {
-	sort(adjacentNodes.begin(), adjacentNodes.end(), bind(&Node::sortFrecuencyComp, this, placeholders::_1, placeholders::_2, mapFrecuency));
+	std::sort(adjacentNodes.begin(), adjacentNodes.end(), bind(&Node::sortFrecuencyComp, this, placeholders::_1, placeholders::_2, mapFrecuency));
 }
 
 bool Node::includes(vector<uint64_t> *c)
@@ -100,7 +105,7 @@ const vector<uint64_t> &Node::getAdjacents() const
 	return adjacentNodes;
 }
 
-uint64_t Node::getFirstAdjacent()
+uint64_t Node::getFrontAdjacent()
 {
 	if (adjacentNodes.size() > 0)
 		return adjacentNodes[0];
@@ -114,7 +119,7 @@ bool Node::restore()
 		adjacentNodes.push_back(cacheNodes.back());
 		cacheNodes.pop_back();
 	}
-	sort(adjacentNodes.begin(), adjacentNodes.end());
+	std::sort(adjacentNodes.begin(), adjacentNodes.end());
 	return true;
 }
 

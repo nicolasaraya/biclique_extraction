@@ -19,12 +19,13 @@ public:
 	void addAdjacent(uint64_t);
 	void find_to_erase(uint64_t);
 	void setModified(bool);
+	void sort();
 	void sortByFrecuency(unordered_map<uint64_t, uint32_t> *);
 	bool includes(vector<uint64_t> *);
 	bool removeAdjacent(uint64_t);
 	void moveToCache(unordered_map<uint64_t, uint32_t> *, uint16_t);
 	const vector<uint64_t> &getAdjacents() const;
-	uint64_t getFirstAdjacent();
+	uint64_t getFrontAdjacent();
 	bool restore();
 	void print();
 

@@ -19,8 +19,6 @@ void Cluster::computeHistogram()
 
     for (auto node : *nodes)
     {
-        auto node_getAdjacents = node->getAdjacents();
-
         node->sortByFrecuency(&mapFrecuency);
 
         node->moveToCache(&mapFrecuency, minFreq);
