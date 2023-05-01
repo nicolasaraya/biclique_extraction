@@ -75,16 +75,16 @@ void Cluster::computeFrecuency()
 {
     for (auto node : *nodes)
     {
-        for (auto j : node->getAdjacents())
+        for (auto j = node->adjacentsBegin(); j != node->adjacentsEnd(); j++)
         {
-            auto aux = mapFrecuency.find(j);
+            auto aux = mapFrecuency.find(*j);
             if (aux != mapFrecuency.end())
             { // existe
-                mapFrecuency[j]++;
+                mapFrecuency[*j]++;
             }
             else
             {
-                mapFrecuency[j] = 1; // insert freq 1;
+                mapFrecuency[*j] = 1; // insert freq 1;
             }
         }
     }

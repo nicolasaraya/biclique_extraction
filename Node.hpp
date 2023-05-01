@@ -5,6 +5,8 @@
 
 using namespace std;
 
+typedef vector<uint64_t>::iterator AdjacentsIterator; 
+
 class Node
 {
 public:
@@ -24,7 +26,9 @@ public:
 	bool includes(vector<uint64_t> *);
 	bool removeAdjacent(uint64_t);
 	void moveToCache(unordered_map<uint64_t, uint32_t> *, uint16_t);
-	const vector<uint64_t> &getAdjacents() const;
+	//const vector<uint64_t> &getAdjacents() const;
+	AdjacentsIterator adjacentsBegin();
+	AdjacentsIterator adjacentsEnd();
 	uint64_t getFrontAdjacent();
 	bool restore();
 	void print();

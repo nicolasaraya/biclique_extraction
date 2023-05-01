@@ -22,3 +22,36 @@ std::vector<std::string> splitString(std::string line, std::string delims){
   	}                 
     return words;
 }
+
+std::unordered_map<std::string, std::string> parseArguments(int argc, char* argv[]){
+    std::unordered_map<std::string, std::string> arguments{
+        {"file", "../data/dblp-2011.txt"},
+        {"numSignatures", "2"},
+        {"minClusterSize", "10"},
+        {"bicliqueSize", "2"},
+        {"minAdyNodes", "500"},
+        {"bsDecrease", "500"},
+        {"shingleSize", "1"},
+        {"selfLoop", "1"},
+        {"threshold", "100"}
+    };
+
+    const std::string prefix = "--"; 
+
+    for(int i = 1; i < argc - 1; i+=2){
+        auto arg = std::string(argv[i]);
+        arg.erase(arg.begin());
+        arg.erase(arg.begin()); 
+        
+        auto f = arguments.find(arg); 
+        if(f == arguments.end()){
+            std::cout << "No se encuentra el argumento: " << prefix + std::string(arg) << std::endl;
+        }
+
+        arguments[arg] = std::string(argv[i+1]);
+        //std::cout << arg << ", " << arguments[arg] << std::endl;
+    }
+
+    return arguments; 
+
+}

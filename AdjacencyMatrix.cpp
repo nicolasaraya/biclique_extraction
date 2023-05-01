@@ -25,6 +25,7 @@ void AdjacencyMatrix::build()
 	if (!file.is_open())
 	{
 		cout << "No se puede leer fichero" << endl;
+		cout << path << endl;
 		exit(0);
 	}
 	string line;
@@ -85,7 +86,15 @@ void AdjacencyMatrix::writeAdjacencyList()
 	cout << path + now_time() << endl;
 	ofstream file;
 	file.open("/output/graph_" + now_time() + ".txt", std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero
-
+	
+	for(auto node : matrix){
+		file << node->getId() << ": ";
+		for(auto adj = node->adjacentsBegin(); adj != node->adjacentsEnd(); adj++){
+			file << *adj << " " ;
+		}
+		file << endl;
+	}
+	/*
 	for (size_t i = 0; i < matrix.size(); i++)
 	{
 		file << matrix[i]->getId() << ": ";
@@ -93,7 +102,9 @@ void AdjacencyMatrix::writeAdjacencyList()
 		for (size_t j = 0; j < node_adjacents.size(); j++)
 			file << node_adjacents[j] << " ";
 		file << endl;
+		
 	}
+	*/
 	file.close();
 }
 

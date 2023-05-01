@@ -149,11 +149,11 @@ void Trie::insert(Node *node)
     TrieNode *t_node;
     TrieNode *ptr = root;
 
-    auto node_adjacents = node->getAdjacents(); // modificado
-
-    for (size_t i = 0; i < node->edgesSize(); i++)
+    //auto node_adjacents = node->getAdjacents(); // modificado
+    int i = 0;
+    for (auto adj = node->adjacentsBegin(); adj != node->adjacentsEnd(); adj++, i++)
     {
-        t_node = find(node_adjacents[i], ptr);
+        t_node = find(*adj, ptr);
 
         if (t_node != NULL)
         { // Si ya existe
@@ -164,7 +164,7 @@ void Trie::insert(Node *node)
             t_node = new TrieNode();
             t_node->indices = new vector<Node *>();
             t_node->childrens = new vector<TrieNode *>();
-            t_node->vertex = node_adjacents[i];
+            t_node->vertex = *adj;
             t_node->indices->push_back(node);
             t_node->depth = i + 1;
 

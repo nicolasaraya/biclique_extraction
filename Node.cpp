@@ -73,7 +73,7 @@ bool Node::includes(vector<uint64_t> *c)
 }
 
 bool Node::removeAdjacent(uint64_t id_adj)
-{
+{	
 	auto element = std::find(adjacentNodes.begin(), adjacentNodes.end(), id_adj);
 	if (element != adjacentNodes.end())
 	{
@@ -99,11 +99,12 @@ void Node::moveToCache(unordered_map<uint64_t, uint32_t> *mapFrecuency, uint16_t
 			break;
 	}
 }
-
-const vector<uint64_t> &Node::getAdjacents() const
+/*
+const vector<uint64_t> &Node::getAdjacents()
 {
 	return adjacentNodes;
 }
+*/
 
 uint64_t Node::getFrontAdjacent()
 {
@@ -133,6 +134,16 @@ void Node::print()
 	for (size_t j = 0; j < cacheNodes.size(); j++)
 		cout << cacheNodes[j] << " ";
 	cout << endl;
+}
+
+AdjacentsIterator Node::adjacentsBegin()
+{	
+	return adjacentNodes.begin();
+}
+
+AdjacentsIterator Node::adjacentsEnd()
+{
+	return adjacentNodes.end();
 }
 
 // PRIVATE METHODS

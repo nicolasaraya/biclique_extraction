@@ -2,13 +2,16 @@
 
 // PUBLIC METHODS
 
-BicliqueExtractor::BicliqueExtractor(const string path, uint16_t num_signatures, uint16_t minClusterSize, uint16_t minAdyNodes, uint32_t biclique_size, uint16_t bs_decrease, uint32_t shingleSize) : path(path),
-                                                                                                                                                                                                      num_signatures(num_signatures),
-                                                                                                                                                                                                      minClusterSize(minClusterSize),
-                                                                                                                                                                                                      biclique_size(biclique_size),
-                                                                                                                                                                                                      minAdyNodes(minAdyNodes),
-                                                                                                                                                                                                      bs_decrease(bs_decrease),
-                                                                                                                                                                                                      shingleSize(shingleSize)
+BicliqueExtractor::BicliqueExtractor(const string path, uint16_t num_signatures, uint16_t minClusterSize, uint16_t minAdyNodes, uint32_t biclique_size, uint16_t bs_decrease, uint32_t shingleSize, bool selfLoop, uint32_t threshold) : 
+    path(path),
+    num_signatures(num_signatures),
+    minClusterSize(minClusterSize),
+    biclique_size(biclique_size),
+    minAdyNodes(minAdyNodes),
+    bs_decrease(bs_decrease),
+    shingleSize(shingleSize),
+    selfLoop(selfLoop),
+    threshold(threshold)
 {
     adjMatrix = new AdjacencyMatrix(path, selfLoop);
     iteration = 1;
@@ -97,7 +100,7 @@ void BicliqueExtractor::extract()
 
         if (iteration == 10)
             break;
-        if (n_bicliques < 100)
+        if (n_bicliques < threshold)
         { // cambiar a num minimo de bilciques
             if (bs_decrease > biclique_size)
             {

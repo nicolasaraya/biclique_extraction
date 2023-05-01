@@ -43,9 +43,9 @@ SignNode *Shingle::computeShingle(Node *node)
     uint64_t shingleID;
     uint64_t shingleHash;
 
-    for (auto adjacent : node->getAdjacents())
+    for (auto adjacent = node->adjacentsBegin(); adjacent != node->adjacentsEnd(); adjacent++)
     {
-        string shingle_ = to_string(adjacent);
+        string shingle_ = to_string(*adjacent);
         shingleID = hash_nodes(shingle_);
 
         for (uint16_t k = 0; k < num_signatures; k++)

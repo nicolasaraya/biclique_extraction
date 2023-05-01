@@ -20,6 +20,8 @@
 #include <iterator>
 #include <cassert>
 #include <functional>
+#include <map>
+#include <unordered_map>
 #include <omp.h>
 #include <math.h>
 
@@ -37,6 +39,8 @@
 
 std::string now_time();
 std::vector<std::string> splitString(std::string line, std::string delims);
+std::unordered_map<std::string, std::string>  parseArguments(int argc, char* argv[]); 
+
 
 
 #endif 
