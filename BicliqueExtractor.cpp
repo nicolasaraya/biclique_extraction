@@ -47,11 +47,7 @@ void BicliqueExtractor::extract()
         // adjMatrix->print();
         cout << "Iteracion: " << iteration << endl;
         auto signatures = computeShingles();
-
         assert(not signatures->empty());
-
-        // printSignatures(signatures);
-
         sortSignatures(signatures, 0);
 
         /**/
@@ -72,12 +68,11 @@ void BicliqueExtractor::extract()
         // computeClusters(&group, 1);
         computeClusters(signatures, 0);
 
-        std::cout << clusters.size() << std::endl;
         for(auto i : *signatures){
             delete i;
         }
         delete (signatures);
-        // break;
+
         computeTree();
 
         uint32_t n_bicliques = extractBicliques();
@@ -103,8 +98,9 @@ void BicliqueExtractor::extract()
 
         if (iteration == 10)
             break;
+            
         if (n_bicliques < threshold)
-        { // cambiar a num minimo de bilciques
+        { 
             if (bs_decrease > biclique_size)
             {
                 break;
@@ -114,9 +110,7 @@ void BicliqueExtractor::extract()
                 break;
         }
 
-        if (DEBUG_LEVEL > 3)
-            break;
-        break;
+
         iteration++;
     }
 

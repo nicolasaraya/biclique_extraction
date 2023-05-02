@@ -1,19 +1,21 @@
 ****************************************************************
 Iteracion: 1
-Adjacency Matrix Size: 1001
-Current Edges Size AdjacencyMatrix: 5767
+Adjacency Matrix Size: 933258
+Current Edges Size AdjacencyMatrix: 5313987
 Min Bilcique Size: 500
-Clusters encontrados: 155
-Bilciques encontrados: 0
+Clusters encontrados: 155359
+Bilciques encontrados: 96
 ****************************************************************
-Original Size AdjacencyMatrix: 1001
-Current Size AdjacencyMatrix: 1001
-
-Original Edges Size AdjacencyMatrix: 8489
-Current Edges Size AdjacencyMatrix: 8489
-
-Number of Bicliques Extracted: 0
-Sum of S: 0
-Sum of C: 0
-Sum of S + C: 0
-Sum of Multiplication of S x C: 0
+Iteracion: 2
+Adjacency Matrix Size: 933258
+Current Edges Size AdjacencyMatrix: 5065810
+Min Bilcique Size: 100
+Clusters encontrados: 155372
+Bilciques encontrados: 1461
+****************************************************************
+Iteracion: 3
+Adjacency Matrix Size: 933258
+Current Edges Size AdjacencyMatrix: 5011441
+Min Bilcique Size: 100
+Clusters encontrados: 155208
+Bilciques encontrados: 449

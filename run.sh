@@ -1,5 +1,4 @@
  #!/bin/bash
-
 ./biclique_extractor    \
     --file ../data/dblp-2011.txt \
     --numSignatures 2   \
