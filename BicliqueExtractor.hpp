@@ -19,7 +19,6 @@ public:
 
 private:
     // PRIVATE VARIABLES
-    bool selfLoop = true;
     bool adjacencyMatrixLoaded = false;
     string path;
     uint16_t num_signatures;
@@ -28,6 +27,7 @@ private:
     uint32_t minAdyNodes;
     uint16_t bs_decrease;
     uint32_t shingleSize;
+    bool selfLoop = true;
     uint32_t threshold; 
     uint16_t iteration = 1;
     uint64_t total_biclique = 0;

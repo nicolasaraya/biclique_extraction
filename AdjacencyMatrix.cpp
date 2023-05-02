@@ -30,6 +30,7 @@ void AdjacencyMatrix::build()
 	}
 	string line;
 	getline(file, line); // num nodes
+	int count = 0;
 	while (!file.eof())
 	{
 		getline(file, line);
@@ -47,7 +48,7 @@ void AdjacencyMatrix::build()
 			tempNode->addAdjacent(atoi(i.c_str()));
 		}
 		matrix.push_back(tempNode);
-		// if(count++ == 100 and DEBUG_LEVEL > 3) break;
+		if(count++ == 1000) break;
 	}
 	file.close();
 }

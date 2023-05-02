@@ -33,18 +33,24 @@ std::unordered_map<std::string, std::string> parseArguments(int argc, char* argv
         {"bsDecrease", "500"},
         {"shingleSize", "1"},
         {"selfLoop", "1"},
-        {"threshold", "100"}
+        {"threshold", "100"},
+        {"debug", "0"}
     };
 
     const std::string prefix = "--"; 
 
-    for(int i = 1; i < argc - 1; i+=2){
+    for(int i = 1; i < argc - 1; i++){
         auto arg = std::string(argv[i]);
+
+        if(arg.front() != '-'){
+            continue; 
+        }
+
         arg.erase(arg.begin());
         arg.erase(arg.begin()); 
         
         auto f = arguments.find(arg); 
-        if(f == arguments.end()){
+        if (f == arguments.end()) {
             std::cout << "No se encuentra el argumento: " << prefix + std::string(arg) << std::endl;
         }
 

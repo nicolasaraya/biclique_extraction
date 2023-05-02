@@ -39,7 +39,7 @@
 
 std::string now_time();
 std::vector<std::string> splitString(std::string line, std::string delims);
-std::unordered_map<std::string, std::string>  parseArguments(int argc, char* argv[]); 
+std::unordered_map<std::string, std::string> parseArguments(int argc, char* argv[]); 
 
 
 

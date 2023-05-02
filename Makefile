@@ -3,9 +3,10 @@ SOURCE	= main.cpp AdjacencyMatrix.cpp BicliqueExtractor.cpp Cluster.cpp Node.cpp
 HEADER	= AdjacencyMatrix.hpp BicliqueExtractor.hpp Cluster.hpp Node.hpp Shingle.hpp Trie.hpp Utils.hpp define.hpp
 OUT	= biclique_extractor
 CC	 = g++
-FLAGS = -c  -O3 -std=c++17 \
-		# -Wall -O0 -g
-LFLAGS	 = -lm -fopenmp
+FLAGS = -c  -std=c++17 \
+		-Wall -O0 -g
+LFLAGS	 = -lm \
+		#-fopenmp
 
 all: $(OBJS)
 	$(CC) $(OBJS) -o $(OUT) $(LFLAGS)

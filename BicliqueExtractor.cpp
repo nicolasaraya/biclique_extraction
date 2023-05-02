@@ -73,6 +73,9 @@ void BicliqueExtractor::extract()
         computeClusters(signatures, 0);
 
         std::cout << clusters.size() << std::endl;
+        for(auto i : *signatures){
+            delete i;
+        }
         delete (signatures);
         // break;
         computeTree();
@@ -113,7 +116,7 @@ void BicliqueExtractor::extract()
 
         if (DEBUG_LEVEL > 3)
             break;
-
+        break;
         iteration++;
     }
 
@@ -188,12 +191,13 @@ void BicliqueExtractor::computeClusters(Signatures *sign_cluster, unsigned int c
             {
                 newCluster->push_back(node->ptrNode);
             }
-            clusters.push_back(new Cluster(newCluster));
+            clusters.push_back(new Cluster(newCluster));  
         }
         else if (clusterSize == 1)
         {
             discarted->push_back(cluster->front()->ptrNode);
         }
+        delete cluster; 
     }
 
     if (discarted->size() > 1)
@@ -204,6 +208,8 @@ void BicliqueExtractor::computeClusters(Signatures *sign_cluster, unsigned int c
     {
         delete discarted;
     }
+
+    candidates.clear();
 }
 
 /*
@@ -262,9 +268,9 @@ void BicliqueExtractor::computeClusters(vector<Signatures *> *groups, unsigned i
 
 void BicliqueExtractor::computeTree()
 {
-    omp_set_num_threads(NUM_THREADS);
+    //omp_set_num_threads(NUM_THREADS);
     TIMERSTART(create_trie);
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for (auto i : clusters)
     {
         i->computeTrie();
