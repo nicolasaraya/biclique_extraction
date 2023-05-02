@@ -98,7 +98,7 @@ void BicliqueExtractor::extract()
 
         if (iteration == 10)
             break;
-            
+
         if (n_bicliques < threshold)
         { 
             if (bs_decrease > biclique_size)
@@ -109,8 +109,6 @@ void BicliqueExtractor::extract()
             if (biclique_size < 20)
                 break;
         }
-
-
         iteration++;
     }
 

@@ -40,16 +40,16 @@ clean:
 	rm -f $(OBJS) $(OUT)
 
 debug: $(OUT)
-	valgrind $(OUT)
+	gdb ./$(OUT)
 
 valgrind: $(OUT)
-	valgrind $(OUT)
+	valgrind ./$(OUT)
 
 valgrind_leakcheck: $(OUT)
-	valgrind --leak-check=full $(OUT)
+	valgrind --leak-check=full ./$(OUT)
 
 valgrind_extreme: $(OUT)
-	valgrind --leak-check=full --show-leak-kinds=all --leak-resolution=high --track-origins=yes --vgdb=yes $(OUT)
+	valgrind --leak-check=full --show-leak-kinds=all --leak-resolution=high --track-origins=yes --vgdb=yes ./$(OUT)
 
 download:
 	cd data && wget http://www.inf.udec.cl/~chernand/sources/kais2014/dsextract/dblp-2011.graph-txt.gz
@@ -59,3 +59,4 @@ download:
 mk:
 	mkdir -p ./data
 	mkdir -p ./output
+
