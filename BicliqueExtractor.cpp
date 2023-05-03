@@ -129,7 +129,7 @@ void BicliqueExtractor::extract()
     file << "Sum of Multiplication of S x C: " << biclique_sxc_size << endl;
     file.close();
 
-    // adjMatrix->writeAdjacencyList();
+    adjMatrix->writeAdjacencyList();
 }
 
 // PRIVATE METHODS

@@ -81,17 +81,21 @@ void AdjacencyMatrix::print()
 
 void AdjacencyMatrix::writeAdjacencyList()
 {
-
-	cout << path + now_time() << endl;
+	auto p = path;
+	p.pop_back();p.pop_back();p.pop_back();p.pop_back(); //pop ".txt"
+	cout << "Writing: " << p + "_" + now_time()  << ".txt " << endl;
 	ofstream file;
-	file.open("/output/graph_" + now_time() + ".txt", std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero
-	
+	file.open(p + "_" + now_time() + ".txt", std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero
+	file << matrix.size() << std::endl;
+	int count = 0; 
 	for(auto node : matrix){
+		if (count % 10000 == 0) cout << float(count)/float(matrix.size()) * 100 << " %" << endl; 
 		file << node->getId() << ": ";
 		for(auto adj = node->adjacentsBegin(); adj != node->adjacentsEnd(); adj++){
 			file << *adj << " " ;
 		}
 		file << endl;
+		count++; 
 	}
 	/*
 	for (size_t i = 0; i < matrix.size(); i++)
