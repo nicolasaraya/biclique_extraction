@@ -28,6 +28,8 @@ void AdjacencyMatrix::addBicliques(string path)
 		cout << path << endl;
 		exit(0);
 	}
+	standardize();
+
 	string S;
 	string C;
 	vector<Node *> newNodes;
@@ -45,28 +47,49 @@ void AdjacencyMatrix::addBicliques(string path)
 
 		for (auto node : sources)
 		{
-			Node *tempNode = find_value_recursive(atoi(node.c_str()), 0, matrix.size() - 1);
-			// Node *tempNode = find_value(atoi(node.c_str()));
-
-			if (tempNode == NULL)
-			{
-				tempNode = new Node(atoi(node.c_str()), selfLoops);
-				matrix.push_back(tempNode);
-				sort(matrix.begin(), matrix.end(), bind(&AdjacencyMatrix::compareNodes, this, placeholders::_1, placeholders::_2));
-			}
-
+			uint64_t id = atoi(node.c_str());
 			for (auto adjacent : centers)
 			{
 				uint64_t adjId = atoi(adjacent.c_str());
-				tempNode->addAdjacent(adjId);
+				matrix[id - 1]->addAdjacent(adjId);
 			}
-
-			if (tempNode->edgesSize() > centers.size())
-				tempNode->sort();
 		}
 	}
 	cout << "Fin addBicliques" << endl;
+	cout << "Sorting and Deleting" << endl;
+	for (auto it = matrix.begin(); it != matrix.end(); it++)
+	{
+		if ((*it)->edgesSize() < 1)
+		{
+			// delete (*it);
+			matrix.erase(it);
+			it--;
+		}
+		else
+			(*it)->sort();
+	}
 }
+
+// funcion que agrega los nodos intermedios que no contienen ninguna arista
+// para facilitar la busqueda de los nodos source
+void AdjacencyMatrix::standardize()
+{
+	auto it = matrix.begin();
+	for (uint64_t cont = 1; cont < last_node + 1; it++, cont++)
+	{
+		if (it != matrix.end() && cont == (*it)->getId())
+		{
+			continue;
+		}
+		else
+		{
+			Node *tempNode = new Node(cont, false);
+			matrix.insert(it, tempNode);
+			it = matrix.begin() + (cont - 1);
+		}
+	}
+}
+
 void AdjacencyMatrix::build()
 {
 	// int count = 0;
@@ -103,6 +126,7 @@ void AdjacencyMatrix::build()
 				continue;
 			tempNode->addAdjacent(adjId);
 		}
+		tempNode->sort();
 		matrix.push_back(tempNode);
 	}
 	file.close();
@@ -166,29 +190,6 @@ void AdjacencyMatrix::writeAdjacencyList()
 		file << endl;
 		count++;
 	}
-	/*for (auto node : matrix)
-	{
-		if (count % 100000 == 0)
-			cout << float(count) / float(matrix.size()) * 100 << " %" << endl;
-		file << node->getId() << ": ";
-		for (auto adj = node->adjacentsBegin(); adj != node->adjacentsEnd(); adj++)
-		{
-			file << *adj << " ";
-		}
-		file << endl;
-		count++;
-	}*/
-	/*
-	for (size_t i = 0; i < matrix.size(); i++)
-	{
-		file << matrix[i]->getId() << ": ";
-		auto node_adjacents = matrix[i]->getAdjacents();
-		for (size_t j = 0; j < node_adjacents.size(); j++)
-			file << node_adjacents[j] << " ";
-		file << endl;
-
-	}
-	*/
 	file.close();
 }
 
@@ -208,71 +209,4 @@ AdjMatrixIterator AdjacencyMatrix::begin()
 AdjMatrixIterator AdjacencyMatrix::end()
 {
 	return matrix.end();
-}
-
-AdjMatrixIterator AdjacencyMatrix::find(Node *a)
-{
-	return std::find(matrix.begin(), matrix.end(), a);
-}
-Node *AdjacencyMatrix::find_value(uint64_t id)
-{
-	uint64_t mid = matrix.size() / 2;
-
-	if (id == matrix.at(mid)->getId())
-	{
-		return matrix.at(mid);
-	}
-	else if (id > matrix.at(mid)->getId())
-	{
-		return find_value_recursive(id, mid + 1, matrix.size());
-	}
-	else if (id < matrix.at(mid)->getId())
-	{
-		return find_value_recursive(id, 0, mid);
-	}
-	return nullptr;
-}
-
-Node *AdjacencyMatrix::find_value_recursive(uint64_t id, uint64_t l, uint64_t r)
-{
-	if (l > r)
-		return nullptr;
-
-	uint64_t mid = (l + r) / 2;
-
-	uint64_t node_id = matrix.at(mid)->getId();
-
-	if (id == node_id)
-		return matrix.at(mid);
-
-	if (id < node_id)
-		r = mid - 1;
-	else
-		l = mid + 1;
-
-	return find_value_recursive(id, l, r);
-	/*
-	uint64_t mid = ((r - l) / 2) + l;
-
-	if (l > r)
-		return nullptr;
-
-	if (id == matrix.at(mid)->getId())
-	{
-		return matrix.at(mid);
-	}
-	else if (id > matrix.at(mid)->getId())
-	{
-		return find_value_recursive(id, mid + 1, r);
-	}
-	else if (id < matrix.at(mid)->getId())
-	{
-		return find_value_recursive(id, l, mid - 1);
-	}
-	return nullptr;*/
-}
-
-bool AdjacencyMatrix::compareNodes(Node *a, Node *b)
-{
-	return (a->getId() < b->getId());
 }
