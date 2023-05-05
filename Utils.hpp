@@ -10,11 +10,11 @@
 #include <cstdint>
 #include <chrono>
 #include <iostream>
-#include <fstream> 
+#include <fstream>
 #include <string>
 #include <cstdint>
 #include <vector>
-#include <sstream> 
+#include <sstream>
 #include <chrono>
 #include <algorithm>
 #include <iterator>
@@ -25,22 +25,18 @@
 #include <omp.h>
 #include <math.h>
 
-#define TIMERSTART(label)                                                  \
+#define TIMERSTART(label)                                                           \
     std::chrono::time_point<std::chrono::high_resolution_clock> a##label, b##label; \
-	a##label = std::chrono::high_resolution_clock::now();
+    a##label = std::chrono::high_resolution_clock::now();
 
-
-#define TIMERSTOP(label)                                                   \
-    b##label = std::chrono::high_resolution_clock::now();                           \
-    std::chrono::duration<double> delta##label = b##label-a##label;        \
-    std::cout << "# elapsed time ("<< #label <<"): "                       \
-                  << delta##label.count()  << "s" << std::endl;
-
+#define TIMERSTOP(label)                                              \
+    b##label = std::chrono::high_resolution_clock::now();             \
+    std::chrono::duration<double> delta##label = b##label - a##label; \
+    std::cout << "# elapsed time (" << #label << "): "                \
+              << delta##label.count() << "s" << std::endl;
 
 std::string now_time();
 std::vector<std::string> splitString(std::string line, std::string delims);
-std::unordered_map<std::string, std::string> parseArguments(int argc, char* argv[]); 
+std::unordered_map<std::string, std::string> parseArguments(int argc, char *argv[], std::unordered_map<std::string, std::string> *);
 
-
-
-#endif 
+#endif

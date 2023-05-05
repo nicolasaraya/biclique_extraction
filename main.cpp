@@ -6,7 +6,19 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    auto arguments = parseArguments(argc, argv);
+    std::unordered_map<std::string, std::string> input_arguments{
+        {"file", "../data/dblp-2011.txt"},
+        {"numSignatures", "2"},
+        {"minClusterSize", "10"},
+        {"bicliqueSize", "2"},
+        {"minAdyNodes", "500"},
+        {"bsDecrease", "500"},
+        {"shingleSize", "1"},
+        {"selfLoop", "1"},
+        {"threshold", "100"},
+        {"debug", "0"}};
+
+    auto arguments = parseArguments(argc, argv, &input_arguments);
     cout << "file: " << arguments["file"] << endl;
     cout << "Num_signatures:  " << arguments["numSignatures"] << endl;
     cout << "Min_Cluster_Size:  " << arguments["minClusterSize"] << endl;
@@ -19,16 +31,15 @@ int main(int argc, char *argv[])
     cout << "Threshold:: " << arguments["threshold"] << endl;
 
     BicliqueExtractor be(
-        arguments["file"],        
-        atoi(arguments["numSignatures"].c_str()), 
-        atoi(arguments["minClusterSize"].c_str()), 
-        atoi(arguments["bicliqueSize"].c_str()), 
-        atoi(arguments["minAdyNodes"].c_str()), 
-        atoi(arguments["bsDecrease"].c_str()), 
+        arguments["file"],
+        atoi(arguments["numSignatures"].c_str()),
+        atoi(arguments["minClusterSize"].c_str()),
+        atoi(arguments["minAdyNodes"].c_str()),
+        atoi(arguments["bicliqueSize"].c_str()),
+        atoi(arguments["bsDecrease"].c_str()),
         atoi(arguments["shingleSize"].c_str()),
         atoi(arguments["selfLoop"].c_str()),
-        atoi(arguments["threshold"].c_str())
-        );
+        atoi(arguments["threshold"].c_str()));
     be.extract();
 
     return 0;

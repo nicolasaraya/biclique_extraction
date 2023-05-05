@@ -2,16 +2,15 @@
 
 // PUBLIC METHODS
 
-BicliqueExtractor::BicliqueExtractor(const string path, uint16_t num_signatures, uint16_t minClusterSize, uint16_t minAdyNodes, uint32_t biclique_size, uint16_t bs_decrease, uint32_t shingleSize, bool selfLoop, uint32_t threshold) : 
-    path(path),
-    num_signatures(num_signatures),
-    minClusterSize(minClusterSize),
-    biclique_size(biclique_size),
-    minAdyNodes(minAdyNodes),
-    bs_decrease(bs_decrease),
-    shingleSize(shingleSize),
-    selfLoop(selfLoop),
-    threshold(threshold)
+BicliqueExtractor::BicliqueExtractor(const string path, uint16_t num_signatures, uint16_t minClusterSize, uint16_t minAdyNodes, uint32_t biclique_size, uint16_t bs_decrease, uint32_t shingleSize, bool selfLoop, uint32_t threshold) : path(path),
+                                                                                                                                                                                                                                         num_signatures(num_signatures),
+                                                                                                                                                                                                                                         minClusterSize(minClusterSize),
+                                                                                                                                                                                                                                         biclique_size(biclique_size),
+                                                                                                                                                                                                                                         minAdyNodes(minAdyNodes),
+                                                                                                                                                                                                                                         bs_decrease(bs_decrease),
+                                                                                                                                                                                                                                         shingleSize(shingleSize),
+                                                                                                                                                                                                                                         selfLoop(selfLoop),
+                                                                                                                                                                                                                                         threshold(threshold)
 {
     adjMatrix = new AdjacencyMatrix(path, selfLoop);
     iteration = 1;
@@ -68,7 +67,8 @@ void BicliqueExtractor::extract()
         // computeClusters(&group, 1);
         computeClusters(signatures, 0);
 
-        for(auto i : *signatures){
+        for (auto i : *signatures)
+        {
             delete i;
         }
         delete (signatures);
@@ -100,11 +100,11 @@ void BicliqueExtractor::extract()
             break;
 
         if (n_bicliques < threshold)
-        { 
+        {
+            cout << n_bicliques << " " << threshold << endl;
             if (bs_decrease > biclique_size)
-            {
                 break;
-            }
+
             biclique_size -= bs_decrease;
             if (biclique_size < 20)
                 break;
@@ -183,13 +183,13 @@ void BicliqueExtractor::computeClusters(Signatures *sign_cluster, unsigned int c
             {
                 newCluster->push_back(node->ptrNode);
             }
-            clusters.push_back(new Cluster(newCluster));  
+            clusters.push_back(new Cluster(newCluster));
         }
         else if (clusterSize == 1)
         {
             discarted->push_back(cluster->front()->ptrNode);
         }
-        delete cluster; 
+        delete cluster;
     }
 
     if (discarted->size() > 1)
@@ -260,9 +260,9 @@ void BicliqueExtractor::computeClusters(vector<Signatures *> *groups, unsigned i
 
 void BicliqueExtractor::computeTree()
 {
-    //omp_set_num_threads(NUM_THREADS);
+    // omp_set_num_threads(NUM_THREADS);
     TIMERSTART(create_trie);
-    //#pragma omp parallel for
+    // #pragma omp parallel for
     for (auto i : clusters)
     {
         i->computeTrie();

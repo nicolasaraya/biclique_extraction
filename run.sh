@@ -3,9 +3,9 @@
     --file ../data/dblp-2011.txt \
     --numSignatures 2   \
     --minClusterSize 10 \
-    --bicliqueSize 2    \
-    --minAdyNodes 500   \
-    --hola 12           \
+    --bicliqueSize 500    \
+    --minAdyNodes 2   \
+    --shingleSize 1           \
     --bsDecrease 400    \
-    --threshold 150     \
+    --threshold 100     \
     --selfLoop 1 
