@@ -61,7 +61,7 @@ void AdjacencyMatrix::addBicliques(string path)
 	{
 		if ((*it)->edgesSize() < 1)
 		{
-			// delete (*it);
+			delete (*it);
 			matrix.erase(it);
 			it--;
 		}
