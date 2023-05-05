@@ -171,24 +171,28 @@ void AdjacencyMatrix::writeAdjacencyList()
 	cout << "Writing: " << p + "_" + now_time() << ".txt " << endl;
 	ofstream file;
 	file.open(p + "_" + now_time() + ".txt", std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero
-	file << matrix.size() << std::endl;
+	file << last_node << std::endl;
+
 	int count = 0;
-	for (uint64_t i = 1; i < last_node + 1; i++)
+	auto it = matrix.begin();
+	for (uint64_t i = 1; i < last_node + 1; i++, it++)
 	{
-		if (count < matrix.size() && i == matrix[count]->getId())
+		if (it != matrix.end() && i == (*it)->getId())
 		{
 			if (i % 100000 == 0)
 				cout << float(i) / float(matrix.size()) * 100 << " %" << endl;
 
-			file << matrix[count]->getId() << ":";
-			for (auto adj = matrix[count]->adjacentsBegin(); adj != matrix[count]->adjacentsEnd(); adj++)
+			file << (*it)->getId() << ":";
+			for (auto adj = (*it)->adjacentsBegin(); adj != (*it)->adjacentsEnd(); adj++)
 				file << " " << *adj;
 			count++;
 		}
 		else
+		{
 			file << i << ":";
+			it--;
+		}
 		file << endl;
-		count++;
 	}
 	file.close();
 }

@@ -6,6 +6,6 @@
     --bicliqueSize 500    \
     --minAdyNodes 2   \
     --shingleSize 1           \
-    --bsDecrease 400    \
+    --bsDecrease 600    \
     --threshold 100     \
     --selfLoop 1 
