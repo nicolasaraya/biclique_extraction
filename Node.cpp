@@ -5,6 +5,7 @@ using namespace std;
 
 Node::Node(uint64_t id, bool selfLoop) : id(id), selfLoop(selfLoop)
 {
+	// adjacentNodes = new vector<uint64_t>();
 	if (selfLoop)
 	{
 		adjacentNodes.push_back(id);
@@ -45,11 +46,41 @@ void Node::addAdjacent(uint64_t id_adj)
 		adjacentNodes.push_back(id_adj);
 }
 
-void Node::find_to_erase(uint64_t id_adj) // PODRIA SER BUSQUEDA BINARIA
+void Node::find_to_erase(vector<uint64_t> *C) // PODRIA SER BUSQUEDA BINARIA
 {
-	vector<uint64_t>::iterator it = std::find(adjacentNodes.begin(), adjacentNodes.end(), id_adj); // buscamos el elemento de C en la lista del Nodo
-	if (it != adjacentNodes.end())
-		adjacentNodes.erase(it); // si se encuentra se elimina
+	vector<uint64_t> new_adjacentNodes;
+	vector<uint64_t>::iterator it = C->begin();
+	vector<uint64_t>::iterator it_end = C->end();
+	for (size_t i = 0; i < adjacentNodes.size(); i++)
+	{
+		if (it == it_end)
+		{
+			new_adjacentNodes.push_back(adjacentNodes.at(i));
+			continue;
+		}
+
+		if ((*it) == adjacentNodes.at(i))
+			it++;
+		else
+			new_adjacentNodes.push_back(adjacentNodes.at(i));
+	}
+	/*
+	cout << "****************" << endl;
+	for (size_t i = 0; i < adjacentNodes.size(); i++)
+		cout << adjacentNodes[i] << " ";
+	cout << endl
+		 << "C: ";
+	for (size_t i = 0; i < C->size(); i++)
+		cout << C->at(i) << " ";
+	cout << endl
+		 << " new ";
+	for (size_t i = 0; i < new_adjacentNodes.size(); i++)
+		std::cout << new_adjacentNodes.at(i) << " ";
+	std::cout << endl;
+
+	cout << "****************" << endl;*/
+	adjacentNodes.clear();
+	adjacentNodes = new_adjacentNodes;
 }
 
 void Node::setModified(bool modified)
@@ -73,7 +104,7 @@ bool Node::includes(vector<uint64_t> *c)
 }
 
 bool Node::removeAdjacent(uint64_t id_adj)
-{	
+{
 	auto element = std::find(adjacentNodes.begin(), adjacentNodes.end(), id_adj);
 	if (element != adjacentNodes.end())
 	{
@@ -99,17 +130,11 @@ void Node::moveToCache(unordered_map<uint64_t, uint32_t> *mapFrecuency, uint16_t
 			break;
 	}
 }
-/*
-const vector<uint64_t> &Node::getAdjacents()
-{
-	return adjacentNodes;
-}
-*/
 
 uint64_t Node::getFrontAdjacent()
 {
 	if (adjacentNodes.size() > 0)
-		return adjacentNodes[0];
+		return adjacentNodes.at(0);
 	return -1;
 }
 
@@ -128,7 +153,7 @@ void Node::print()
 {
 	cout << "Node " << id << ": ";
 	for (size_t i = 0; i < adjacentNodes.size(); i++)
-		cout << adjacentNodes[i] << " ";
+		cout << adjacentNodes.at(i) << " ";
 	if (cacheNodes.size() > 0)
 		cout << " || ";
 	for (size_t j = 0; j < cacheNodes.size(); j++)
@@ -137,7 +162,7 @@ void Node::print()
 }
 
 AdjacentsIterator Node::adjacentsBegin()
-{	
+{
 	return adjacentNodes.begin();
 }
 

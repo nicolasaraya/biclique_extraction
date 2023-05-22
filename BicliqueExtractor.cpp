@@ -343,6 +343,8 @@ uint32_t BicliqueExtractor::extractBicliques()
                 file << S->at(j)->getId();
                 if (j != S->size() - 1)
                     file << " ";
+
+                S->at(j)->find_to_erase(C);
                 S->at(j)->setModified(true);
             }
             file << endl
@@ -353,12 +355,8 @@ uint32_t BicliqueExtractor::extractBicliques()
                 file << C->at(j);
                 if (j != C->size() - 1)
                     file << " ";
-                for (size_t k = 0; k < S->size(); k++)
-                {
-                    // cout <<"C: " <<  *(C->at(j)) << endl;
-                    S->at(k)->find_to_erase(C->at(j)); // modificado
-                }
             }
+
             file << endl;
 
             delete best_biclique;
