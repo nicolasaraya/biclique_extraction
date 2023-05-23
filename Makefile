@@ -4,7 +4,7 @@ HEADER	= AdjacencyMatrix.hpp BicliqueExtractor.hpp Cluster.hpp Node.hpp Shingle.
 OUT	= biclique_extractor
 CC	 = g++
 FLAGS = -c  -std=c++17 \
-		-O3
+		-O0 -g
 LFLAGS	 = -lm \
 		#-fopenmp
 

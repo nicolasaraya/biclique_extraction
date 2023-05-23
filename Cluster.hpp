@@ -20,7 +20,7 @@ public:
     ~Cluster();
 
     void computeTrie();
-    vector<Biclique *> getBicliques();
+    Biclique *getBiclique();
     void printCluster();
     void printMap();
 

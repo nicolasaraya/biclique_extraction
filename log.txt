@@ -1,26 +1,33 @@
 ****************************************************************
 Iteracion: 1
-Adjacency Matrix Size: 933258
-Current Edges Size AdjacencyMatrix: 5316742
-Min Bilcique Size: 500
-Clusters encontrados: 155345
-Bilciques encontrados: 100
+Adjacency Matrix Size: 9
+Current Edges Size AdjacencyMatrix: 38
+Min Bilcique Size: 1
+Clusters encontrados: 2
+Bilciques encontrados: 2
 ****************************************************************
 Iteracion: 2
-Adjacency Matrix Size: 933258
-Current Edges Size AdjacencyMatrix: 5298401
-Min Bilcique Size: 500
-Clusters encontrados: 155202
-Bilciques encontrados: 26
+Adjacency Matrix Size: 9
+Current Edges Size AdjacencyMatrix: 32
+Min Bilcique Size: 1
+Clusters encontrados: 2
+Bilciques encontrados: 2
 ****************************************************************
-Original Size AdjacencyMatrix: 933258
-Current Size AdjacencyMatrix: 933258
+Iteracion: 3
+Adjacency Matrix Size: 9
+Current Edges Size AdjacencyMatrix: 27
+Min Bilcique Size: 1
+Clusters encontrados: 2
+Bilciques encontrados: 1
+****************************************************************
+Original Size AdjacencyMatrix: 9
+Current Size AdjacencyMatrix: 9
 
-Original Edges Size AdjacencyMatrix: 7640494
-Current Edges Size AdjacencyMatrix: 7494404
+Original Edges Size AdjacencyMatrix: 43
+Current Edges Size AdjacencyMatrix: 29
 
-Number of Bicliques Extracted: 126
-Sum of S: 3241
-Sum of C: 5082
-Sum of S + C: 8323
-Sum of Multiplication of S x C: 146090
+Number of Bicliques Extracted: 5
+Sum of S: 14
+Sum of C: 19
+Sum of S + C: 33
+Sum of Multiplication of S x C: 52

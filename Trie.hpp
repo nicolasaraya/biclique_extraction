@@ -15,7 +15,7 @@ public:
     ~Trie();
 
     void create(vector<Node *> *);
-    vector<Biclique *> getBicliques();
+    Biclique *getBiclique();
     void printTrie();
 
     // PUBLIC VARIABLES
@@ -24,11 +24,14 @@ public:
 private:
     // PRIVATE VARIABLES
     TrieNode *root;
+    TrieNode *candidateBiclique;
 
     // PRIVATE METHODS
     TrieNode *find(uint64_t &, TrieNode *);
     void clear(TrieNode *);
+    void computeBiclique(Biclique *, TrieNode *);
     void computeCandidatesBicliques(TrieNode *, map<vector<Node *> *, TrieNode *> *);
+    void computeCandidateBiclique(TrieNode *);
     void insert(Node *);
     void print(TrieNode *);
 };

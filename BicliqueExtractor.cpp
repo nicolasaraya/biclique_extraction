@@ -300,90 +300,53 @@ uint32_t BicliqueExtractor::extractBicliques()
     file.open(path + "_bicliques.txt", fstream::app);
     for (size_t i = 0; i < clusters.size(); i++)
     {
-        vector<Biclique *> possible_bicliques = clusters[i]->getBicliques();
-        if (possible_bicliques.empty())
+        Biclique *b = clusters[i]->getBiclique();
+        if (b == nullptr)
             continue;
 
-        while (!possible_bicliques.empty())
+        vector<Node *> *S = b->first;
+        vector<uint64_t> *C = &b->second;
+
+        // si el biclique no cumple con el tamaño deseado o es 2x2, significa que no hay mas bicliques que cumplan la condicion
+        if ((S->size() * C->size() < biclique_size) || ((S->size() - 1) * (C->size() - 1) == 1))
         {
-            // sort by size/rank
-            sortBicliques(&possible_bicliques);
-
-            // se elije el biclique con mayor rank
-            Biclique *best_biclique = possible_bicliques.at(possible_bicliques.size() - 1);
-
-            vector<Node *> *S = best_biclique->first;
-            vector<uint64_t> *C = &best_biclique->second;
-
-            // si el biclique no cumple con el tamaño deseado o es 2x2, significa que no hay mas bicliques que cumplan la condicion
-            if ((S->size() * C->size() < biclique_size) || ((S->size() - 1) * (C->size() - 1) == 1))
-            {
-                for (size_t j = 0; j < possible_bicliques.size(); j++)
-                {
-                    best_biclique = possible_bicliques.at(j);
-                    delete best_biclique;
-                }
-                possible_bicliques.clear();
-                continue;
-            }
-            else
-                n_bicliques += 1;
-
-            // se comienza a extraer el biclique
-            biclique_s_size += S->size();
-            biclique_c_size += C->size();
-            biclique_sxc_size += S->size() * C->size();
-
-            sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortS, this, placeholders::_1, placeholders::_2));
-            // sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
-
-            file << "S: ";
-            for (size_t j = 0; j < S->size(); j++)
-            {
-                file << S->at(j)->getId();
-                if (j != S->size() - 1)
-                    file << " ";
-
-                S->at(j)->find_to_erase(C);
-                S->at(j)->setModified(true);
-            }
-            file << endl
-                 << "C: ";
-
-            for (size_t j = 0; j < C->size(); j++)
-            {
-                file << C->at(j);
-                if (j != C->size() - 1)
-                    file << " ";
-            }
-
-            file << endl;
-
-            delete best_biclique;
-
-            possible_bicliques.pop_back();
-
-            // se limpian el resto de bicliques
-            Biclique *best_biclique_to_erase;
-            vector<Node *> *S_to_erase;
-            vector<uint64_t> *C_to_erase;
-
-            for (auto it = possible_bicliques.rbegin(); it != possible_bicliques.rend(); it++)
-            {
-                best_biclique_to_erase = *it;
-
-                S_to_erase = best_biclique_to_erase->first;
-                C_to_erase = &best_biclique_to_erase->second;
-
-                for (size_t k = 0; k < S_to_erase->size(); k++)
-                    if (S_to_erase->at(k)->isModified())
-                        if (!S_to_erase->at(k)->includes(C_to_erase)) // modificado
-                        {
-                            S_to_erase->erase(S_to_erase->begin() + k);
-                            k--;
-                        }
-            }
+            delete b;
+            continue;
         }
+        else
+            n_bicliques += 1;
+
+        // se comienza a extraer el biclique
+        biclique_s_size += S->size();
+        biclique_c_size += C->size();
+        biclique_sxc_size += S->size() * C->size();
+
+        sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortS, this, placeholders::_1, placeholders::_2));
+        // sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
+
+        file << "S: ";
+        for (size_t j = 0; j < S->size(); j++)
+        {
+            file << S->at(j)->getId();
+            if (j != S->size() - 1)
+                file << " ";
+
+            S->at(j)->find_to_erase(C);
+            S->at(j)->setModified(true);
+        }
+        file << endl
+             << "C: ";
+
+        for (size_t j = 0; j < C->size(); j++)
+        {
+            file << C->at(j);
+            if (j != C->size() - 1)
+                file << " ";
+        }
+
+        file << endl;
+
+        delete b;
     }
     file.close();
     return n_bicliques;
