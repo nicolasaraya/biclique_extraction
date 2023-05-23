@@ -1,30 +1,29 @@
 #ifndef SHINGLE_HPP
 #define SHINGLE_HPP
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <math.h>
-#include "Utils.hpp"
+#include "Define.hpp"
 
-using namespace std; 
+using namespace std;
 
-class Shingle{
-    public:
-        Shingle(uint16_t num_signatures, uint32_t minAN);
-        ~Shingle();
-        
-        SignNode* computeShingle(Node*);
-    private:
-        uint32_t minAdyNodes;
-        uint16_t num_signatures;
-        uint32_t shingle_size;
-        uint64_t prime;
+class Shingle
+{
+public:
+    // PUBLIC METHODS
+    Shingle(uint16_t, uint32_t, uint32_t);
+    ~Shingle();
+    SignNode *computeShingle(Node *);
 
-        std::hash<string> hash_nodes;
+private:
+    // PRIVATE VARIABLES
+    uint16_t num_signatures;
+    uint32_t minAdyNodes;
+    uint32_t shingle_size = 1;
+    uint64_t prime = (1ULL << 31ULL) - 1ULL;
 
-        vector<uint64_t> A;
-        vector<uint64_t> B;
+    std::hash<string> hash_nodes;
+
+    vector<uint64_t> A;
+    vector<uint64_t> B;
 };
 
 #endif

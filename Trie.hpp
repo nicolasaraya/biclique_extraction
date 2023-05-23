@@ -2,33 +2,35 @@
 #define TRIE_HPP
 
 #include <fstream>
-#include "Utils.hpp"
+#include <map>
+#include "Define.hpp"
 
-using namespace std; 
+using namespace std;
 
-class Trie{
-    public:
-        Trie();
-        ~Trie();
+class Trie
+{
+public:
+    // PUBLIC METHODS
+    Trie();
+    ~Trie();
 
-        uint64_t size_bicliques = 0;
-        
-        void create(vector<Node*>*);
-        Biclique* getBiclique();
-        void printTrie();
+    void create(vector<Node *> *);
+    vector<Biclique *> getBicliques();
+    void printTrie();
 
-    private:
-        TrieNode* root;
+    // PUBLIC VARIABLES
+    uint64_t size_bicliques = 0;
 
-        TrieNode* candidateBiclique;
+private:
+    // PRIVATE VARIABLES
+    TrieNode *root;
 
-        TrieNode* find(uint64_t&, TrieNode*);
-        void clear(TrieNode*);
-        void computeCandidateBiclique(TrieNode*);
-        void computeBiclique(Biclique*, TrieNode*);
-        void insert(Node*);
-        void print(TrieNode*);
-
+    // PRIVATE METHODS
+    TrieNode *find(uint64_t &, TrieNode *);
+    void clear(TrieNode *);
+    void computeCandidatesBicliques(TrieNode *, map<vector<Node *> *, TrieNode *> *);
+    void insert(Node *);
+    void print(TrieNode *);
 };
 
 #endif

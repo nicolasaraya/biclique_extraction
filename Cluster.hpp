@@ -7,34 +7,37 @@
 #include <functional>
 
 #include "Trie.hpp"
-#include "Utils.hpp"
+#include "Define.hpp"
+#include "Node.hpp"
 
 using namespace std;
 
+class Cluster
+{
+public:
+    // PUBLIC METHODS
+    Cluster(vector<Node *> *);
+    ~Cluster();
 
-class Cluster{
-    public:
-        Cluster(vector<Node*>*);
-        ~Cluster();
+    void computeTrie();
+    vector<Biclique *> getBicliques();
+    void printCluster();
+    void printMap();
 
-        Trie *t;
+    // PUBLIC VARIABLES
+    Trie *t;
 
-        void computeTrie();
-        Biclique* getBiclique();
-        void printCluster();
+private:
+    // PRIVATE VARIABLES
+    vector<Node *> *nodes;
 
-    private:
-        vector<Node*>* nodes;
+    unordered_map<uint64_t, uint32_t> mapFrecuency; // Valor Nodo, Frecuencia
+    uint16_t minFreq = 1;
 
-        unordered_map<uint64_t, uint32_t> mapFrecuency; //Valor Nodo, Frecuencia
-
-        bool sortFrecuencyComp(const uint64_t&, const uint64_t&);
-        bool sortSizeComp(const Node*, const Node*);
-
-        void computeFrecuency();
-        void computeHistogram();
-        //void printCluster();
+    // PRIVATE METHODS
+    bool sortSizeComp(Node *, Node *);
+    void computeFrecuency();
+    void computeHistogram();
 };
-
 
 #endif

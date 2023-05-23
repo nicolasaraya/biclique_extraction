@@ -1,5 +1,12 @@
 biclique_extractor.o
 biclique_extractor
+biclique_extractor-debug
 20first.txt
 /data
 /output
+*.o
+*.out
+_bicliques.txt
+log.out
+log.out
+.vscode/settings.json

@@ -1,1 +1,11 @@
-./biclique_extractor dblp-2011.txt 4 10 3 500 100
+ #!/bin/bash
+./biclique_extractor    \
+    --file ../data/dblp-2011.txt \
+    --numSignatures 2   \
+    --minClusterSize 10 \
+    --bicliqueSize 500    \
+    --minAdyNodes 2   \
+    --shingleSize 1           \
+    --bsDecrease 600    \
+    --threshold 100     \
+    --selfLoop 1 

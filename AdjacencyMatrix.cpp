@@ -1,82 +1,216 @@
 #include "AdjacencyMatrix.hpp"
 
-AdjacencyMatrix::AdjacencyMatrix(const string path){
-	this->path = path;
-}
-AdjacencyMatrix::~AdjacencyMatrix(){
-	for(unsigned int i=0; i < matrix.size(); i++){
-		delete matrix[i];
-	}	
-	matrix.clear();
+// PUBLIC METHODS
+
+AdjacencyMatrix::AdjacencyMatrix(const string path, bool selfLoops) : path(path), selfLoops(selfLoops)
+{
+	build();
 }
 
-uint64_t AdjacencyMatrix::size(){
-    return matrix.size();
+AdjacencyMatrix::AdjacencyMatrix()
+{
 }
 
-uint64_t AdjacencyMatrix::all_edges_size(){
+AdjacencyMatrix::~AdjacencyMatrix()
+{
+	for (auto i : matrix)
+		delete i;
+}
+// g++ checker.cpp AdjacencyMatrix.cpp Node.cpp Utils.cpp -o checker
+void AdjacencyMatrix::addBicliques(string path)
+{
+	cout << "addBicliques" << endl;
+	ifstream file;
+	file.open(path);
+	if (!file.is_open())
+	{
+		cout << "No se puede leer fichero" << endl;
+		cout << path << endl;
+		exit(0);
+	}
+	standardize();
+
+	string S;
+	string C;
+	vector<Node *> newNodes;
+	while (!file.eof())
+	{
+		getline(file, S);
+		if (S == "")
+			break;
+		getline(file, C);
+
+		std::vector<std::string> sources = splitString(S, " ");
+		std::vector<std::string> centers = splitString(C, " ");
+		sources.erase(sources.begin());
+		centers.erase(centers.begin());
+
+		for (auto node : sources)
+		{
+			uint64_t id = atoi(node.c_str());
+			for (auto adjacent : centers)
+			{
+				uint64_t adjId = atoi(adjacent.c_str());
+				matrix[id - 1]->addAdjacent(adjId);
+			}
+		}
+	}
+	cout << "Fin addBicliques" << endl;
+	cout << "Sorting and Deleting" << endl;
+	for (auto it = matrix.begin(); it != matrix.end(); it++)
+	{
+		if ((*it)->edgesSize() < 1)
+		{
+			delete (*it);
+			matrix.erase(it);
+			it--;
+		}
+		else
+			(*it)->sort();
+	}
+}
+
+// funcion que agrega los nodos intermedios que no contienen ninguna arista
+// para facilitar la busqueda de los nodos source
+void AdjacencyMatrix::standardize()
+{
+	auto it = matrix.begin();
+	for (uint64_t cont = 1; cont < last_node + 1; it++, cont++)
+	{
+		if (it != matrix.end() && cont == (*it)->getId())
+		{
+			continue;
+		}
+		else
+		{
+			Node *tempNode = new Node(cont, false);
+			matrix.insert(it, tempNode);
+			it = matrix.begin() + (cont - 1);
+		}
+	}
+}
+
+void AdjacencyMatrix::build()
+{
+	// int count = 0;
+	ifstream file;
+	file.open(path);
+	if (!file.is_open())
+	{
+		cout << "No se puede leer fichero" << endl;
+		cout << path << endl;
+		exit(0);
+	}
+	string line;
+	uint64_t id;
+	getline(file, line); // num nodes
+	while (!file.eof())
+	{
+		getline(file, line);
+		auto adjacents = splitString(line, " ");
+
+		if (adjacents.size() > 0)
+		{
+			id = atoi(adjacents.at(0).c_str());
+			last_node = id;
+		}
+		if (adjacents.size() < 2)
+			continue;
+
+		Node *tempNode = new Node(id, selfLoops);
+
+		for (auto i : adjacents)
+		{
+			uint64_t adjId = atoi(i.c_str());
+			if (adjId == tempNode->getId() and not selfLoops)
+				continue;
+			tempNode->addAdjacent(adjId);
+		}
+		tempNode->sort();
+		matrix.push_back(tempNode);
+	}
+	file.close();
+}
+
+uint64_t AdjacencyMatrix::size()
+{
+	return matrix.size();
+}
+
+uint64_t AdjacencyMatrix::all_edges_size()
+{
 	uint64_t size = 0;
-    for(uint64_t i = 0; i < matrix.size(); i++){
-		size+= matrix[i]->adyNodes.size();
+	for (auto it : matrix)
+	{
+		size += it->edgesSize();
 	}
-	return size; 
+	return size;
 }
 
-void AdjacencyMatrix::insert(Node* node){
-    matrix.push_back(node);
+void AdjacencyMatrix::insert(Node *node)
+{
+	matrix.push_back(node);
 }
 
-Node* AdjacencyMatrix::getNode(uint64_t i){
-    return matrix.at(i);
-}
-
-void AdjacencyMatrix::print(){
-	for(auto i : matrix){
-		cout << i->nodeID << ": ";
-		
-		for(auto j : i->adyNodes) cout << j << " ";
-		if(i->cacheAdyNodes.size() > 0) cout << " || ";
-		for(auto j : i->cacheAdyNodes) cout << j << " ";
-		
-		cout << endl;
+void AdjacencyMatrix::print()
+{
+	for (size_t i = 0; i < matrix.size(); i++)
+	{
+		matrix[i]->print();
 	}
 }
 
-void AdjacencyMatrix::makeAdjacencyList(){
-	std::time_t t = std::time(0);   // get time now
-    std::tm* t_now = std::localtime(&t);
-	string now =  to_string(t_now->tm_year + 1900) + '-' + to_string(t_now->tm_mon + 1) + '-' + to_string(t_now->tm_mday) + "-" + to_string(t_now->tm_hour) +to_string(t_now->tm_min) +to_string(t_now->tm_sec)  ;
-	cout << path+now << endl;
+void AdjacencyMatrix::writeAdjacencyList()
+{
 
-
+	auto p = path;
+	p.pop_back();
+	p.pop_back();
+	p.pop_back();
+	p.pop_back(); // pop ".txt"
+	cout << "Writing: " << p + "_" + now_time() << ".txt " << endl;
 	ofstream file;
-	file.open(path+now+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
+	file.open(p + "_" + now_time() + ".txt", std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero
+	file << last_node << std::endl;
 
-	for(auto i : matrix){
-		file << i->nodeID << ": ";
-		
-		for(auto j : i->adyNodes) file << j << " ";
+	int count = 0;
+	auto it = matrix.begin();
+	for (uint64_t i = 1; i < last_node + 1; i++, it++)
+	{
+		if (it != matrix.end() && i == (*it)->getId())
+		{
+			if (i % 100000 == 0)
+				cout << float(i) / float(matrix.size()) * 100 << " %" << endl;
+
+			file << (*it)->getId() << ":";
+			for (auto adj = (*it)->adjacentsBegin(); adj != (*it)->adjacentsEnd(); adj++)
+				file << " " << *adj;
+			count++;
+		}
+		else
+		{
+			file << i << ":";
+			it--;
+		}
 		file << endl;
 	}
 	file.close();
-	//file 
-
 }
 
-void AdjacencyMatrix::reWork(){
-	for(vector<Node*>::iterator i = matrix.begin(); i != matrix.end(); i++){
-		Node* aux = *i;
-		
-		if(aux->adyNodes.size() + aux->cacheAdyNodes.size() < 1) {
-			matrix.erase(i);
-			i--;
-			delete aux;
-			continue; 
-		}
-		for(auto j : aux->cacheAdyNodes){
-			aux->adyNodes.push_back(j);
-		}
-		sort(aux->adyNodes.begin(), aux->adyNodes.end());
-		aux->cacheAdyNodes.clear();
+void AdjacencyMatrix::restoreNodes()
+{
+	for (size_t i = 0; i < matrix.size(); i++)
+	{
+		matrix[i]->restore();
 	}
+}
+
+AdjMatrixIterator AdjacencyMatrix::begin()
+{
+	return matrix.begin();
+}
+
+AdjMatrixIterator AdjacencyMatrix::end()
+{
+	return matrix.end();
 }

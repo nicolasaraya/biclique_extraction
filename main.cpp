@@ -1,25 +1,49 @@
 #include <iostream>
 #include "BicliqueExtractor.hpp"
-
-const string path = "./data/";
+#include "Utils.hpp"
 
 using namespace std;
 
-int main(int argc, char *argv[]){
-    if(argc != 7){
-        cout << "uso ./biclique_extractor filename num_sign min_cluster_size min_adyacency_nodes biclique_size biclique_size_decrease" << endl;
-        return 0;
-    }
-    cout << "file: " << path+argv[1] << endl;
-    cout << "Num_signatures:  " << atoi(argv[2]) << endl;
-    cout << "Min_Cluster_Size:  " << atoi(argv[3]) << endl;
-    cout << "Min_Adyacency_Nodes:  " << atoi(argv[4]) << endl;
-    cout << "Biclique_Size:  " << atoi(argv[5]) << endl;
-    cout << "Biclique_Size_Decrease:  " << atoi(argv[6]) << endl;
+int main(int argc, char *argv[])
+{
+    std::unordered_map<std::string, std::string> input_arguments{
+        {"file", "../data/dblp-2011.txt"},
+        {"numSignatures", "2"},
+        {"minClusterSize", "10"},
+        {"bicliqueSize", "2"},
+        {"minAdyNodes", "500"},
+        {"bsDecrease", "500"},
+        {"shingleSize", "1"},
+        {"selfLoop", "1"},
+        {"threshold", "100"},
+        {"debug", "0"}};
 
-    BicliqueExtractor be(path+argv[1], atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));
+    auto arguments = parseArguments(argc, argv, &input_arguments);
+    cout << "file: " << arguments["file"] << endl;
+    cout << "Num_signatures:  " << arguments["numSignatures"] << endl;
+    cout << "Min_Cluster_Size:  " << arguments["minClusterSize"] << endl;
+    cout << "Min_Adyacency_Nodes:  " << arguments["minAdyNodes"] << endl;
+    cout << "Biclique_Size:  " << arguments["bicliqueSize"] << endl;
+    cout << "Biclique_Size_Decrease:  " << arguments["bsDecrease"] << endl;
+    cout << "Shingle Size:  " << arguments["shingleSize"] << endl;
+    cout << "SelfLoop:  " << arguments["selfLoop"] << endl;
+    cout << "Debug flag:  " << arguments["debug"] << endl;
+    cout << "Threshold:: " << arguments["threshold"] << endl;
 
+    BicliqueExtractor be(
+        arguments["file"],
+        atoi(arguments["numSignatures"].c_str()),
+        atoi(arguments["minClusterSize"].c_str()),
+        atoi(arguments["minAdyNodes"].c_str()),
+        atoi(arguments["bicliqueSize"].c_str()),
+        atoi(arguments["bsDecrease"].c_str()),
+        atoi(arguments["shingleSize"].c_str()),
+        atoi(arguments["selfLoop"].c_str()),
+        atoi(arguments["threshold"].c_str()));
     be.extract();
 
     return 0;
- }
+}
+
+// ./biclique_extractor ../data/dblp-2011.txt 2 10 2 500 400 1
+//./biclique_extractor ../data/ej1.txt 2 1 2 2 400 1
