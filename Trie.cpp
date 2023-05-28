@@ -69,18 +69,20 @@ void Trie::computeCandidateBiclique(TrieNode *node)
 
 void Trie::computeBiclique(Biclique *b, TrieNode *node)
 {
-    if (node == candidateBiclique)
-    {
-        b->first = node->indices;
-    }
+
+    b->first = node->indices;
+
+    for (auto it_node = b->first->begin(); it_node != b->first->end(); it_node++)
+        (*it_node)->sort();
+
     b->second.push_back(node->vertex);
 
-    if (node->parent == NULL)
+    TrieNode *parent_node = node->parent;
+    while (parent_node != NULL)
     {
-        return;
+        b->second.push_back(parent_node->vertex);
+        parent_node = parent_node->parent;
     }
-
-    computeBiclique(b, node->parent);
 }
 
 void Trie::printTrie()

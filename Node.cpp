@@ -64,8 +64,8 @@ void Node::find_to_erase(vector<uint64_t> *C) // PODRIA SER BUSQUEDA BINARIA
 		else
 			new_adjacentNodes.push_back(adjacentNodes.at(i));
 	}
-	/*
-	cout << "****************" << endl;
+
+	/*cout << "****************" << endl;
 	for (size_t i = 0; i < adjacentNodes.size(); i++)
 		cout << adjacentNodes[i] << " ";
 	cout << endl

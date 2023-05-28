@@ -322,7 +322,7 @@ uint32_t BicliqueExtractor::extractBicliques()
         biclique_sxc_size += S->size() * C->size();
 
         sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortS, this, placeholders::_1, placeholders::_2));
-        // sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
+        sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
 
         file << "S: ";
         for (size_t j = 0; j < S->size(); j++)
@@ -343,7 +343,6 @@ uint32_t BicliqueExtractor::extractBicliques()
             if (j != C->size() - 1)
                 file << " ";
         }
-
         file << endl;
 
         delete b;
