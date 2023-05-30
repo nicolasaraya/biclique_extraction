@@ -45,6 +45,7 @@ void BicliqueExtractor::extract()
     {
         // adjMatrix->print();
         cout << "Iteracion: " << iteration << endl;
+        cout << "Calculando Shingles" << endl;
         auto signatures = computeShingles();
         assert(not signatures->empty());
         sortSignatures(signatures, 0);
@@ -65,6 +66,7 @@ void BicliqueExtractor::extract()
         }
         // vector<Signatures *> group = makeGroups(signatures, 0);
         // computeClusters(&group, 1);
+        cout << "Calculando Clusters" << endl;
         computeClusters(signatures, 0);
 
         for (auto i : *signatures)
@@ -72,9 +74,9 @@ void BicliqueExtractor::extract()
             delete i;
         }
         delete (signatures);
-
+        cout << "Calculando Tree" << endl;
         computeTree();
-
+        cout << "Extrayendo Bicliques" << endl;
         uint32_t n_bicliques = extractBicliques();
         total_biclique += n_bicliques;
         std::cout << "biclique iteracion: " << n_bicliques << std::endl;
@@ -89,7 +91,7 @@ void BicliqueExtractor::extract()
         file << "Clusters encontrados: " << clusters.size() << endl;
         file << "Bilciques encontrados: " << n_bicliques << endl;
         file.close();
-
+        cout << "Restaurando Nodos" << endl;
         adjMatrix->restoreNodes();
 
         for (auto i : clusters)
@@ -300,10 +302,17 @@ uint32_t BicliqueExtractor::extractBicliques()
     file.open(path + "_bicliques.txt", fstream::app);
     for (size_t i = 0; i < clusters.size(); i++)
     {
+
+        cout << "Cluster " << i << " / " << clusters.size() << endl;
         vector<Biclique *> possible_bicliques = clusters[i]->getBicliques();
         if (possible_bicliques.empty())
             continue;
 
+        for (size_t i = 0; i < possible_bicliques.size(); i++)
+        {
+            sort(possible_bicliques[i]->second.begin(), possible_bicliques[i]->second.end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
+        }
+        cout << "Cluster " << i << " / tamaño vector pb: " << possible_bicliques.size() << endl;
         while (!possible_bicliques.empty())
         {
             // sort by size/rank

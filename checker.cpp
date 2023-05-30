@@ -12,10 +12,10 @@ void compareAdjMatrix(AdjacencyMatrix *adjMatrix1, AdjacencyMatrix *adjMatrix2)
     {
         cout << "Matrices de distintos tamaño" << endl;
         cout << "Adj Matrix 1: " << size1 << " / Adj Matrix 2: " << size2 << endl;
-        adjMatrix1->print();
+        /*adjMatrix1->print();
         cout << endl
              << endl;
-        adjMatrix2->print();
+        adjMatrix2->print();*/
         return;
     }
 

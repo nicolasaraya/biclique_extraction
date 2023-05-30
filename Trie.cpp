@@ -34,31 +34,20 @@ vector<Biclique *> Trie::getBicliques()
     if (root == NULL)
         return potential_bicliques;
 
-    map<vector<Node *> *, TrieNode *> candidate_bicliques;
+    Biclique *b = new Biclique();
 
-    computeCandidatesBicliques(root, &candidate_bicliques);
+    b->first = root->indices;
+    for (auto it_node = b->first->begin(); it_node != b->first->end(); it_node++)
+        (*it_node)->sort();
 
-    map<vector<Node *> *, TrieNode *>::iterator it;
+    b->second.push_back(root->vertex);
 
-    for (it = candidate_bicliques.begin(); it != candidate_bicliques.end(); it++)
-    {
-        Biclique *b = new Biclique();
-        b->first = it->second->indices;
-        b->second.push_back(it->second->vertex);
+    potential_bicliques.push_back(b);
 
-        TrieNode *parent_node = it->second->parent;
-        while (parent_node != NULL)
-        {
-            b->second.push_back(parent_node->vertex);
-            parent_node = parent_node->parent;
-        }
-        for (auto it_node = b->first->begin(); it_node != b->first->end(); it_node++)
-            (*it_node)->sort();
-        sort(b->second.begin(), b->second.end());
-        potential_bicliques.push_back(b);
-    }
+    computeCandidatesBicliques(root, &potential_bicliques);
 
-    candidate_bicliques.clear();
+    if (potential_bicliques[0]->second.size() == 1)
+        potential_bicliques.erase(potential_bicliques.begin());
 
     return potential_bicliques;
 }
@@ -79,33 +68,40 @@ void Trie::printTrie()
 
 // PRIVATE METHODS
 
-void Trie::computeCandidatesBicliques(TrieNode *node, map<vector<Node *> *, TrieNode *> *candidate_bicliques)
+void Trie::computeCandidatesBicliques(TrieNode *node, vector<Biclique *> *candidate_bicliques)
 {
-    if (node->childrens->size() > 0)
-    {
-        for (size_t i = 0; i < node->childrens->size(); i++)
-        {
-            computeCandidatesBicliques(node->childrens->at(i), candidate_bicliques);
-        }
-    }
-
     uint64_t index = (node->depth - 1) * (node->indices->size() - 1);
     if (index > 0)
     {
         // comprobar en el vector
-        if (candidate_bicliques->find(node->indices) != candidate_bicliques->end())
+        if (node->indices->size() != node->parent->indices->size())
         {
-            uint64_t last_rank = candidate_bicliques->at(node->indices)->depth * node->indices->size();
-            uint64_t rank = node->depth * node->indices->size();
-            if (rank > last_rank)
+            Biclique *b = new Biclique();
+
+            b->first = node->indices;
+            for (auto it_node = b->first->begin(); it_node != b->first->end(); it_node++)
+                (*it_node)->sort();
+
+            b->second.push_back(node->vertex);
+            TrieNode *parent_node = node->parent;
+            while (parent_node != NULL)
             {
-                candidate_bicliques->insert(make_pair(node->indices, node));
+                b->second.push_back(parent_node->vertex);
+                parent_node = parent_node->parent;
             }
+            candidate_bicliques->push_back(b);
         }
         else
         {
-            candidate_bicliques->insert(make_pair(node->indices, node));
+            Biclique *b = candidate_bicliques->at(candidate_bicliques->size() - 1);
+            b->second.push_back(node->vertex);
         }
+    }
+
+    if (node->childrens->size() > 0)
+    {
+        for (size_t i = 0; i < node->childrens->size(); i++)
+            computeCandidatesBicliques(node->childrens->at(i), candidate_bicliques);
     }
 }
 
@@ -149,7 +145,7 @@ void Trie::insert(Node *node)
     TrieNode *t_node;
     TrieNode *ptr = root;
 
-    //auto node_adjacents = node->getAdjacents(); // modificado
+    // auto node_adjacents = node->getAdjacents(); // modificado
     int i = 0;
     for (auto adj = node->adjacentsBegin(); adj != node->adjacentsEnd(); adj++, i++)
     {
