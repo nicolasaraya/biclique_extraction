@@ -180,7 +180,7 @@ void AdjacencyMatrix::writeAdjacencyList()
 		if (it != matrix.end() && i == (*it)->getId())
 		{
 			if (i % 100000 == 0)
-				cout << float(i) / float(matrix.size()) * 100 << " %" << endl;
+				cout << float(i) / float(last_node) * 100 << " %" << endl;
 
 			file << (*it)->getId() << ":";
 			for (auto adj = (*it)->adjacentsBegin(); adj != (*it)->adjacentsEnd(); adj++)
