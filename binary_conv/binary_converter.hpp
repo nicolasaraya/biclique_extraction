@@ -8,8 +8,8 @@
 #include <vector>
 #include <bitset>
 
-typedef long long int var;
-//typedef int var;
+//typedef long long int var;
+typedef int var;
 
 void text2binary(const std::string path); 
 void binary2text(const std::string path);

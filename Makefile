@@ -1,19 +1,23 @@
-OBJS	= main.o AdjacencyMatrix.o BicliqueExtractor.o Cluster.o Node.o Shingle.o Trie.o Utils.o
-SOURCE	= main.cpp AdjacencyMatrix.cpp BicliqueExtractor.cpp Cluster.cpp Node.cpp Shingle.cpp Trie.cpp Utils.cpp
-HEADER	= AdjacencyMatrix.hpp BicliqueExtractor.hpp Cluster.hpp Node.hpp Shingle.hpp Trie.hpp Utils.hpp define.hpp
-OUT	= biclique_extractor
-CC	 = g++
-FLAGS = -c  -std=c++17 \
-		-O3
-LFLAGS	 = -lm \
+OBJS	=         main.o AdjacencyMatrix.o BicliqueExtractor.o Cluster.o Node.o Shingle.o Trie.o Utils.o
+OBJS_CHECKER =    checker.o AdjacencyMatrix.o Node.o Utils.o
+SOURCE	=         main.cpp AdjacencyMatrix.cpp BicliqueExtractor.cpp Cluster.cpp Node.cpp Shingle.cpp Trie.cpp Utils.cpp
+HEADER	=         AdjacencyMatrix.hpp BicliqueExtractor.hpp Cluster.hpp Node.hpp Shingle.hpp Trie.hpp Utils.hpp define.hpp
+OUT	=             biclique_extractor
+OUT_CHECKER =     checker
+CC	 =            g++
+FLAGS =           -c  -std=c++17 -O3
+LFLAGS	 =        -lm \
 		#-fopenmp
 
-all: $(OBJS)
+all: $(OBJS) $(OBJS_CHECKER)
 	$(CC) $(OBJS) -o $(OUT) $(LFLAGS)
-
+	$(CC) $(OBJS_CHECKER) -o $(OUT_CHECKER)
 
 main.o: main.cpp
 	$(CC) $(FLAGS) main.cpp 
+
+checker.o: checker.cpp
+	$(CC) $(FLAGS) checker.cpp
 
 AdjacencyMatrix.o: AdjacencyMatrix.cpp
 	$(CC) $(FLAGS) AdjacencyMatrix.cpp 

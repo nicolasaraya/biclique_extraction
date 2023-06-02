@@ -1,16 +1,13 @@
  #!/bin/bash
 ./biclique_extractor    \
-    --file ../eu-2015-host.txt \
+    --file ../bin32/dblp-2011.bin \
     --numSignatures 2   \
-    --minClusterSize 10 \
+    --minClusterSize 4 \
     --bicliqueSize 5000    \
     --minAdyNodes 2   \
     --shingleSize 1           \
     --bsDecrease 1000    \
     --threshold 500     \
-<<<<<<< HEAD
-    --selfLoop 1   \
-    --debug 1
-=======
-    --selfLoop 1 
->>>>>>> 97abf47f72107c57e5dd0bdd0fab97cdec7f884d
+    --selfLoop 1      \
+    --debug 0       \
+    --iterations 10

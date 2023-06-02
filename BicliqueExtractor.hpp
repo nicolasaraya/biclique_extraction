@@ -12,14 +12,15 @@ class BicliqueExtractor
 {
 public:
     // PUBLIC METHODS
-    BicliqueExtractor(const string, uint16_t, uint16_t, uint16_t, uint32_t, uint16_t, uint32_t, bool, uint32_t);
+    BicliqueExtractor(const string, uint16_t, uint16_t, uint16_t, uint32_t, uint16_t, uint32_t, bool, uint32_t, uint16_t);
     ~BicliqueExtractor();
 
     void extract();
 
 private:
     // PRIVATE VARIABLES
-    bool adjacencyMatrixLoaded = false;
+    bool selfLoop;
+    bool check;
     string path;
     uint16_t num_signatures;
     uint32_t minClusterSize;
@@ -27,9 +28,9 @@ private:
     uint32_t minAdyNodes;
     uint16_t bs_decrease;
     uint32_t shingleSize;
-    bool selfLoop = true;
     uint32_t threshold; 
     uint16_t iteration = 1;
+    uint16_t iterations;
     uint64_t total_biclique = 0;
     uint64_t biclique_s_size = 0;
     uint64_t biclique_c_size = 0;

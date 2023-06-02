@@ -1,11 +1,12 @@
 #ifndef ADJ_MATRIX
 #define ADJ_MATRIX
-
 #include "Node.hpp"
 
 using namespace std;
 
 typedef vector<Node *>::iterator AdjMatrixIterator;
+typedef int BinVar;
+//typedef long long int BinVar; 
 
 class AdjacencyMatrix
 {
@@ -16,13 +17,15 @@ public:
     ~AdjacencyMatrix();
 
     void addBicliques(string);
-    void standardize();
-    void build();
+    void standardize(vector<uint64_t>*);
+    void buildTxt();
+    void buildBin();
     void insert(Node *);
     uint64_t size();
+    Node* back();
     uint64_t all_edges_size();
     void print();
-    void writeAdjacencyList();
+    void writeAdjacencyList(string);
     void restoreNodes();
     AdjMatrixIterator begin();
     AdjMatrixIterator end();
@@ -33,7 +36,8 @@ private:
     vector<Node *> matrix;
     string path;
     bool selfLoops = false;
-    uint64_t last_node;
+    uint64_t num_nodes;
+    string format;
 };
 
 #endif

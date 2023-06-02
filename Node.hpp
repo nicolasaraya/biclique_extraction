@@ -11,7 +11,8 @@ class Node
 {
 public:
 	// PUBLIC METHODS
-	Node(uint64_t, bool);
+	Node(uint64_t);
+	//Node(uint64_t, bool);
 	~Node();
 
 	bool hasSelfLoop();
@@ -21,12 +22,14 @@ public:
 	void addAdjacent(uint64_t);
 	void find_to_erase(vector<uint64_t> *);
 	void setModified(bool);
+	void setSelfLoop(bool);
+	void shrinkToFit();
 	void sort();
 	void sortByFrecuency(unordered_map<uint64_t, uint32_t> *);
 	bool includes(vector<uint64_t> *);
 	bool removeAdjacent(uint64_t);
 	void moveToCache(unordered_map<uint64_t, uint32_t> *, uint16_t);
-	// const vector<uint64_t> &getAdjacents() const;
+
 	AdjacentsIterator adjacentsBegin();
 	AdjacentsIterator adjacentsEnd();
 	uint64_t getFrontAdjacent();
@@ -36,7 +39,6 @@ public:
 private:
 	// PRIVATE VARIABLES
 	uint64_t id;
-	uint64_t adjacents_size;
 	bool modified;
 	bool selfLoop;
 	vector<uint64_t> adjacentNodes;

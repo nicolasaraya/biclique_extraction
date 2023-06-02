@@ -8,39 +8,60 @@ void text2binary(const string path){
     do {
         binaryfile.pop_back();
     } while(binaryfile.back() != '.');
+    cout << "Escribiendo: " << binaryfile+"bin" << endl;
 
     ofstream binFile;
     binFile.open(binaryfile + "bin", std::ios::out | std::ios::binary | std::ios::trunc);
     ifstream textFile; 
     textFile.open(path);
 
-    assert(binFile.is_open());
     assert(textFile.is_open());
+    assert(binFile.is_open());
 
     string line; 
     getline(textFile, line); //skip first line
+    auto info = splitString(line, " ");
+    var nodes = atoi(info[0].c_str()); 
+    binFile.write((char*)&nodes, sizeof(var)); //reserve nodes
+
+    var countNodes = 0;
+    var countEdges = 0;
+    //binFile.write((char*)&countNodes, sizeof(var)); //reserve nodes
+    binFile.write((char*)&countEdges, sizeof(var)); //reserve edges
+
+    
+
     while(not textFile.eof()){
         getline(textFile, line);
+        //cout << line << endl;
         auto elements = splitString(line, " ");
         
-        if (elements.size() <= 0) {
-            continue;
-        }
-        var id = atoi(elements[0].c_str()) * -1; 
+        //if (elements.size() <= 0) {
+        //    continue;
+        //}
+        if(elements.empty()) continue;
 
+        var id = atoi(elements[0].c_str()) * -1; 
+        countNodes++;
+        countEdges+=elements.size()-1;
         binFile.write((char*)&id, sizeof(var));
         //binFile << atoi(elements[0].c_str()) * -1;
         for (size_t i = 1; i < elements.size(); i++) {
             id = atoi(elements[i].c_str());
+            //cout << id << " " ;
             binFile.write((char*)&id, sizeof(var));
         }
         //if(temp++ == 100) break;
     }
-
+    binFile.seekp(0);
+    binFile.write((char*)&nodes, sizeof(var));
+    //binFile.write((char*)&countNodes, sizeof(var));
+    binFile.write((char*)&countEdges, sizeof(var));
     binFile.close();
     textFile.close();
+    cout << countNodes << "," << countEdges << "," << nodes <<endl;
 
-    cout << "Escribiendo: " << binaryfile+"bin" << endl;
+
 }
 
 void binary2text(const string path){

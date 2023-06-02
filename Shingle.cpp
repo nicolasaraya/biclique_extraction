@@ -8,14 +8,14 @@ Shingle::Shingle(uint16_t num_signatures, uint32_t minAN, uint32_t shingle_size)
                                                                                    shingle_size(shingle_size)
 {
     srand(time(NULL));
-    if (DEBUG_LEVEL > 1)
+    if (DEBUG_LEVEL > 5)
         cout << "Prime " << prime << endl;
     for (size_t i = 0; i < num_signatures; i++)
     {
         A.push_back(rand() % prime + 1);
         B.push_back(rand() % prime + 1);
 
-        if (DEBUG_LEVEL > 1)
+        if (DEBUG_LEVEL > 5)
             cout << "A: " << A[i] << " B: " << B[i] << endl;
     }
 }

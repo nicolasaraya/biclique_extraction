@@ -54,3 +54,13 @@ std::unordered_map<std::string, std::string> parseArguments(int argc, char *argv
 
     return *arguments;
 }
+
+std::string modify_path(std::string old_path, std::string text){
+    std::string new_path = old_path;
+    do {
+        new_path.pop_back();
+    } while(new_path.back() != '.');
+    new_path.pop_back();
+    new_path += "_" + text;
+    return new_path;
+}

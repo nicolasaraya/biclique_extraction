@@ -3,14 +3,19 @@ using namespace std;
 
 // PUBLIC METHODS
 
-Node::Node(uint64_t id, bool selfLoop) : id(id), selfLoop(selfLoop)
+Node::Node(uint64_t id) : id(id)
 {
-	// adjacentNodes = new vector<uint64_t>();
-	if (selfLoop)
+	//withSelfLoop = false;
+	selfLoop = false;
+}
+
+/*Node::Node(uint64_t id, bool selfLoop) : id(id), withSelfLoop(selfLoop)
+{
+	if(withSelfLoop)
 	{
 		adjacentNodes.push_back(id);
 	}
-}
+}*/
 
 Node::~Node()
 {
@@ -20,6 +25,7 @@ Node::~Node()
 
 bool Node::hasSelfLoop()
 {
+	//return natureSelfLoop;
 	return selfLoop;
 }
 
@@ -40,13 +46,19 @@ uint64_t Node::edgesSize()
 
 void Node::addAdjacent(uint64_t id_adj)
 {
-	if (selfLoop and id_adj == id)
-		return;
-	else
-		adjacentNodes.push_back(id_adj);
+	/*if(id_adj == id) {
+		natureSelfLoop = true; 
+		if(withSelfLoop){ return; }
+	}*/
+	adjacentNodes.push_back(id_adj);
+
 }
 
-void Node::find_to_erase(vector<uint64_t> *C) // PODRIA SER BUSQUEDA BINARIA
+void Node::shrinkToFit(){
+	adjacentNodes.shrink_to_fit();
+}
+
+void Node::find_to_erase(vector<uint64_t> *C)
 {
 	vector<uint64_t> new_adjacentNodes;
 	vector<uint64_t>::iterator it = C->begin();
@@ -88,8 +100,16 @@ void Node::setModified(bool modified)
 	this->modified = modified;
 }
 
+
+void Node::setSelfLoop(bool selfloop){
+	selfLoop = selfloop;
+}
+
+
 void Node::sort()
 {
+	if( edgesSize() == 0 )
+		return;
 	std::sort(adjacentNodes.begin(), adjacentNodes.end());
 }
 
@@ -123,8 +143,8 @@ void Node::moveToCache(unordered_map<uint64_t, uint32_t> *mapFrecuency, uint16_t
 	{ // eliminar freq 1
 		if (mapFrecuency->at(*it) <= minFreq)
 		{
-			adjacentNodes.erase(it);
 			cacheNodes.push_back(*it);
+			adjacentNodes.erase(it);
 		}
 		else
 			break;
