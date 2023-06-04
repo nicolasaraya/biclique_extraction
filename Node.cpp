@@ -5,7 +5,7 @@ using namespace std;
 
 Node::Node(uint64_t id) : id(id)
 {
-	//withSelfLoop = false;
+	// withSelfLoop = false;
 	selfLoop = false;
 }
 
@@ -25,7 +25,7 @@ Node::~Node()
 
 bool Node::hasSelfLoop()
 {
-	//return natureSelfLoop;
+	// return natureSelfLoop;
 	return selfLoop;
 }
 
@@ -47,14 +47,14 @@ uint64_t Node::edgesSize()
 void Node::addAdjacent(uint64_t id_adj)
 {
 	/*if(id_adj == id) {
-		natureSelfLoop = true; 
+		natureSelfLoop = true;
 		if(withSelfLoop){ return; }
 	}*/
 	adjacentNodes.push_back(id_adj);
-
 }
 
-void Node::shrinkToFit(){
+void Node::shrinkToFit()
+{
 	adjacentNodes.shrink_to_fit();
 }
 
@@ -91,8 +91,10 @@ void Node::find_to_erase(vector<uint64_t> *C)
 	std::cout << endl;
 
 	cout << "****************" << endl;*/
-	adjacentNodes.clear();
-	adjacentNodes = new_adjacentNodes;
+	// adjacentNodes.clear();
+	// adjacentNodes = new_adjacentNodes;
+	adjacentNodes.swap(new_adjacentNodes);
+	new_adjacentNodes.clear();
 }
 
 void Node::setModified(bool modified)
@@ -100,15 +102,14 @@ void Node::setModified(bool modified)
 	this->modified = modified;
 }
 
-
-void Node::setSelfLoop(bool selfloop){
+void Node::setSelfLoop(bool selfloop)
+{
 	selfLoop = selfloop;
 }
 
-
 void Node::sort()
 {
-	if( edgesSize() == 0 )
+	if (edgesSize() == 0)
 		return;
 	std::sort(adjacentNodes.begin(), adjacentNodes.end());
 }

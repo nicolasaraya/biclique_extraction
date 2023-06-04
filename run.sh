@@ -1,13 +1,13 @@
  #!/bin/bash
 ./biclique_extractor    \
-    --file ../bin32/dblp-2011.bin \
+    --file ../data/dblp-2011.txt \
     --numSignatures 2   \
-    --minClusterSize 4 \
-    --bicliqueSize 5000    \
+    --minClusterSize 10 \
+    --bicliqueSize 500    \
     --minAdyNodes 2   \
     --shingleSize 1           \
-    --bsDecrease 1000    \
-    --threshold 500     \
-    --selfLoop 1      \
+    --bsDecrease 400    \
+    --threshold 100     \
+    --selfLoop 0      \
     --debug 0       \
     --iterations 10

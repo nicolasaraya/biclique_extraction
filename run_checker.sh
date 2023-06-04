@@ -2,11 +2,11 @@
 dataset="dblp-2011"
 format="txt"
 
-compress_file=../$format/"$dataset"\_compressed."$format"
-biclique_file=../$format/"$dataset"\_bicliques."$format"
+compress_file=../data/"$dataset"\_compressed."$format"
+biclique_file=../data/"$dataset"\_bicliques."$format"
 
-original_file=../$format/"$dataset"."$format"
-final_file=../$format/"$dataset"\_compressed_rebuild."$format"
+original_file=../data/"$dataset"."$format"
+final_file=../data/"$dataset"\_compressed_rebuild."$format"
 
 ./checker    \
     --final $compress_file  \

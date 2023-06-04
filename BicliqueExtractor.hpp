@@ -19,35 +19,36 @@ public:
 
 private:
     // PRIVATE VARIABLES
-    bool selfLoop;
-    bool check;
-    string path;
+    // PARAMETERS
     uint16_t num_signatures;
     uint32_t minClusterSize;
     uint32_t biclique_size;
     uint32_t minAdyNodes;
     uint16_t bs_decrease;
     uint32_t shingleSize;
-    uint32_t threshold; 
-    uint16_t iteration = 1;
+    uint32_t threshold;
     uint16_t iterations;
-    uint64_t total_biclique = 0;
-    uint64_t biclique_s_size = 0;
-    uint64_t biclique_c_size = 0;
-    uint64_t biclique_sxc_size = 0;
+
+    bool selfLoop;
+    string path;
+    uint16_t iteration;
+    uint64_t total_biclique;
+    uint64_t biclique_s_size;
+    uint64_t biclique_c_size;
+    uint64_t biclique_sxc_size;
+    uint64_t cluster_size;
+    uint64_t n_bicliques_iter;
     AdjacencyMatrix *adjMatrix;
-    vector<Cluster *> clusters;
 
     // PRIVATE METHODS
+    void extractBicliques(Cluster *);
     bool compareMinHash(const SignNode *, const SignNode *, int);
     bool compareBicliqueRank(const Biclique *, const Biclique *);
     vector<Signatures *> makeGroups(Signatures *, int);
     // void computeClusters(vector<Signatures *> *, unsigned int);
     void computeClusters(Signatures *, unsigned int);
-    void computeTree();
     Signatures *computeShingles();
-    void computeShinglesInline();
-    uint32_t extractBicliques();
+    void getBicliques(Cluster *);
     void printSignatures(Signatures *);
     void sortSignatures(Signatures *, int);
     void sortBicliques(vector<Biclique *> *);
