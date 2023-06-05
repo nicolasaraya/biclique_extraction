@@ -293,21 +293,21 @@ void BicliqueExtractor::getBicliques(Cluster *c)
     string new_path = modify_path(path, "bicliques.txt");
     file.open(new_path, fstream::app);
 
-    vector<Biclique *> possible_bicliques = c->getBicliques();
+    vector<Biclique *> *possible_bicliques = c->getBicliques();
 
-    if (possible_bicliques.empty())
+    if (possible_bicliques->empty())
         return;
 
-    for (size_t i = 0; i < possible_bicliques.size(); i++)
-        sort(possible_bicliques[i]->second.begin(), possible_bicliques[i]->second.end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
+    for (size_t i = 0; i < possible_bicliques->size(); i++)
+        sort(possible_bicliques->at(i)->second.begin(), possible_bicliques->at(i)->second.end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
 
-    while (!possible_bicliques.empty())
+    while (!possible_bicliques->empty())
     {
         // sort by size/rank
-        sortBicliques(&possible_bicliques);
+        sortBicliques(possible_bicliques);
 
         // se elije el biclique con mayor rank
-        Biclique *best_biclique = possible_bicliques.at(possible_bicliques.size() - 1);
+        Biclique *best_biclique = possible_bicliques->at(possible_bicliques->size() - 1);
 
         vector<Node *> *S = best_biclique->first;
         vector<uint64_t> *C = &best_biclique->second;
@@ -318,12 +318,12 @@ void BicliqueExtractor::getBicliques(Cluster *c)
 
             // cout << "Estoy eliminando posibles blicliques" << endl;
 
-            for (size_t j = 0; j < possible_bicliques.size(); j++)
+            for (size_t j = 0; j < possible_bicliques->size(); j++)
             {
-                best_biclique = possible_bicliques[j];
+                best_biclique = possible_bicliques->at(j);
                 delete best_biclique;
             }
-            possible_bicliques.clear();
+            possible_bicliques->clear();
             // cout << "Termine de eliminar posibles blicliques" << endl;
             break;
         }
@@ -364,7 +364,7 @@ void BicliqueExtractor::getBicliques(Cluster *c)
 
         delete best_biclique;
 
-        possible_bicliques.pop_back();
+        possible_bicliques->pop_back();
 
         // se limpian el resto de bicliques
         Biclique *best_biclique_to_erase;
@@ -372,7 +372,7 @@ void BicliqueExtractor::getBicliques(Cluster *c)
         vector<uint64_t> *C_to_erase;
 
         // cout << "Estoy eliminando aristas de los posibles bicliques " << endl;
-        for (auto it = possible_bicliques.rbegin(); it != possible_bicliques.rend(); it++)
+        for (auto it = possible_bicliques->rbegin(); it != possible_bicliques->rend(); it++)
         {
             best_biclique_to_erase = *it;
 

@@ -15,7 +15,7 @@ public:
     ~Trie();
 
     void create(vector<Node *> *);
-    vector<Biclique *> getBicliques();
+    vector<Biclique *> *getBicliques();
     void printTrie();
 
     // PUBLIC VARIABLES

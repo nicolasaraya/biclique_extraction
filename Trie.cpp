@@ -10,9 +10,7 @@ Trie::Trie()
 Trie::~Trie()
 {
     if (root != NULL)
-    {
         clear(root);
-    }
 }
 
 void Trie::create(vector<Node *> *nodes)
@@ -27,9 +25,9 @@ void Trie::create(vector<Node *> *nodes)
     }
 }
 
-vector<Biclique *> Trie::getBicliques()
+vector<Biclique *> *Trie::getBicliques()
 {
-    vector<Biclique *> potential_bicliques;
+    vector<Biclique *> *potential_bicliques = new vector<Biclique *>();
 
     if (root == NULL)
         return potential_bicliques;
@@ -42,12 +40,12 @@ vector<Biclique *> Trie::getBicliques()
 
     b->second.push_back(root->vertex);
 
-    potential_bicliques.push_back(b);
+    potential_bicliques->push_back(b);
 
-    computeCandidatesBicliques(root, &potential_bicliques);
+    computeCandidatesBicliques(root, potential_bicliques);
 
-    if (potential_bicliques[0]->second.size() == 1)
-        potential_bicliques.erase(potential_bicliques.begin());
+    if (potential_bicliques->at(0)->second.size() == 1)
+        potential_bicliques->erase(potential_bicliques->begin());
 
     return potential_bicliques;
 }
