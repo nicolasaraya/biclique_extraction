@@ -5,13 +5,13 @@
 
 using namespace std;
 
-typedef vector<uint64_t>::iterator AdjacentsIterator;
+typedef vector<uInt>::iterator AdjacentsIterator;
 
 class Node
 {
 public:
 	// PUBLIC METHODS
-	Node(uint64_t);
+	Node(uInt);
 	//Node(uint64_t, bool);
 	~Node();
 
@@ -19,16 +19,16 @@ public:
 	bool isModified();
 	uint64_t getId();
 	uint64_t edgesSize();
-	void addAdjacent(uint64_t);
-	void find_to_erase(vector<uint64_t> *);
+	void addAdjacent(uInt);
+	void find_to_erase(vector<uInt> *);
 	void setModified(bool);
 	void setSelfLoop(bool);
 	void shrinkToFit();
 	void sort();
-	void sortByFrecuency(unordered_map<uint64_t, uint32_t> *);
-	bool includes(vector<uint64_t> *);
-	bool removeAdjacent(uint64_t);
-	void moveToCache(unordered_map<uint64_t, uint32_t> *, uint16_t);
+	void sortByFrecuency(unordered_map<uInt, uint32_t> *);
+	bool includes(vector<uInt> *);
+	bool removeAdjacent(uInt);
+	void moveToCache(unordered_map<uInt, uint32_t> *, uint16_t);
 
 	AdjacentsIterator adjacentsBegin();
 	AdjacentsIterator adjacentsEnd();
@@ -41,11 +41,11 @@ private:
 	uint64_t id;
 	bool modified;
 	bool selfLoop;
-	vector<uint64_t> adjacentNodes;
-	vector<uint64_t> cacheNodes;
+	vector<uInt> adjacentNodes;
+	vector<uInt> cacheNodes;
 
 	// PRIVATE METHODS
-	bool sortFrecuencyComp(const uint64_t &a, const uint64_t &b, unordered_map<uint64_t, uint32_t> *mapFrecuency);
+	bool sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, uint32_t> *mapFrecuency);
 };
 
 #endif

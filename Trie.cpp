@@ -103,7 +103,7 @@ void Trie::computeCandidatesBicliques(TrieNode *node, vector<Biclique *> *candid
     }
 }
 
-TrieNode *Trie::find(uint64_t &vertex, TrieNode *ptr)
+TrieNode *Trie::find(uInt &vertex, TrieNode *ptr)
 {
     if (ptr == NULL)
     {

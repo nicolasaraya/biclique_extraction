@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
         {"iterations", "10"}};
 
     auto arguments = parseArguments(argc, argv, &input_arguments);
+
     cout << "file: " << arguments["file"] << endl;
     cout << "Num_signatures:  " << arguments["numSignatures"] << endl;
     cout << "Min_Cluster_Size:  " << arguments["minClusterSize"] << endl;
@@ -59,7 +60,6 @@ int main(int argc, char *argv[])
     //cout << "sleep" << endl;
     //sleep(30);
     //delete adjMatrix;
-    
     
     
 

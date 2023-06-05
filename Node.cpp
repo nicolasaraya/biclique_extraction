@@ -3,7 +3,7 @@ using namespace std;
 
 // PUBLIC METHODS
 
-Node::Node(uint64_t id) : id(id)
+Node::Node(uInt id) : id(id)
 {
 	// withSelfLoop = false;
 	selfLoop = false;
@@ -44,7 +44,7 @@ uint64_t Node::edgesSize()
 	return adjacentNodes.size();
 }
 
-void Node::addAdjacent(uint64_t id_adj)
+void Node::addAdjacent(uInt id_adj)
 {
 	/*if(id_adj == id) {
 		natureSelfLoop = true;
@@ -58,11 +58,11 @@ void Node::shrinkToFit()
 	adjacentNodes.shrink_to_fit();
 }
 
-void Node::find_to_erase(vector<uint64_t> *C)
+void Node::find_to_erase(vector<uInt> *C)
 {
-	vector<uint64_t> new_adjacentNodes;
-	vector<uint64_t>::iterator it = C->begin();
-	vector<uint64_t>::iterator it_end = C->end();
+	vector<uInt> new_adjacentNodes;
+	vector<uInt>::iterator it = C->begin();
+	vector<uInt>::iterator it_end = C->end();
 	for (size_t i = 0; i < adjacentNodes.size(); i++)
 	{
 		if (it == it_end)
@@ -114,17 +114,17 @@ void Node::sort()
 	std::sort(adjacentNodes.begin(), adjacentNodes.end());
 }
 
-void Node::sortByFrecuency(unordered_map<uint64_t, uint32_t> *mapFrecuency)
+void Node::sortByFrecuency(unordered_map<uInt, uint32_t> *mapFrecuency)
 {
 	std::sort(adjacentNodes.begin(), adjacentNodes.end(), bind(&Node::sortFrecuencyComp, this, placeholders::_1, placeholders::_2, mapFrecuency));
 }
 
-bool Node::includes(vector<uint64_t> *c)
+bool Node::includes(vector<uInt> *c)
 {
 	return std::includes(adjacentNodes.begin(), adjacentNodes.end(), c->begin(), c->end());
 }
 
-bool Node::removeAdjacent(uint64_t id_adj)
+bool Node::removeAdjacent(uInt id_adj)
 {
 	auto element = std::find(adjacentNodes.begin(), adjacentNodes.end(), id_adj);
 	if (element != adjacentNodes.end())
@@ -138,7 +138,7 @@ bool Node::removeAdjacent(uint64_t id_adj)
 	}
 }
 
-void Node::moveToCache(unordered_map<uint64_t, uint32_t> *mapFrecuency, uint16_t minFreq)
+void Node::moveToCache(unordered_map<uInt, uint32_t> *mapFrecuency, uint16_t minFreq)
 {
 	for (auto it = (adjacentNodes.end() - 1); it != adjacentNodes.begin(); it--)
 	{ // eliminar freq 1
@@ -194,7 +194,7 @@ AdjacentsIterator Node::adjacentsEnd()
 
 // PRIVATE METHODS
 
-bool Node::sortFrecuencyComp(const uint64_t &a, const uint64_t &b, unordered_map<uint64_t, uint32_t> *mapFrecuency)
+bool Node::sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, uint32_t> *mapFrecuency)
 {
 	if (mapFrecuency->at(a) > mapFrecuency->at(b))
 	{

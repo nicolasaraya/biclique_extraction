@@ -17,7 +17,7 @@ public:
     ~AdjacencyMatrix();
 
     void addBicliques(string);
-    void standardize(vector<uint64_t>*);
+    void standardize(vector<uInt>*);
     void buildTxt();
     void buildBin();
     void insert(Node *);
@@ -33,7 +33,7 @@ public:
 
 private:
     // PRIVATE METHODS
-    vector<Node *> matrix;
+    vector<Node*> matrix;
     string path;
     bool selfLoops = false;
     uint64_t num_nodes;

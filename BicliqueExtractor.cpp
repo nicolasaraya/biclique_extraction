@@ -310,7 +310,7 @@ void BicliqueExtractor::getBicliques(Cluster *c)
         Biclique *best_biclique = possible_bicliques->at(possible_bicliques->size() - 1);
 
         vector<Node *> *S = best_biclique->first;
-        vector<uint64_t> *C = &best_biclique->second;
+        vector<uInt> *C = &best_biclique->second;
 
         // si el biclique no cumple con el tamaño deseado o es 2x2, significa que no hay mas bicliques que cumplan la condicion
         if ((S->size() * C->size() < biclique_size) || ((S->size() - 1) * (C->size() - 1) == 1))
@@ -369,7 +369,7 @@ void BicliqueExtractor::getBicliques(Cluster *c)
         // se limpian el resto de bicliques
         Biclique *best_biclique_to_erase;
         vector<Node *> *S_to_erase;
-        vector<uint64_t> *C_to_erase;
+        vector<uInt> *C_to_erase;
 
         // cout << "Estoy eliminando aristas de los posibles bicliques " << endl;
         for (auto it = possible_bicliques->rbegin(); it != possible_bicliques->rend(); it++)

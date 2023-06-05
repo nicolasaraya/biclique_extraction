@@ -13,6 +13,7 @@ class BicliqueExtractor
 public:
     // PUBLIC METHODS
     BicliqueExtractor(const string, uint16_t, uint16_t, uint16_t, uint32_t, uint16_t, uint32_t, bool, uint32_t, uint16_t);
+    //path, num_signatures, minClusterSize, minAdyNodes, biclique_size, bs_decrease, shingleSize, selfLoop, threshold, iterations) 
     ~BicliqueExtractor();
 
     void extract();

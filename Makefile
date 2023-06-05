@@ -5,7 +5,7 @@ HEADER	=         AdjacencyMatrix.hpp BicliqueExtractor.hpp Cluster.hpp Node.hpp 
 OUT	=             biclique_extractor
 OUT_CHECKER =     checker
 CC	 =            g++
-FLAGS =           -c  -std=c++17 -O3
+FLAGS =           -c  -std=c++20 -O0 -g
 LFLAGS	 =        -lm \
 		#-fopenmp
 

@@ -25,6 +25,16 @@
 #include <omp.h>
 #include <math.h>
 
+#define BITS64
+
+#if defined(BITS32)
+    typedef int Int;
+    typedef unsigned int uInt;
+#elif defined(BITS64) 
+    typedef long long int Int;
+    typedef unsigned long long int uInt;
+#endif
+
 #define TIMERSTART(label)                                                           \
     std::chrono::time_point<std::chrono::high_resolution_clock> a##label, b##label; \
     a##label = std::chrono::high_resolution_clock::now();

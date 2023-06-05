@@ -31,7 +31,7 @@ private:
     // PRIVATE VARIABLES
     vector<Node *> *nodes;
 
-    unordered_map<uint64_t, uint32_t> mapFrecuency; // Valor Nodo, Frecuencia
+    unordered_map<uInt, uint32_t> mapFrecuency; // Valor Nodo, Frecuencia
     uint16_t minFreq = 1;
 
     // PRIVATE METHODS

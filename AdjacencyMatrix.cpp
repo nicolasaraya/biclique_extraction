@@ -36,7 +36,7 @@ void AdjacencyMatrix::addBicliques(string path)
 		cout << path << endl;
 		exit(0);
 	}
-	vector<uint64_t> newNodesPos;
+	vector<uInt> newNodesPos;
 	if( size() != back()->getId())
 		standardize(&newNodesPos);
 
@@ -80,7 +80,7 @@ void AdjacencyMatrix::addBicliques(string path)
 
 // funcion que agrega los nodos intermedios que no contienen ninguna arista
 // para facilitar la busqueda de los nodos source
-void AdjacencyMatrix::standardize(vector<uint64_t>* aux)
+void AdjacencyMatrix::standardize(vector<uInt>* aux)
 {
 	cout << "Standarize" << endl;
 	vector<Node*> new_matrix;
@@ -123,7 +123,7 @@ void AdjacencyMatrix::buildTxt()
 		exit(0);
 	}
 	string line;
-	uint64_t id;
+	uInt id;
 	getline(file, line); // num nodes
 	num_nodes = atoi(line.c_str());
 	while (!file.eof())

@@ -26,7 +26,7 @@ private:
     TrieNode *root;
 
     // PRIVATE METHODS
-    TrieNode *find(uint64_t &, TrieNode *);
+    TrieNode *find(uInt &, TrieNode *);
     void clear(TrieNode *);
     void computeCandidatesBicliques(TrieNode *, vector<Biclique *> *);
     void insert(Node *);
