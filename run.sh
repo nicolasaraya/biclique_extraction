@@ -8,6 +8,6 @@
     --shingleSize 1           \
     --bsDecrease 400    \
     --threshold 100     \
-    --selfLoop 0      \
+    --selfLoop 1      \
     --debug 0       \
     --iterations 10

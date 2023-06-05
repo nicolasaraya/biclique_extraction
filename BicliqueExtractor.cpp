@@ -66,13 +66,14 @@ void BicliqueExtractor::extract()
             }
             std::cout << "Groups: " << count << std::endl;
         }
-        // vector<Signatures *> group = makeGroups(signatures, 0);
-        // computeClusters(&group, 1);
 
         cout << "Compute Clusters and Extract Bicliques" << endl;
         TIMERSTART(compute_clusters_and_bicliques);
         // sortSignatures(signatures, 0);
-        computeClusters(signatures, 0);
+        // computeClusters(signatures, 1);
+        sortSignatures(signatures, 0);
+        vector<Signatures *> group = makeGroups(signatures, 0);
+        computeClusters(&group, 1);
         TIMERSTOP(compute_clusters_and_bicliques);
 
         for (auto i : *signatures)
@@ -166,7 +167,7 @@ vector<Signatures *> BicliqueExtractor::makeGroups(Signatures *signatures, int c
 
     return group;
 }
-
+/*
 void BicliqueExtractor::computeClusters(Signatures *sign_cluster, unsigned int column)
 {
     sortSignatures(sign_cluster, column);
@@ -209,23 +210,14 @@ void BicliqueExtractor::computeClusters(Signatures *sign_cluster, unsigned int c
     }
 
     candidates.clear();
-}
+}*/
 
-void BicliqueExtractor::extractBicliques(Cluster *c)
-{
-    cluster_size++;
-    c->computeTrie();
-    getBicliques(c);
-    delete c;
-}
-
-/*
 void BicliqueExtractor::computeClusters(vector<Signatures *> *groups, unsigned int column)
 {
     for (size_t i = 0; i < groups->size(); i++)
     {
         uint64_t numberEntries = groups->at(i)->size();
-        // if (1 < numberEntries)
+
         if ((num_signatures + (uint64_t)1) < numberEntries)
         {
             sortSignatures(groups->at(i), column);
@@ -247,12 +239,9 @@ void BicliqueExtractor::computeClusters(vector<Signatures *> *groups, unsigned i
                 {
                     vector<Node *> *new_cluster = new vector<Node *>();
                     for (size_t k = 0; k < new_groups[j]->size(); k++)
-                    {
                         new_cluster->push_back(new_groups[j]->at(k)->ptrNode);
-                    }
 
-                    Cluster *c = new Cluster(new_cluster);
-                    clusters.push_back(c);
+                    extractBicliques(new Cluster(new_cluster));
                 }
                 else if (numberEntries_new_group == 1)
                     new_cluster_single_elements->push_back(new_groups[j]->at(0)->ptrNode);
@@ -260,18 +249,21 @@ void BicliqueExtractor::computeClusters(vector<Signatures *> *groups, unsigned i
                 delete new_groups[j];
             }
             if (new_cluster_single_elements->size() > 1)
-            {
-                Cluster *c = new Cluster(new_cluster_single_elements);
-                clusters.push_back(c);
-            }
+                extractBicliques(new Cluster(new_cluster_single_elements));
             else
-            {
                 delete new_cluster_single_elements;
-            }
         }
         delete groups->at(i);
     }
-}*/
+}
+
+void BicliqueExtractor::extractBicliques(Cluster *c)
+{
+    cluster_size++;
+    c->computeTrie();
+    getBicliques(c);
+    delete c;
+}
 
 Signatures *BicliqueExtractor::computeShingles()
 {

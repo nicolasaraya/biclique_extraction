@@ -45,7 +45,7 @@ private:
     bool compareMinHash(const SignNode *, const SignNode *, int);
     bool compareBicliqueRank(const Biclique *, const Biclique *);
     vector<Signatures *> makeGroups(Signatures *, int);
-    // void computeClusters(vector<Signatures *> *, unsigned int);
+    void computeClusters(vector<Signatures *> *, unsigned int);
     void computeClusters(Signatures *, unsigned int);
     Signatures *computeShingles();
     void getBicliques(Cluster *);
