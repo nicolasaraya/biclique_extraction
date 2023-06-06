@@ -5,9 +5,9 @@ HEADER	=         AdjacencyMatrix.hpp BicliqueExtractor.hpp Cluster.hpp Node.hpp 
 OUT	=             biclique_extractor
 OUT_CHECKER =     checker
 CC	 =            g++
-FLAGS =           -c  -std=c++20 -O0 -g
+FLAGS =           -c  -std=c++17 -O3 -DBITS32
 LFLAGS	 =        -lm \
-		#-fopenmp
+				#-fopenmp
 
 all: $(OBJS) $(OBJS_CHECKER)
 	$(CC) $(OBJS) -o $(OUT) $(LFLAGS)
@@ -54,13 +54,3 @@ valgrind_leakcheck: $(OUT)
 
 valgrind_extreme: $(OUT)
 	valgrind --leak-check=full --show-leak-kinds=all --leak-resolution=high --track-origins=yes --vgdb=yes ./$(OUT)
-
-download:
-	cd data && wget http://www.inf.udec.cl/~chernand/sources/kais2014/dsextract/dblp-2011.graph-txt.gz
-	cd data && gzip -d dblp-2011.graph-txt.gz
-	cd data && $(addV)
-
-mk:
-	mkdir -p ./data
-	mkdir -p ./output
-

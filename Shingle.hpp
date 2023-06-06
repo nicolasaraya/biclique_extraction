@@ -22,8 +22,8 @@ private:
 
     std::hash<string> hash_nodes;
 
-    vector<uint64_t> A;
-    vector<uint64_t> B;
+    vector<uInt> A;
+    vector<uInt> B;
 };
 
 #endif

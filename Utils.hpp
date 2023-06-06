@@ -25,12 +25,10 @@
 #include <omp.h>
 #include <math.h>
 
-#define BITS64
-
 #if defined(BITS32)
     typedef int Int;
     typedef unsigned int uInt;
-#elif defined(BITS64) 
+#else
     typedef long long int Int;
     typedef unsigned long long int uInt;
 #endif

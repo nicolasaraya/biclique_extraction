@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
     cout << "Debug flag:  " << arguments["debug"] << endl;
     cout << "Threshold: " << arguments["threshold"] << endl;
     cout << "Iterations: " << arguments["iterations"] << endl;
+    cout << "Bits: " << sizeof(Int) * 8 << endl;
     
     
     
