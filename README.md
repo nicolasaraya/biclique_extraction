@@ -4,34 +4,40 @@
 
 ## Usage
 
- Clear and create directories
 
-```bash
-make configure
-```
-
-Load dataset in ```Data``` folder
-
-Compile
+## Compile
 
 ```bash
 make
 ```
+Flags:
+* `-Dparallel` : enable parallelism
+* `-DBITS32` : compile with 32 bits 
+* `-DNUM_THREADS=value` : set number of threads
+    
+    
 
-Execute
+## Execute
 
 
 ```bash
-./biclique_extractor filename num_sign min_cluster_size min_adyacency_nodes biclique_size biclique_size_decrease
+./biclique_extractor params
 ```
 
+## Parameters
 
-* `filename`: file in Data folder
-* `num_sign`: number of Min hashes
-* `min_cluster_size`: minimum number of nodes in each cluster
-* `min_adyency_nodes`: minimum number of adyancy nodes per node to make cluster
-* `biclique_size`: minimum number of SxC per biclique
-* `biclique_size_decrease`: discount factor 
+* `--file`: file in `bin` or `txt`
+* `--numSignature`: number of Min hashes
+* `--minClusterSize`: minimum number of nodes in each cluster
+* `--bicliqueSize`: minimum number of SxC per biclique 
+* `--minAdyNodes`: minimum number of adyancy nodes per node to make cluster
+* `--bsDecrease`: discount factor 
+* `--shingleSize`: shingle size value
+* `--selfLoop`: flag for selfloops
+* `--threshold`: minimum bicliques founded per iteration
+* `--debug`: debug flag
+* `--iterations`: number of iterations
+
 
 Execution example 
 ```bash
