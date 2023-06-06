@@ -1,7 +1,9 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-#define NUM_THREADS 8
+#if !defined(NUM_THREADS)
+    #define NUM_THREADS 4
+#endif
 #define DEBUG_LEVEL 3
 
 #include <vector>
@@ -22,8 +24,9 @@
 #include <functional>
 #include <map>
 #include <unordered_map>
-#include <omp.h>
 #include <math.h>
+#include <thread>
+#include <future>
 
 #if defined(BITS32)
     typedef int Int;

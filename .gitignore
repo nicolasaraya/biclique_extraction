@@ -10,3 +10,6 @@ _bicliques.txt
 log.out
 log.out
 .vscode/settings.json
+output
+output/*
+log

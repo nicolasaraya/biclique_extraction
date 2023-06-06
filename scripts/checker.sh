@@ -1,10 +1,10 @@
 #!/bin/bash
 
 nameFiles=(
-    "dblp-2011"
-    "arabic-2005-hc"
+#    "dblp-2011"
+#    "arabic-2005-hc"
 #    "eu-2015-hc"
-    "eu-2015-host"
+#    "eu-2015-host"
     "indochina-2004"
 #    "uk-2014-hc"
 )

@@ -29,6 +29,8 @@ private:
     uint32_t shingleSize;
     uint32_t threshold;
     uint16_t iterations;
+    mutex mtxWriteBiclique;
+    mutex mtxSignatures;
 
     bool selfLoop;
     string path;
@@ -45,7 +47,15 @@ private:
     void extractBicliques(Cluster *);
     bool compareMinHash(const SignNode *, const SignNode *, int);
     bool compareBicliqueRank(const Biclique *, const Biclique *);
+
+    #if defined(parallel)
+    vector<Signatures *> makeGroups(Signatures *, uInt, uInt, int);
+    void parallelExtraction(Signatures*, uInt, uInt);
+    void shingleParallel(Shingle*, Signatures*, uInt, uInt);
+    #endif
+
     vector<Signatures *> makeGroups(Signatures *, int);
+    void writeBiclique(vector<Node *> *, vector<uInt> *);
     void computeClusters(vector<Signatures *> *, unsigned int);
     void computeClusters(Signatures *, unsigned int);
     Signatures *computeShingles();

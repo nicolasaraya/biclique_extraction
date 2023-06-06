@@ -5,9 +5,10 @@ HEADER	=         AdjacencyMatrix.hpp BicliqueExtractor.hpp Cluster.hpp Node.hpp 
 OUT	=             biclique_extractor
 OUT_CHECKER =     checker
 CC	 =            g++
-FLAGS =           -c  -std=c++17 -O3 -DBITS32
-LFLAGS	 =        -lm \
-				#-fopenmp
+FLAGS =           -c  -std=c++17 -O3 -DBITS32 \
+				  -Dparallel -lpthread -DNUM_THREADS=20 
+LFLAGS	=        -lm -lpthread
+				
 
 all: $(OBJS) $(OBJS_CHECKER)
 	$(CC) $(OBJS) -o $(OUT) $(LFLAGS)
@@ -41,7 +42,7 @@ Utils.o: Utils.cpp
 	$(CC) $(FLAGS) Utils.cpp 
 
 clean:
-	rm -f $(OBJS) $(OUT)
+	rm -f $(OBJS) $(OBJS_CHECKER) $(OUT) $(OUT_CHECKER)
 
 debug: $(OUT)
 	gdb ./$(OUT)

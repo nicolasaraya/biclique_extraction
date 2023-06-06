@@ -1,6 +1,6 @@
  #!/bin/bash
 ./biclique_extractor    \
---file ../data/dblp-2011.txt \
+--file ../wgraphs/bin/arabic-2005-hc.bin \
 --numSignatures 2   \
 --minClusterSize 10 \
 --bicliqueSize 500    \

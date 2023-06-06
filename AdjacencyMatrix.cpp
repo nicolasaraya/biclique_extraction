@@ -4,6 +4,7 @@
 
 AdjacencyMatrix::AdjacencyMatrix(const string path, bool selfLoops) : path(path), selfLoops(selfLoops)
 {
+	TIMERSTART(build_matrix);
 	if(path.find(".txt" )!= std::string::npos) {
 		buildTxt();
 		format = "txt";
@@ -12,6 +13,7 @@ AdjacencyMatrix::AdjacencyMatrix(const string path, bool selfLoops) : path(path)
 		buildBin();
 		format = "bin";
 	}
+	TIMERSTOP(build_matrix);
 	//print();
 }
 
@@ -323,4 +325,8 @@ AdjMatrixIterator AdjacencyMatrix::begin()
 AdjMatrixIterator AdjacencyMatrix::end()
 {
 	return matrix.end();
+}
+
+Node* AdjacencyMatrix::at(uInt id){
+	return matrix.at(id);
 }

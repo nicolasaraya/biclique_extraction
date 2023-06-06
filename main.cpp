@@ -23,6 +23,10 @@ int main(int argc, char *argv[])
 
     auto arguments = parseArguments(argc, argv, &input_arguments);
 
+    #if defined(parallel)
+        cout<<"Using: " << NUM_THREADS << " threads" << endl;
+    #endif
+
     cout << "file: " << arguments["file"] << endl;
     cout << "Num_signatures:  " << arguments["numSignatures"] << endl;
     cout << "Min_Cluster_Size:  " << arguments["minClusterSize"] << endl;

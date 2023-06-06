@@ -52,28 +52,30 @@ void BicliqueExtractor::extract()
 
         assert(not signatures->empty());
 
-        /**/
-        if (DEBUG_LEVEL > 4)
-        {
-            std::cout << "***signatures sorted***" << std::endl;
-            // printSignatures(signatures);
-            auto group = makeGroups(signatures, 0);
-            int count = 0;
-            for (auto g : group)
-            {
-                std::cout << "***group(" << count++ << ")***" << std::endl;
-                printSignatures(g);
-            }
-            std::cout << "Groups: " << count << std::endl;
-        }
-
         cout << "Compute Clusters and Extract Bicliques" << endl;
         TIMERSTART(compute_clusters_and_bicliques);
         // sortSignatures(signatures, 0);
         // computeClusters(signatures, 1);
         sortSignatures(signatures, 0);
-        vector<Signatures *> group = makeGroups(signatures, 0);
-        computeClusters(&group, 1);
+
+        #if defined(parallel)
+            uInt division = signatures->size() / NUM_THREADS;
+            std::vector<std::thread> threads(NUM_THREADS);
+            for(int i_thread = 0; i_thread < NUM_THREADS; i_thread++){
+                uInt l = i_thread * division;
+                uInt r = (i_thread + 1) * division;
+                if (r > signatures->size() ) r = signatures->size() ;
+                threads[i_thread] = std::thread(&BicliqueExtractor::parallelExtraction, this, signatures, l, r);
+            }
+            for(int i_thread = 0; i_thread < NUM_THREADS; i_thread++){
+                threads[i_thread].join();
+            }
+            
+        #else
+            vector<Signatures *> group = makeGroups(signatures, 0);
+            computeClusters(&group, 1);
+        #endif
+
         TIMERSTOP(compute_clusters_and_bicliques);
 
         for (auto i : *signatures)
@@ -141,7 +143,40 @@ void BicliqueExtractor::extract()
 }
 
 // PRIVATE METHODS
+#if defined(parallel)
+void BicliqueExtractor::parallelExtraction(Signatures* signatures, uInt l, uInt r){
+    //std::cout << l << ", " << r << endl;
+    vector<Signatures *> group = makeGroups(signatures, l, r,  0);
+    computeClusters(&group, 1);
+}
 
+
+vector<Signatures *> BicliqueExtractor::makeGroups(Signatures *signatures, uInt l, uInt r, int column)
+{
+    vector<Signatures *> group;
+    Signatures *partition = new Signatures();
+    group.push_back(partition);
+
+    for(uInt i = l; i < r; i++){
+        auto signNode = signatures->at(i); 
+         if (partition->empty())
+        {
+            partition->push_back(signNode);
+        }
+        else if (partition->front()->minHash.at(column) == (signNode)->minHash.at(column))
+        {
+            partition->push_back(signNode);
+        }
+        else
+        {
+            partition = new Signatures();
+            group.push_back(partition);
+        }
+
+    }
+    return group;
+}
+#endif
 vector<Signatures *> BicliqueExtractor::makeGroups(Signatures *signatures, int column)
 {
     vector<Signatures *> group;
@@ -164,9 +199,10 @@ vector<Signatures *> BicliqueExtractor::makeGroups(Signatures *signatures, int c
             group.push_back(partition);
         }
     }
-
     return group;
 }
+
+
 /*
 void BicliqueExtractor::computeClusters(Signatures *sign_cluster, unsigned int column)
 {
@@ -269,30 +305,55 @@ Signatures *BicliqueExtractor::computeShingles()
 {
     auto shingle = new Shingle(num_signatures, minAdyNodes, shingleSize);
     Signatures *sg = new Signatures();
-    for (auto i = adjMatrix->begin(); i != adjMatrix->end(); i++)
-    {
-        SignNode *sn = shingle->computeShingle(*i);
-        if (sn != nullptr)
-            sg->push_back(sn);
-        else
-            delete sn;
-    }
 
-    if (DEBUG_LEVEL > 3)
-    {
-        printSignatures(sg);
-    }
+    #if defined(parallel)
+        uInt partitionSize = adjMatrix->size()/NUM_THREADS;
+        vector<std::thread> threads(NUM_THREADS);
+        for(Int i = 0; i < NUM_THREADS; i++){
+            uInt l = i * partitionSize;
+            uInt r = (i+1) * partitionSize; 
+            if (r > adjMatrix->size()) r = adjMatrix->size();
+            threads[i] = std::thread(&BicliqueExtractor::shingleParallel, this, shingle, sg, l, r);
+        }
+        for(Int i = 0; i < NUM_THREADS; i++){
+            threads[i].join();
+        }
+
+
+    #else
+        for (auto i = adjMatrix->begin(); i != adjMatrix->end(); i++)
+        {
+            SignNode *sn = shingle->computeShingle(*i);
+            if (sn != nullptr){
+                sg->push_back(sn);
+            }
+            else
+                delete sn;
+        }
+    #endif
+
     delete shingle;
     return sg;
 }
 
+#if defined(parallel)
+void BicliqueExtractor::shingleParallel(Shingle* shingle, Signatures* sg, uInt l, uInt r){
+    for(uInt i = l; i < r; i++){
+        SignNode *sn = shingle->computeShingle(adjMatrix->at(i));
+         if (sn != nullptr){
+            std::unique_lock<mutex> lock(mtxSignatures);
+            sg->push_back(sn);
+        }
+        else
+            delete sn;
+    }
+
+}
+#endif
+
 void BicliqueExtractor::getBicliques(Cluster *c)
 {
-    ofstream file;
-    // file.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
-    string new_path = modify_path(path, "bicliques.txt");
-    file.open(new_path, fstream::app);
-
+    
     vector<Biclique *> *possible_bicliques = c->getBicliques();
 
     if (possible_bicliques->empty())
@@ -340,27 +401,7 @@ void BicliqueExtractor::getBicliques(Cluster *c)
         sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortS, this, placeholders::_1, placeholders::_2));
         // sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
 
-        file << "S: ";
-        for (size_t j = 0; j < S->size(); j++)
-        {
-            file << S->at(j)->getId();
-            if (j != S->size() - 1)
-                file << " ";
-            // cout << "Estoy eliminando S " << j << endl;
-            S->at(j)->find_to_erase(C);
-            S->at(j)->setModified(true);
-        }
-        file << endl
-             << "C: ";
-
-        for (size_t j = 0; j < C->size(); j++)
-        {
-            file << C->at(j);
-            if (j != C->size() - 1)
-                file << " ";
-        }
-
-        file << endl;
+        writeBiclique(S, C);
 
         delete best_biclique;
 
@@ -395,7 +436,38 @@ void BicliqueExtractor::getBicliques(Cluster *c)
             }
         }
     }
+}
+
+void BicliqueExtractor::writeBiclique(vector<Node*>* S, vector<uInt>* C){
+    std::unique_lock<mutex> lock(mtxWriteBiclique);
+    ofstream file;
+    // file.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
+    string new_path = modify_path(path, "bicliques.txt");
+    file.open(new_path, fstream::app);
+    file << "S: ";
+    for (size_t j = 0; j < S->size(); j++)
+    {
+        file << S->at(j)->getId();
+        if (j != S->size() - 1)
+            file << " ";
+        // cout << "Estoy eliminando S " << j << endl;
+        S->at(j)->find_to_erase(C);
+        S->at(j)->setModified(true);
+    }
+    file << endl
+            << "C: ";
+
+    for (size_t j = 0; j < C->size(); j++)
+    {
+        file << C->at(j);
+        if (j != C->size() - 1)
+            file << " ";
+    }
+
+    file << endl;
+    
     file.close();
+
 }
 
 void BicliqueExtractor::printSignatures(Signatures *signatures)

@@ -29,6 +29,7 @@ public:
     void restoreNodes();
     AdjMatrixIterator begin();
     AdjMatrixIterator end();
+    Node* at(uInt);
     // PUBLIC VARIABLES
 
 private:
