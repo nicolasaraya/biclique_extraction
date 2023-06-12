@@ -5,8 +5,7 @@ HEADER	=         AdjacencyMatrix.hpp BicliqueExtractor.hpp Cluster.hpp Node.hpp 
 OUT	=             biclique_extractor
 OUT_CHECKER =     checker
 CC	 =            g++
-FLAGS =           -c  -std=c++17 -O3 -DBITS32 \
-				  -Dparallel -lpthread -DNUM_THREADS=20 
+FLAGS =           -c  -std=c++17 -O3 -DBITS32 
 LFLAGS	=        -lm -lpthread
 				
 

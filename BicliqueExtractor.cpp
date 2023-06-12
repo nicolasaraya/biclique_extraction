@@ -72,8 +72,9 @@ void BicliqueExtractor::extract()
             }
             
         #else
-            vector<Signatures *> group = makeGroups(signatures, 0);
-            computeClusters(&group, 1);
+            //vector<Signatures *> group = makeGroups(signatures, 0);
+            //computeClusters(&group, 1);
+            computeClusters(signatures, 0);
         #endif
 
         TIMERSTOP(compute_clusters_and_bicliques);
@@ -203,7 +204,7 @@ vector<Signatures *> BicliqueExtractor::makeGroups(Signatures *signatures, int c
 }
 
 
-/*
+
 void BicliqueExtractor::computeClusters(Signatures *sign_cluster, unsigned int column)
 {
     sortSignatures(sign_cluster, column);
@@ -246,7 +247,7 @@ void BicliqueExtractor::computeClusters(Signatures *sign_cluster, unsigned int c
     }
 
     candidates.clear();
-}*/
+}
 
 void BicliqueExtractor::computeClusters(vector<Signatures *> *groups, unsigned int column)
 {

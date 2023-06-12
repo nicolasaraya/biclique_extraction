@@ -97,6 +97,31 @@ void Node::find_to_erase(vector<uInt> *C)
 	new_adjacentNodes.clear();
 }
 
+bool Node::findAdjacent(uInt num){
+	if( adjacentNodes.empty() )
+		return false;
+	return binarySearch(0, edgesSize()-1, num);
+}
+
+bool Node::binarySearch(uInt l, uInt r, uInt num){
+	//cout << "l: " << l << "  r: " << r << endl;
+    if (r >= l) {
+        uInt mid = l + (r - l) / 2;
+
+        if (adjacentNodes[mid] == num)
+            return true;
+ 
+        if (adjacentNodes[mid] > num){
+			if(mid == 0)
+				return false;
+            return binarySearch(l, mid - 1, num);
+		}
+ 
+        return binarySearch(mid + 1, r, num);
+    }
+    return false;
+}
+
 void Node::setModified(bool modified)
 {
 	this->modified = modified;

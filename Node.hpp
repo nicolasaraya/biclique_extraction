@@ -21,6 +21,7 @@ public:
 	uint64_t edgesSize();
 	void addAdjacent(uInt);
 	void find_to_erase(vector<uInt> *);
+	bool findAdjacent(uInt);
 	void setModified(bool);
 	void setSelfLoop(bool);
 	void shrinkToFit();
@@ -46,6 +47,7 @@ private:
 
 	// PRIVATE METHODS
 	bool sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, uint32_t> *mapFrecuency);
+	bool binarySearch(uInt, uInt, uInt);
 };
 
 #endif

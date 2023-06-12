@@ -1,0 +1,33 @@
+****************************************************************
+Iteracion: 1
+Adjacency Matrix Size: 15
+Current Edges Size AdjacencyMatrix: 13
+Min Bilcique Size: 5
+Clusters encontrados: 2
+Bilciques encontrados: 2
+****************************************************************
+Iteracion: 2
+Adjacency Matrix Size: 15
+Current Edges Size AdjacencyMatrix: 6
+Min Bilcique Size: 5
+Clusters encontrados: 3
+Bilciques encontrados: 1
+****************************************************************
+Iteracion: 3
+Adjacency Matrix Size: 15
+Current Edges Size AdjacencyMatrix: 9
+Min Bilcique Size: 5
+Clusters encontrados: 3
+Bilciques encontrados: 0
+****************************************************************
+Original Size AdjacencyMatrix: 15
+Current Size AdjacencyMatrix: 15
+
+Original Edges Size AdjacencyMatrix: 43
+Current Edges Size AdjacencyMatrix: 9
+
+Number of Bicliques Extracted: 3
+Sum of S: 8
+Sum of C: 12
+Sum of S + C: 20
+Sum of Multiplication of S x C: 34

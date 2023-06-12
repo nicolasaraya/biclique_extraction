@@ -327,6 +327,31 @@ AdjMatrixIterator AdjacencyMatrix::end()
 	return matrix.end();
 }
 
-Node* AdjacencyMatrix::at(uInt id){
-	return matrix.at(id);
+Node* AdjacencyMatrix::at(uInt pos){
+	return matrix.at(pos);
+}
+
+Node* AdjacencyMatrix::find(uInt node_id){
+	if( size() == num_nodes )
+		return at(node_id-1);
+	return binarySearch(0, size()-1,node_id);
+}
+
+Node* AdjacencyMatrix::binarySearch(uInt l, uInt r, uInt node_id){
+
+    if (r >= l) {
+        uInt mid = l + (r - l) / 2;
+ 
+        if (matrix[mid]->getId() == node_id)
+            return matrix[mid];
+
+        if (matrix[mid]->getId() > node_id){
+			if(mid == 0)
+				return nullptr;
+            return binarySearch(l, mid - 1, node_id);
+		}
+ 
+        return binarySearch(mid + 1, r, node_id);
+    }
+    return nullptr;
 }

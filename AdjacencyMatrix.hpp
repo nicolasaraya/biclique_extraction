@@ -30,6 +30,7 @@ public:
     AdjMatrixIterator begin();
     AdjMatrixIterator end();
     Node* at(uInt);
+    Node* find(uInt);
     // PUBLIC VARIABLES
 
 private:
@@ -39,6 +40,8 @@ private:
     bool selfLoops = false;
     uint64_t num_nodes;
     string format;
+
+    Node* binarySearch(uInt, uInt, uInt);
 };
 
 #endif

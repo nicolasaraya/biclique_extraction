@@ -1,13 +1,13 @@
  #!/bin/bash
 ./biclique_extractor    \
---file ../wgraphs/bin/arabic-2005-hc.bin \
+--file ../data/ej1.txt \
 --numSignatures 2   \
---minClusterSize 10 \
---bicliqueSize 500    \
+--minClusterSize 1 \
+--bicliqueSize 5    \
 --minAdyNodes 2   \
 --shingleSize 1           \
 --bsDecrease 400    \
---threshold 100     \
---selfLoop 1      \
+--threshold 1     \
+--selfLoop 0      \
 --debug 0       \
 --iterations 10
