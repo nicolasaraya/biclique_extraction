@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     cout << "alledgessize: " << adjMatrix->all_edges_size() << endl;    
     cout << "size: " << adjMatrix->size() << endl;
     adjMatrix->addBicliques(bicliques_file_path);
-    adjMatrix->writeAdjacencyList(modify_path(arguments["final"],"rebuild"));
+    adjMatrix->writeAdjacencyList(modify_path(arguments["final"],4,"rebuild"));
     //adjMatrix->print();
 
     delete adjMatrix;

@@ -34,7 +34,7 @@ void BicliqueExtractor::extract()
     file.open("log.txt", std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero log
     file.close();
 
-    string new_path = modify_path(path, "bicliques.txt");
+    string new_path = modify_path(path, 4 ,"bicliques.txt");
     file.open(new_path, std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero bicliques y se cierra
     file.close();
 
@@ -139,7 +139,7 @@ void BicliqueExtractor::extract()
     file << "Sum of Multiplication of S x C: " << biclique_sxc_size << endl;
     file.close();
 
-    string path_write = modify_path(path, "compressed");
+    string path_write = modify_path(path, 4 ,"compressed");
     adjMatrix->writeAdjacencyList(path_write);
 }
 
@@ -443,7 +443,7 @@ void BicliqueExtractor::writeBiclique(vector<Node*>* S, vector<uInt>* C){
     std::unique_lock<mutex> lock(mtxWriteBiclique);
     ofstream file;
     // file.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
-    string new_path = modify_path(path, "bicliques.txt");
+    string new_path = modify_path(path, 4 , "bicliques.txt");
     file.open(new_path, fstream::app);
     file << "S: ";
     for (size_t j = 0; j < S->size(); j++)
