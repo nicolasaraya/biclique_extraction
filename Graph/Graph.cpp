@@ -1,8 +1,8 @@
-#include "AdjacencyMatrix.hpp"
+#include "Graph.hpp"
 
 // PUBLIC METHODS
 
-AdjacencyMatrix::AdjacencyMatrix(const string path, bool selfLoops) : path(path), selfLoops(selfLoops)
+Graph::Graph(const string path, bool selfLoops) : GraphADT(path, selfLoops)
 {
 	TIMERSTART(build_matrix);
 	if(path.find(".txt" )!= std::string::npos) {
@@ -14,20 +14,22 @@ AdjacencyMatrix::AdjacencyMatrix(const string path, bool selfLoops) : path(path)
 		format = "bin";
 	}
 	TIMERSTOP(build_matrix);
-	//print();
 }
 
-AdjacencyMatrix::AdjacencyMatrix()
-{
-}
+Graph::Graph() {}
 
-AdjacencyMatrix::~AdjacencyMatrix()
+Graph::~Graph()
 {
 	for (auto i : matrix)
 		delete i;
 }
-// g++ checker.cpp AdjacencyMatrix.cpp Node.cpp Utils.cpp -o checker
-void AdjacencyMatrix::addBicliques(string path)
+
+string Graph::getPath()
+{
+	return path;
+}
+// g++ checker.cpp Graph.cpp Node.cpp Utils.cpp -o checker
+void Graph::addBicliques(string path)
 {
 	cout << "Read File Bicliques" << endl;
 	ifstream file;
@@ -82,7 +84,7 @@ void AdjacencyMatrix::addBicliques(string path)
 
 // funcion que agrega los nodos intermedios que no contienen ninguna arista
 // para facilitar la busqueda de los nodos source
-void AdjacencyMatrix::standardize(vector<uInt>* aux)
+void Graph::standardize(vector<uInt>* aux)
 {
 	cout << "Standarize" << endl;
 	vector<Node*> new_matrix;
@@ -113,7 +115,7 @@ void AdjacencyMatrix::standardize(vector<uInt>* aux)
 
 }
 
-void AdjacencyMatrix::buildTxt()
+void Graph::buildTxt()
 {
 	// int count = 0;
 	ifstream file;
@@ -167,7 +169,7 @@ void AdjacencyMatrix::buildTxt()
 	matrix.shrink_to_fit();
 }
 
-void AdjacencyMatrix::buildBin()
+void Graph::buildBin()
 {
 	ifstream binFile; 
     binFile.open(path, ios::in | ios::binary);    
@@ -219,16 +221,16 @@ void AdjacencyMatrix::buildBin()
 }
 
 
-uint64_t AdjacencyMatrix::size()
+uint64_t Graph::size()
 {
 	return matrix.size();
 }
 
-Node* AdjacencyMatrix::back(){
+Node* Graph::back(){
 	return matrix.back();
 }
 
-uint64_t AdjacencyMatrix::all_edges_size()
+uint64_t Graph::all_edges_size()
 {
 	uint64_t size = 0;
 	for (auto it : matrix)
@@ -238,12 +240,12 @@ uint64_t AdjacencyMatrix::all_edges_size()
 	return size;
 }
 
-void AdjacencyMatrix::insert(Node *node)
+void Graph::insert(Node *node)
 {
 	matrix.push_back(node);
 }
 
-void AdjacencyMatrix::print()
+void Graph::print()
 {
 	for (size_t i = 0; i < matrix.size(); i++)
 	{
@@ -251,7 +253,7 @@ void AdjacencyMatrix::print()
 	}
 }
 
-void AdjacencyMatrix::writeAdjacencyList(string path_write_)
+void Graph::writeAdjacencyList(string path_write_)
 {
 	if( size() == 0 ){
 		cout << "Matrix Empty" << endl;
@@ -309,7 +311,7 @@ void AdjacencyMatrix::writeAdjacencyList(string path_write_)
 	file.close();
 }
 
-void AdjacencyMatrix::restoreNodes()
+void Graph::restoreNodes()
 {
 	for (size_t i = 0; i < matrix.size(); i++)
 	{
@@ -317,27 +319,27 @@ void AdjacencyMatrix::restoreNodes()
 	}
 }
 
-AdjMatrixIterator AdjacencyMatrix::begin()
+AdjMatrixIterator Graph::begin()
 {
 	return matrix.begin();
 }
 
-AdjMatrixIterator AdjacencyMatrix::end()
+AdjMatrixIterator Graph::end()
 {
 	return matrix.end();
 }
 
-Node* AdjacencyMatrix::at(uInt pos){
+Node* Graph::at(uInt pos){
 	return matrix.at(pos);
 }
 
-Node* AdjacencyMatrix::find(uInt node_id){
+Node* Graph::find(uInt node_id){
 	if( size() == num_nodes )
 		return at(node_id-1);
 	return binarySearch(0, size()-1,node_id);
 }
 
-Node* AdjacencyMatrix::binarySearch(uInt l, uInt r, uInt node_id){
+Node* Graph::binarySearch(uInt l, uInt r, uInt node_id){
 
     if (r >= l) {
         uInt mid = l + (r - l) / 2;

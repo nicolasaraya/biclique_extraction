@@ -1,20 +1,18 @@
-#ifndef ADJ_MATRIX
-#define ADJ_MATRIX
+#ifndef GRAPH_HPP
+#define GRAPH_HPP
+
+#include "GraphADT.hpp"
 #include "Node.hpp"
 
 using namespace std;
 
 typedef vector<Node *>::iterator AdjMatrixIterator;
-typedef int BinVar;
-//typedef long long int BinVar; 
-
-class AdjacencyMatrix
+class Graph : public GraphADT
 {
 public:
-    // PUBLIC METHODS
-    AdjacencyMatrix(const string, bool);
-    AdjacencyMatrix();
-    ~AdjacencyMatrix();
+    Graph(const string, bool);
+    Graph();
+    ~Graph();
 
     void addBicliques(string);
     void standardize(vector<uInt>*);
@@ -31,16 +29,11 @@ public:
     AdjMatrixIterator end();
     Node* at(uInt);
     Node* find(uInt);
-    // PUBLIC VARIABLES
+    string getPath();
 
 private:
     // PRIVATE METHODS
     vector<Node*> matrix;
-    string path;
-    bool selfLoops = false;
-    uint64_t num_nodes;
-    string format;
-
     Node* binarySearch(uInt, uInt, uInt);
 };
 

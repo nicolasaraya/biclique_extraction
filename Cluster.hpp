@@ -6,38 +6,37 @@
 #include <unordered_map>
 #include <functional>
 
+#include "Graph/Node.hpp"
+#include "Graph/NodeWeighted.hpp"
+
 #include "Trie.hpp"
-#include "Define.hpp"
-#include "Node.hpp"
 
 using namespace std;
 
-class Cluster
+template <typename NodeType> class Cluster
 {
-public:
-    // PUBLIC METHODS
-    Cluster(vector<Node *> *);
-    ~Cluster();
 
+public:
+    Cluster(vector<NodeType *> *);
+    ~Cluster();
     void computeTrie();
-    vector<Biclique *> *getBicliques();
+    vector<Biclique<NodeType>*> *getBicliques();
     void printCluster();
     void printMap();
-
-    // PUBLIC VARIABLES
-    Trie *t;
-
+    Trie<NodeType> *t;
 private:
-    // PRIVATE VARIABLES
-    vector<Node *> *nodes;
-
+    vector<NodeType *> *nodes;
     unordered_map<uInt, uint32_t> mapFrecuency; // Valor Nodo, Frecuencia
     uint16_t minFreq = 1;
-
-    // PRIVATE METHODS
-    bool sortSizeComp(Node *, Node *);
+    bool weighted = false;
+    bool sortSizeComp(NodeType *, NodeType *);
     void computeFrecuency();
     void computeHistogram();
+
+
 };
+
+template class Cluster<NodeWeighted>;
+template class Cluster<Node>;
 
 #endif

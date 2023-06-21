@@ -27,6 +27,8 @@
 #include <math.h>
 #include <thread>
 #include <future>
+#include <type_traits>
+
 
 #if defined(BITS32)
     typedef int Int;

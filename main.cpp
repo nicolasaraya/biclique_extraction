@@ -1,7 +1,9 @@
 #include <iostream>
-#include "BicliqueExtractor.hpp"
-#include "Utils.hpp"
 #include <unistd.h>
+
+#include "BicliqueExtractor.hpp"
+#include "Utils/Utils.hpp"
+#include "Graph/GraphWeighted.hpp"
 
 using namespace std;
 
@@ -13,7 +15,7 @@ int main(int argc, char *argv[])
         {"numSignatures", "2"},
         {"minClusterSize", "10"},
         {"bicliqueSize", "2"},
-        {"minAdyNodes", "500"},
+        {"minAdyNodes", "5"},
         {"bsDecrease", "500"},
         {"shingleSize", "1"},
         {"selfLoop", "0"},
@@ -42,7 +44,7 @@ int main(int argc, char *argv[])
     
     
     
-    BicliqueExtractor be(
+    /*BicliqueExtractor be(
         arguments["file"],
         atoi(arguments["numSignatures"].c_str()),
         atoi(arguments["minClusterSize"].c_str()),
@@ -54,7 +56,27 @@ int main(int argc, char *argv[])
         atoi(arguments["threshold"].c_str()),
         atoi(arguments["iterations"].c_str())
         );
-    be.extract();
+    be.extract();*/
+
+    GraphWeighted* g = new GraphWeighted(arguments["file"]);
+    BicliqueExtractor<GraphWeighted, NodeWeighted>* be = new BicliqueExtractor<GraphWeighted, NodeWeighted>(
+        atoi(arguments["numSignatures"].c_str()),
+        atoi(arguments["minClusterSize"].c_str()),
+        atoi(arguments["minAdyNodes"].c_str()),
+        atoi(arguments["bicliqueSize"].c_str()),
+        atoi(arguments["bsDecrease"].c_str()),
+        atoi(arguments["shingleSize"].c_str()),
+        atoi(arguments["selfLoop"].c_str()),
+        atoi(arguments["threshold"].c_str()),
+        atoi(arguments["iterations"].c_str())
+        );
+
+    be->setGraph(g);
+    be->extract();
+    //g->print();
+    //be->extractWeighted();
+    delete(be);
+    delete(g);
     
     
     

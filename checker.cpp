@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
-#include "AdjacencyMatrix.hpp"
-#include "Utils.hpp"
+#include "Graph/Graph.hpp"
+#include "Utils/Utils.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     cout << "final file:  " << final_file_path << endl;
     cout << "bicliques file:  " << bicliques_file_path << endl;
 
-    AdjacencyMatrix *adjMatrix = new AdjacencyMatrix(final_file_path, false);
+    Graph *adjMatrix = new Graph(final_file_path, false);
     cout << "alledgessize: " << adjMatrix->all_edges_size() << endl;    
     cout << "size: " << adjMatrix->size() << endl;
     adjMatrix->addBicliques(bicliques_file_path);

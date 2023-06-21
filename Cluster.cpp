@@ -1,19 +1,26 @@
 #include "Cluster.hpp"
 
 // PUBLIC METHODS
-Cluster::Cluster(vector<Node *> *entry)
+template <typename NodeType> 
+Cluster<NodeType>::Cluster(vector<NodeType *> *entry)
 {
-    t = new Trie();
+    t = new Trie<NodeType>();
     nodes = entry;
+    if(std::is_same<NodeType, NodeWeighted>::value){
+        weighted = true;
+    }
 }
-Cluster::~Cluster()
+
+template <typename NodeType> 
+Cluster<NodeType>::~Cluster()
 {
     mapFrecuency.clear();
     delete t;
     delete nodes;
 }
 
-void Cluster::computeHistogram()
+template <typename NodeType> 
+void Cluster<NodeType>::computeHistogram()
 {
     computeFrecuency();
 
@@ -24,26 +31,28 @@ void Cluster::computeHistogram()
         node->moveToCache(&mapFrecuency, minFreq);
     }
     sort(nodes->begin(), nodes->end(), bind(&Cluster::sortSizeComp, this, placeholders::_1, placeholders::_2));
+    
 }
 
-void Cluster::computeTrie()
+template <typename NodeType> 
+void Cluster<NodeType>::computeTrie()
 {
-    // printCluster();
-
-    computeHistogram();
+    if(nodes != nullptr){
+        computeHistogram();
+        t->create(nodes);
+    }
     mapFrecuency.clear();
-    // printCluster();
-    t->create(nodes);
-
-    // t->printTrie();
+    
 }
 
-vector<Biclique *> *Cluster::getBicliques()
+template <typename NodeType> 
+vector<Biclique<NodeType>*>* Cluster<NodeType>::getBicliques()
 {
     return t->getBicliques();
 }
 
-void Cluster::printCluster()
+template <typename NodeType> 
+void Cluster<NodeType>::printCluster()
 {
     cout << endl
          << "***************" << endl;
@@ -55,9 +64,8 @@ void Cluster::printCluster()
          << endl;
 }
 
-// PRIVATE METHODS
-
-bool Cluster::sortSizeComp(Node *a, Node *b)
+template <typename NodeType> 
+bool Cluster<NodeType>::sortSizeComp(NodeType *a, NodeType *b)
 {
     if (a->edgesSize() > b->edgesSize()) // modificado
     {
@@ -71,12 +79,20 @@ bool Cluster::sortSizeComp(Node *a, Node *b)
         return false;
 }
 
-void Cluster::computeFrecuency()
-{
+
+template <typename NodeType> 
+void Cluster<NodeType>::computeFrecuency()
+{   
+    // printMap();
+}
+
+
+template<>
+void Cluster<Node>::computeFrecuency(){
     for (auto node : *nodes)
     {
         for (auto j = node->adjacentsBegin(); j != node->adjacentsEnd(); j++)
-        {
+        {   
             auto aux = mapFrecuency.find(*j);
             if (aux != mapFrecuency.end())
             { // existe
@@ -88,10 +104,30 @@ void Cluster::computeFrecuency()
             }
         }
     }
-    // printMap();
 }
 
-void Cluster::printMap()
+template <>
+void Cluster<NodeWeighted>::computeFrecuency(){
+    for (auto node : *nodes)
+    {
+        for (auto j = node->adjacentsBegin(); j != node->adjacentsEnd(); j++)
+        {   
+            auto aux = mapFrecuency.find((*j).first);
+            if (aux != mapFrecuency.end())
+            { // existe
+                mapFrecuency[(*j).first]++;
+            }
+            else
+            {
+                mapFrecuency[(*j).first] = 1; // insert freq 1;
+            }
+        }
+    }
+
+}
+
+template <typename NodeType> 
+void Cluster<NodeType>::printMap()
 {
     cout << "********MAP**********" << endl;
     for (auto i : mapFrecuency)

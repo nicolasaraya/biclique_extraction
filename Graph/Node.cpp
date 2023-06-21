@@ -3,19 +3,7 @@ using namespace std;
 
 // PUBLIC METHODS
 
-Node::Node(uInt id) : id(id)
-{
-	// withSelfLoop = false;
-	selfLoop = false;
-}
-
-/*Node::Node(uint64_t id, bool selfLoop) : id(id), withSelfLoop(selfLoop)
-{
-	if(withSelfLoop)
-	{
-		adjacentNodes.push_back(id);
-	}
-}*/
+Node::Node(uInt id) : NodeADT(id) {;}
 
 Node::~Node()
 {
@@ -23,21 +11,6 @@ Node::~Node()
 	cacheNodes.clear();
 }
 
-bool Node::hasSelfLoop()
-{
-	// return natureSelfLoop;
-	return selfLoop;
-}
-
-bool Node::isModified()
-{
-	return modified;
-}
-
-uint64_t Node::getId()
-{
-	return id;
-}
 
 uint64_t Node::edgesSize()
 {
@@ -46,10 +19,6 @@ uint64_t Node::edgesSize()
 
 void Node::addAdjacent(uInt id_adj)
 {
-	/*if(id_adj == id) {
-		natureSelfLoop = true;
-		if(withSelfLoop){ return; }
-	}*/
 	adjacentNodes.push_back(id_adj);
 }
 
@@ -76,23 +45,6 @@ void Node::find_to_erase(vector<uInt> *C)
 		else
 			new_adjacentNodes.push_back(adjacentNodes.at(i));
 	}
-	/*
-	cout << "****************" << endl;
-	for (size_t i = 0; i < adjacentNodes.size(); i++)
-		cout << adjacentNodes[i] << " ";
-	cout << endl
-		 << "C: ";
-	for (size_t i = 0; i < C->size(); i++)
-		cout << C->at(i) << " ";
-	cout << endl
-		 << " new ";
-	for (size_t i = 0; i < new_adjacentNodes.size(); i++)
-		std::cout << new_adjacentNodes.at(i) << " ";
-	std::cout << endl;
-
-	cout << "****************" << endl;*/
-	// adjacentNodes.clear();
-	// adjacentNodes = new_adjacentNodes;
 	adjacentNodes.swap(new_adjacentNodes);
 	new_adjacentNodes.clear();
 }
@@ -104,7 +56,6 @@ bool Node::findAdjacent(uInt num){
 }
 
 bool Node::binarySearch(uInt l, uInt r, uInt num){
-	//cout << "l: " << l << "  r: " << r << endl;
     if (r >= l) {
         uInt mid = l + (r - l) / 2;
 
@@ -122,15 +73,6 @@ bool Node::binarySearch(uInt l, uInt r, uInt num){
     return false;
 }
 
-void Node::setModified(bool modified)
-{
-	this->modified = modified;
-}
-
-void Node::setSelfLoop(bool selfloop)
-{
-	selfLoop = selfloop;
-}
 
 void Node::sort()
 {
@@ -177,7 +119,7 @@ void Node::moveToCache(unordered_map<uInt, uint32_t> *mapFrecuency, uint16_t min
 	}
 }
 
-uint64_t Node::getFrontAdjacent()
+uInt Node::getFrontAdjacent()
 {
 	if (adjacentNodes.size() > 0)
 		return adjacentNodes.at(0);
