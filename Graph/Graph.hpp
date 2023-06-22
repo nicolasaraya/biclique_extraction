@@ -11,6 +11,7 @@ class Graph : public GraphADT
 {
 public:
     Graph(const string, bool);
+    Graph(const string);
     Graph();
     ~Graph();
 

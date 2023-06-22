@@ -16,6 +16,20 @@ Graph::Graph(const string path, bool selfLoops) : GraphADT(path, selfLoops)
 	TIMERSTOP(build_matrix);
 }
 
+Graph::Graph(const string path) : GraphADT(path, false)
+{
+	TIMERSTART(build_matrix);
+	if(path.find(".txt" )!= std::string::npos) {
+		buildTxt();
+		format = "txt";
+	}
+	else if(path.find(".bin")!= std::string::npos) {
+		buildBin();
+		format = "bin";
+	}
+	TIMERSTOP(build_matrix);
+}
+
 Graph::Graph() {}
 
 Graph::~Graph()

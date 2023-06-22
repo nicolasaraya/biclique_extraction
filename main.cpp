@@ -43,51 +43,39 @@ int main(int argc, char *argv[])
     cout << "Bits: " << sizeof(Int) * 8 << endl;
     
     
+    Graph* g = new Graph(arguments["file"]);
+    BicliqueExtractor<Graph, Node> be(
+        atoi(arguments["numSignatures"].c_str()),
+        atoi(arguments["minClusterSize"].c_str()),
+        atoi(arguments["minAdyNodes"].c_str()),
+        atoi(arguments["bicliqueSize"].c_str()),
+        atoi(arguments["bsDecrease"].c_str()),
+        atoi(arguments["shingleSize"].c_str()),
+        atoi(arguments["selfLoop"].c_str()),
+        atoi(arguments["threshold"].c_str()),
+        atoi(arguments["iterations"].c_str())
+        );
+    be.extract();
+
+    /*
+    GraphWeighted g = GraphWeighted(arguments["file"]);
+    BicliqueExtractor<GraphWeighted, NodeWeighted> be = BicliqueExtractor<GraphWeighted, NodeWeighted>(
+        atoi(arguments["numSignatures"].c_str()),
+        atoi(arguments["minClusterSize"].c_str()),
+        atoi(arguments["minAdyNodes"].c_str()),
+        atoi(arguments["bicliqueSize"].c_str()),
+        atoi(arguments["bsDecrease"].c_str()),
+        atoi(arguments["shingleSize"].c_str()),
+        atoi(arguments["selfLoop"].c_str()),
+        atoi(arguments["threshold"].c_str()),
+        atoi(arguments["iterations"].c_str())
+        );
+
+    be.setGraph(g);
+    be.extract();
+    */
     
-    /*BicliqueExtractor be(
-        arguments["file"],
-        atoi(arguments["numSignatures"].c_str()),
-        atoi(arguments["minClusterSize"].c_str()),
-        atoi(arguments["minAdyNodes"].c_str()),
-        atoi(arguments["bicliqueSize"].c_str()),
-        atoi(arguments["bsDecrease"].c_str()),
-        atoi(arguments["shingleSize"].c_str()),
-        atoi(arguments["selfLoop"].c_str()),
-        atoi(arguments["threshold"].c_str()),
-        atoi(arguments["iterations"].c_str())
-        );
-    be.extract();*/
-
-    GraphWeighted* g = new GraphWeighted(arguments["file"]);
-    BicliqueExtractor<GraphWeighted, NodeWeighted>* be = new BicliqueExtractor<GraphWeighted, NodeWeighted>(
-        atoi(arguments["numSignatures"].c_str()),
-        atoi(arguments["minClusterSize"].c_str()),
-        atoi(arguments["minAdyNodes"].c_str()),
-        atoi(arguments["bicliqueSize"].c_str()),
-        atoi(arguments["bsDecrease"].c_str()),
-        atoi(arguments["shingleSize"].c_str()),
-        atoi(arguments["selfLoop"].c_str()),
-        atoi(arguments["threshold"].c_str()),
-        atoi(arguments["iterations"].c_str())
-        );
-
-    be->setGraph(g);
-    be->extract();
-    //g->print();
-    //be->extractWeighted();
-    delete(be);
     delete(g);
-    
-    
-    
-    //AdjacencyMatrix* adjMatrix = new AdjacencyMatrix(arguments["file"], false);
-    //adjMatrix->print();
-    //cout << "adjmatrixsize " << adjMatrix->all_edges_size() << endl;
-    //cout << "adjmatrixsizenode " << adjMatrix->size() << endl;
-    //cout << "sleep" << endl;
-    //sleep(30);
-    //delete adjMatrix;
-    
     
 
     return 0;
