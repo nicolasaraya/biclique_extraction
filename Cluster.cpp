@@ -83,7 +83,7 @@ bool Cluster<NodeType>::sortSizeComp(NodeType *a, NodeType *b)
 template <typename NodeType> 
 void Cluster<NodeType>::computeFrecuency()
 {   
-    // printMap();
+    printMap();
 }
 
 
@@ -123,6 +123,7 @@ void Cluster<NodeWeighted>::computeFrecuency(){
             }
         }
     }
+    printMap();
 
 }
 
@@ -135,3 +136,4 @@ void Cluster<NodeType>::printMap()
         cout << i.first << ", freq: " << i.second << endl;
     }
 }
+

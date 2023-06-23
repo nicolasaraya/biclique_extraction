@@ -25,6 +25,7 @@ void Trie<NodeType>::create(vector<NodeType *> *nodes)
 
         insert(nodes->at(i));
     }
+    printTrie();
 }
 
 template<typename NodeType>
@@ -206,6 +207,7 @@ void Trie<NodeWeighted>::insert(NodeWeighted *node)
             t_node->indices = new vector<NodeWeighted *>();
             t_node->childrens = new vector<TrieNode<NodeWeighted> *>();
             t_node->vertex = (*adj).first;
+            t_node->weight = (*adj).second;
             t_node->indices->push_back(node);
             t_node->depth = i + 1;
 
@@ -228,6 +230,23 @@ template<typename NodeType>
 void Trie<NodeType>::print(TrieNode<NodeType> *node)
 {
     cout << "Nodo: " << node->vertex << endl;
+    cout << "Indices: ";
+    for (size_t i = 0; i < node->indices->size(); i++)
+    {
+        cout << node->indices->at(i)->getId() << " ";
+    }
+    cout << endl;
+    cout << "Hijos de " << node->vertex << endl;
+    for (size_t i = 0; i < node->childrens->size(); i++)
+    {
+        print(node->childrens->at(i));
+    }
+}
+
+template<>
+void Trie<NodeWeighted>::print(TrieNode<NodeWeighted> *node)
+{
+    cout << "Nodo: " << "(" <<node->vertex << "," << node->weight << ")" << endl;
     cout << "Indices: ";
     for (size_t i = 0; i < node->indices->size(); i++)
     {

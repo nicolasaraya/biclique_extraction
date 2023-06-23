@@ -13,7 +13,9 @@ public:
 	~NodeWeighted();
 	uint64_t edgesSize();
 	void addAdjacent(uInt, uInt);
-	void find_to_erase(vector<uInt> *);
+	//void find_to_erase(vector<uInt> *);
+	
+	vector<uInt> find_to_erase(vector<uInt> *);
 	bool findAdjacent(uInt);
 	void shrinkToFit();
 	void sort();

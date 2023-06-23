@@ -2,25 +2,6 @@
 
 // PUBLIC METHODS
 
-/*
-template <typename GraphType, typename NodeType> 
-BicliqueExtractor<GraphType, NodeType>::BicliqueExtractor(
-    const string path, uint16_t num_signatures, uint16_t minClusterSize, uint16_t minAdyNodes, uint32_t biclique_size, uint16_t bs_decrease, uint32_t shingleSize, bool selfLoop, uint32_t threshold, uint16_t iterations) : path(path), num_signatures(num_signatures), minClusterSize(minClusterSize), biclique_size(biclique_size), minAdyNodes(minAdyNodes), bs_decrease(bs_decrease), shingleSize(shingleSize), selfLoop(selfLoop), threshold(threshold), iterations(iterations)
-{
-
-    graph = new AdjacencyMatrix(path, selfLoop);
-    iteration = 1;
-    biclique_s_size = 0;
-    biclique_sxc_size = 0;
-    biclique_c_size = 0;
-    total_biclique = 0;
-    cluster_size = 0;
-    n_bicliques_iter = 0;
-    if (DEBUG_LEVEL > 10)
-        graph->print();
-}
-*/
-
 template <typename GraphType, typename NodeType> 
 BicliqueExtractor<GraphType, NodeType>::BicliqueExtractor(
     uint16_t num_signatures, uint16_t minClusterSize, uint16_t minAdyNodes, uint32_t biclique_size, uint16_t bs_decrease, uint32_t shingleSize, bool selfLoop, uint32_t threshold, uint16_t iterations) : num_signatures(num_signatures), minClusterSize(minClusterSize), biclique_size(biclique_size), minAdyNodes(minAdyNodes), bs_decrease(bs_decrease), shingleSize(shingleSize), selfLoop(selfLoop), threshold(threshold), iterations(iterations)
@@ -89,6 +70,7 @@ void BicliqueExtractor<GraphType, NodeType>::extract()
             }
             
         #else
+            printSignatures(signatures);
             computeClusters(signatures, 0);
         #endif
 
@@ -192,6 +174,7 @@ void BicliqueExtractor<GraphType, NodeType>::makeGroups(Signatures *signatures, 
     return group;
 }
 #endif
+
 template <typename GraphType, typename NodeType> 
 vector<typename Shingle<NodeType>::Signatures*> BicliqueExtractor<GraphType, NodeType>::makeGroups(SignaturesType *signatures, int column)
 {
@@ -201,20 +184,13 @@ vector<typename Shingle<NodeType>::Signatures*> BicliqueExtractor<GraphType, Nod
 
     for (SignIterator signNode = signatures->begin(); signNode != signatures->end(); signNode++)
     {
-        if (partition->empty())
-        {
-            partition->push_back(*signNode);
-        }
-        else if (partition->front()->minHash.at(column) == (*signNode)->minHash.at(column))
-        {
-            partition->push_back(*signNode);
-        }
-        else
-        {
+        if (not partition->empty() and partition->front()->minHash.at(column) != (*signNode)->minHash.at(column)){
             partition = new SignaturesType();
             group.push_back(partition);
         }
+        partition->push_back(*signNode);
     }
+
     return group;
 }
 
@@ -230,9 +206,12 @@ void BicliqueExtractor<GraphType, NodeType>::computeClusters(SignaturesType *sig
 
     for (auto cluster : candidates)
     {
+        cout << "*** Cluster: ***" << endl;
+        printSignatures(cluster);
+        cout << "~~~~~~~~~~" << endl;
         auto clusterSize = cluster->size();
 
-        if (clusterSize > minClusterSize and (int) column < num_signatures - 1)
+        if (clusterSize >= minClusterSize and (int) column < num_signatures - 1)
         {
             computeClusters(cluster, column + 1);
         }
@@ -282,7 +261,7 @@ void BicliqueExtractor<GraphType, NodeType>::computeClusters(vector<SignaturesTy
             {
                 uint64_t numberEntries_new_group = new_groups[j]->size();
 
-                if (numberEntries_new_group > minClusterSize && column < num_signatures - (unsigned int)1)
+                if (numberEntries_new_group >= minClusterSize && column < num_signatures - (unsigned int)1)
                 {
                     vector<SignaturesType *> groups_new_cluster;
                     groups_new_cluster.push_back(new_groups[j]);
@@ -481,6 +460,40 @@ void BicliqueExtractor<GraphType, NodeType>::writeBiclique(vector<NodeType*>* S,
     for (size_t j = 0; j < C->size(); j++)
     {
         file << C->at(j);
+        if (j != C->size() - 1)
+            file << " ";
+    }
+
+    file << endl;
+    
+    file.close();
+
+}
+
+template <> 
+void BicliqueExtractor<GraphWeighted, NodeWeighted>::writeBiclique(vector<NodeWeighted*>* S, vector<uInt>* C){
+    std::unique_lock<mutex> lock(mtxWriteBiclique);
+    ofstream file;
+    // file.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
+    string new_path = modify_path(graph->getPath(), 4 , "bicliques.txt");
+    file.open(new_path, fstream::app);
+    file << "S: ";
+    vector<uInt> weights; 
+    for (size_t j = 0; j < S->size(); j++)
+    {
+        file << S->at(j)->getId();
+        if (j != S->size() - 1)
+            file << " ";
+        // cout << "Estoy eliminando S " << j << endl;
+        weights = S->at(j)->find_to_erase(C);
+        S->at(j)->setModified(true);
+    }
+    file << endl
+            << "C: ";
+
+    for (size_t j = 0; j < C->size(); j++)
+    {
+        file << "(" <<C->at(j) << "," << weights.at(j) << ")";
         if (j != C->size() - 1)
             file << " ";
     }

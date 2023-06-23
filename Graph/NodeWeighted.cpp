@@ -25,11 +25,12 @@ void NodeWeighted::shrinkToFit()
 uint64_t NodeWeighted::edgesSize(){
 	return adjacentNodes.size();
 }
-void NodeWeighted::find_to_erase(vector<uInt> *C)
+vector<uInt> NodeWeighted::find_to_erase(vector<uInt> *C)
 {
+	vector<uInt> weights; 
 	vector<pair<uInt, uInt>> new_adjacentNodes;
-	vector<uInt>::iterator it = C->begin();
-	vector<uInt>::iterator it_end = C->end();
+	auto it = C->begin();
+	auto it_end = C->end();
 	for (size_t i = 0; i < adjacentNodes.size(); i++)
 	{
 		if (it == it_end)
@@ -38,13 +39,18 @@ void NodeWeighted::find_to_erase(vector<uInt> *C)
 			continue;
 		}
 
-		if ((*it) == adjacentNodes.at(i).first)
+		if ((*it) == adjacentNodes.at(i).first){
+			weights.push_back(adjacentNodes.at(i).second);
 			it++;
-		else
+		}
+		else {
 			new_adjacentNodes.push_back(adjacentNodes.at(i));
+		}
 	}
 	adjacentNodes.swap(new_adjacentNodes);
 	new_adjacentNodes.clear();
+	return weights;
+
 }
 
 bool NodeWeighted::findAdjacent(uInt num){

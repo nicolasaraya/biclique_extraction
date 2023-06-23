@@ -2,7 +2,6 @@ OBJS	=   	main.o \
 				Graph.o \
 				GraphWeighted.o \
 				BicliqueExtractor.o \
-				BicliqueExtractorWeighted.o \
 				Cluster.o \
 				Node.o \
 				NodeWeighted.o \
@@ -22,7 +21,6 @@ SOURCE	=       main.cpp \
 				Graph/NodeWeighted.cpp \
 				Graph/NodeADT.hpp \
 				BicliqueExtractor.cpp \
-				BicliqueExtractorWeighted \
 				Cluster.cpp \
 				Shingle.cpp \
 				Trie.cpp \
@@ -61,9 +59,6 @@ Graph.o: Graph/Graph.cpp
 
 BicliqueExtractor.o: BicliqueExtractor.cpp
 	$(CC) $(FLAGS) BicliqueExtractor.cpp 
-
-BicliqueExtractorWeighted.o: BicliqueExtractorWeighted.cpp
-	$(CC) $(FLAGS) BicliqueExtractorWeighted.cpp 
 
 Cluster.o: Cluster.cpp
 	$(CC) $(FLAGS) Cluster.cpp 

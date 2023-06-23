@@ -11,6 +11,7 @@ template<typename NodeType>
 struct TrieNode{
     TrieNode *parent;
     uInt vertex;
+    uInt weight;
     vector<NodeType*>* indices;
     vector<TrieNode*>* childrens;
     uint32_t depth;

@@ -21,9 +21,6 @@ public:
     ~BicliqueExtractor();
     void extract();
     void setGraph(GraphType*); 
-    
-
-
 
 private:
     typedef Shingle<NodeType>::Signatures SignaturesType;
@@ -55,13 +52,7 @@ private:
     bool compareMinHash(const SignNode<NodeType> *, const SignNode<NodeType> *, int);
     bool compareBicliqueRank(const Biclique<NodeType> *, const Biclique<NodeType> *);
 
-    #if defined(parallel)
-    vector<Signatures *> makeGroups(Signatures *, uInt, uInt, int);
-    void parallelExtraction(Signatures*, uInt, uInt);
-    void shingleParallel(Shingle*, Signatures*, uInt, uInt);
-    #endif
-
-    vector<typename Shingle<NodeType>::Signatures*>makeGroups(SignaturesType *, int);
+    vector<typename Shingle<NodeType>::Signatures*> makeGroups(SignaturesType *, int);
     void writeBiclique(vector<NodeType *> *, vector<uInt> *);
     void computeClusters(vector<SignaturesType *> *, unsigned int);
     void computeClusters(SignaturesType *, unsigned int);
@@ -73,21 +64,11 @@ private:
     bool sortC(uint64_t, uint64_t);
     bool sortS(NodeType *, NodeType *);
 
-    //weight
-    /*
-    Signatures *computeShinglesWeighted();
-    void getBicliquesWeighted(Cluster *);
-    void sortBicliques(vector<BicliqueWeighted *> *);
-    bool compareBicliqueRankW(const BicliqueWeighted *, const BicliqueWeighted *);
-    void writeBiclique(vector<NodeWeighted *> *, vector<uInt> *);
-    bool sortSw(NodeWeighted *, NodeWeighted *);
-    void computeClustersW(Signatures *, unsigned int);
-    void computeClustersW(vector<Signatures *> *, unsigned int);
     #if defined(parallel)
-    void shingleParallelW(Shingle*, Signatures*, uInt, uInt);
-    void parallelExtractionW(Signatures*, uInt, uInt);
+    vector<Signatures *> makeGroups(Signatures *, uInt, uInt, int);
+    void parallelExtraction(Signatures*, uInt, uInt);
+    void shingleParallel(Shingle*, Signatures*, uInt, uInt);
     #endif
-*/
 };
 
 template class BicliqueExtractor<GraphWeighted, NodeWeighted>;
