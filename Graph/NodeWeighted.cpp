@@ -85,7 +85,7 @@ void NodeWeighted::sort()
 	std::sort(adjacentNodes.begin(), adjacentNodes.end(), bind(&NodeWeighted::sortWeighted, this, placeholders::_1, placeholders::_2)); 
 }
 
-void NodeWeighted::sortByFrecuency(unordered_map<uInt, uint32_t> *mapFrecuency)
+void NodeWeighted::sortByFrecuency(unordered_map<string, uint32_t> *mapFrecuency)
 {
 	std::sort(adjacentNodes.begin(), adjacentNodes.end(), bind(&NodeWeighted::sortFrecuencyComp, this, placeholders::_1, placeholders::_2, mapFrecuency));
 }
@@ -111,11 +111,12 @@ bool NodeWeighted::removeAdjacent(uInt idAdj)
 	}
 }
 
-void NodeWeighted::moveToCache(unordered_map<uInt, uint32_t> *mapFrecuency, uint16_t minFreq)
+void NodeWeighted::moveToCache(unordered_map<string , uint32_t> *mapFrecuency, uint16_t minFreq)
 {
 	for (auto it = (adjacentNodes.end() - 1); it != adjacentNodes.begin(); it--)
 	{ // eliminar freq 1
-		if (mapFrecuency->at((*it).first) <= minFreq)
+		string it_id = to_string((*it).first) + "," + to_string((*it).second);
+		if (mapFrecuency->at(it_id) <= minFreq)
 		{
 			cacheNodes.push_back(*it);
 			adjacentNodes.erase(it);
@@ -175,13 +176,15 @@ WeightedIterator NodeWeighted::adjacentsEnd()
 
 // PRIVATE METHODS
 
-bool NodeWeighted::sortFrecuencyComp(const pair<uInt, uInt> &a, const pair<uInt, uInt> &b, unordered_map<uInt, uint32_t> *mapFrecuency)
+bool NodeWeighted::sortFrecuencyComp(const pair<uInt, uInt> &a, const pair<uInt, uInt> &b, unordered_map<string, uint32_t> *mapFrecuency)
 {
-	if (mapFrecuency->at(a.first) > mapFrecuency->at(b.first))
+	string a_id = to_string(a.first) + "," + to_string(a.second);
+	string b_id = to_string(b.first) + "," + to_string(b.second);
+	if (mapFrecuency->at(a_id) > mapFrecuency->at(b_id))
 	{
 		return true;
 	}
-	else if (mapFrecuency->at(a.first) == mapFrecuency->at(b.first))
+	else if (mapFrecuency->at(a_id) == mapFrecuency->at(b_id))
 	{
 		return a.first < b.first;
 	}

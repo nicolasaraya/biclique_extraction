@@ -19,10 +19,11 @@ void Trie<NodeType>::create(vector<NodeType *> *nodes)
 {
     for (size_t i = 0; i < nodes->size(); i++)
     {
-        if (root != NULL)
-            if (nodes->at(i)->getFrontAdjacent() != root->vertex)
+        if (root != NULL){
+            if (nodes->at(i)->getFrontAdjacent() != root->vertex){
                 continue;
-
+            }
+        }
         insert(nodes->at(i));
     }
     printTrie();
@@ -127,6 +128,28 @@ TrieNode<NodeType> *Trie<NodeType>::find(uInt &vertex, TrieNode<NodeType> *ptr)
     return NULL;
 }
 
+
+template<typename NodeType>
+TrieNode<NodeType> *Trie<NodeType>::find(pair<uInt, uInt> node, TrieNode<NodeType> *ptr)
+{
+    if (ptr == NULL)
+    {
+        return NULL;
+    }
+    if (ptr->vertex == node.first and ptr->weight == node.second)
+    {
+        return ptr;
+    }
+    for (size_t i = 0; i < ptr->childrens->size(); i++)
+    {
+        if (ptr->childrens->at(i)->vertex == node.first and ptr->childrens->at(i)->weight == node.second)
+        {
+            return ptr->childrens->at(i);
+        }
+    }
+    return NULL;
+}
+
 template<typename NodeType>
 void Trie<NodeType>::clear(TrieNode<NodeType> *node)
 {
@@ -195,7 +218,7 @@ void Trie<NodeWeighted>::insert(NodeWeighted *node)
     int i = 0;
     for (auto adj = node->adjacentsBegin(); adj != node->adjacentsEnd(); adj++, i++)
     {
-        t_node = find((*adj).first, ptr);
+        t_node = find((*adj), ptr);
 
         if (t_node != NULL)
         { // Si ya existe

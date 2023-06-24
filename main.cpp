@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
         {"selfLoop", "0"},
         {"threshold", "100"},
         {"debug", "0"},
-        {"iterations", "1"}};
+        {"iterations", "3"}};
 
     auto arguments = parseArguments(argc, argv, &input_arguments);
 

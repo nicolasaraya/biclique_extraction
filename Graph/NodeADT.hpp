@@ -47,10 +47,10 @@ public:
 	virtual bool findAdjacent(uInt) = 0;
 	virtual void shrinkToFit() = 0;
 	virtual void sort() = 0;
-	virtual void sortByFrecuency(unordered_map<uInt, uint32_t> *) = 0;
+	//virtual void sortByFrecuency(unordered_map<uInt, uint32_t> *) = 0;
 	virtual bool includes(vector<uInt> *) = 0;
 	virtual bool removeAdjacent(uInt) = 0;
-	virtual void moveToCache(unordered_map<uInt, uint32_t> *, uint16_t) = 0;
+	//virtual void moveToCache(unordered_map<uInt, uint32_t> *, uint16_t) = 0;
 	virtual uInt getFrontAdjacent() = 0;
 	virtual bool restore() = 0;
 	virtual void print() = 0;

@@ -19,10 +19,10 @@ public:
 	bool findAdjacent(uInt);
 	void shrinkToFit();
 	void sort();
-	void sortByFrecuency(unordered_map<uInt, uint32_t> *);
+	void sortByFrecuency(unordered_map<string, uint32_t> *);
 	bool includes(vector<uInt> *);
 	bool removeAdjacent(uInt);
-	void moveToCache(unordered_map<uInt, uint32_t> *, uint16_t);
+	void moveToCache(unordered_map<string, uint32_t> *, uint16_t);
 
 	WeightedIterator adjacentsBegin();
 	WeightedIterator adjacentsEnd();
@@ -38,7 +38,7 @@ private:
 	vector<pair<uInt, uInt>> cacheNodes;
 
 	// PRIVATE METHODS
-	bool sortFrecuencyComp(const pair<uInt, uInt> &a, const pair<uInt, uInt> &b, unordered_map<uInt, uint32_t> *mapFrecuency);
+	bool sortFrecuencyComp(const pair<uInt, uInt> &a, const pair<uInt, uInt> &b, unordered_map<string, uint32_t> *mapFrecuency);
 	bool binarySearch(uInt, uInt, uInt);
 	bool sortWeighted(const pair<uInt, uInt>&a, const pair<uInt, uInt>&b);
 };

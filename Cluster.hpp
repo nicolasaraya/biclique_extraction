@@ -13,6 +13,9 @@
 
 using namespace std;
 
+
+
+
 template <typename NodeType> class Cluster
 {
 
@@ -25,10 +28,10 @@ public:
     void printMap();
     Trie<NodeType> *t;
 private:
-    vector<NodeType *> *nodes;
+    vector<NodeType*> *nodes;
     unordered_map<uInt, uint32_t> mapFrecuency; // Valor Nodo, Frecuencia
+    unordered_map<string, uint32_t> mapFrecuencyWeighted; // Valor Nodo, Frecuencia
     uint16_t minFreq = 1;
-    bool weighted = false;
     bool sortSizeComp(NodeType *, NodeType *);
     void computeFrecuency();
     void computeHistogram();
@@ -36,7 +39,7 @@ private:
 
 };
 
-template class Cluster<NodeWeighted>;
 template class Cluster<Node>;
+template class Cluster<NodeWeighted>;
 
 #endif

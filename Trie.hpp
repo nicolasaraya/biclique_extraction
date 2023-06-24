@@ -50,6 +50,7 @@ private:
 
     // PRIVATE METHODS
     TrieNode<NodeType> *find(uInt &, TrieNode<NodeType> *);
+    TrieNode<NodeType> *find(pair<uInt, uInt>, TrieNode<NodeType> *);
     void clear(TrieNode<NodeType> *);
     void computeCandidatesBicliques(TrieNode<NodeType> *, vector<Biclique<NodeType> *> *);
     void insert(NodeType*);

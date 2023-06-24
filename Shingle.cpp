@@ -7,7 +7,7 @@ Shingle<NodeType>::Shingle(uint16_t num_signatures, uint32_t minAN, uint32_t shi
                                                                                    minAdyNodes(minAN),
                                                                                    shingle_size(shingle_size)
 {
-    //srand(time(NULL));
+    srand(time(NULL));
     if (DEBUG_LEVEL > 5)
         cout << "Prime " << prime << endl;
     for (size_t i = 0; i < num_signatures; i++)
@@ -89,8 +89,8 @@ SignNode<NodeWeighted>* Shingle<NodeWeighted>::computeShingle(NodeWeighted *node
 
     for (auto adjacent = node->adjacentsBegin(); adjacent != node->adjacentsEnd(); adjacent++)
     {
-        string shingle_ = to_string((*adjacent).first) + to_string((*adjacent).second);
-        cout << shingle_ << endl;
+        string shingle_ = to_string((*adjacent).first) + " " + to_string((*adjacent).second);
+        //cout << shingle_ << endl;
         shingleID = hash_nodes(shingle_);
 
         for (uint16_t k = 0; k < num_signatures; k++)
