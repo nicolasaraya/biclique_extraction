@@ -1,3 +1,5 @@
+#!/bin/bash
+
 nameFiles=(
     "dblp-2011"
 #    "arabic-2005-hc"

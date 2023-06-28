@@ -51,7 +51,7 @@ void Cluster<NodeType>::computeHistogram()
 template <typename NodeType> 
 void Cluster<NodeType>::computeFrecuency()
 {   
-    printMap();
+    //printMap();
 }
 
 
@@ -92,7 +92,7 @@ void Cluster<NodeWeighted>::computeFrecuency(){
             }
         }
     }
-    printMap();
+    //printMap();
 
 }
 

@@ -26,7 +26,7 @@ void Trie<NodeType>::create(vector<NodeType *> *nodes)
         }
         insert(nodes->at(i));
     }
-    printTrie();
+    //printTrie();
 }
 
 template<typename NodeType>

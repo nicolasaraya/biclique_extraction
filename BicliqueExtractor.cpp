@@ -206,9 +206,12 @@ void BicliqueExtractor<GraphType, NodeType>::computeClusters(SignaturesType *sig
 
     for (auto cluster : candidates)
     {
-        cout << "*** Cluster: ***" << endl;
-        printSignatures(cluster);
-        cout << "~~~~~~~~~~" << endl;
+        if(cluster->size() > 5){
+            cout << "*** Cluster: ***" << endl;
+            printSignatures(cluster);
+            cout << "~~~~~~~~~~" << endl;
+        }
+        
         auto clusterSize = cluster->size();
 
         if (clusterSize >= minClusterSize and (int) column < num_signatures - 1)

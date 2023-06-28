@@ -89,7 +89,7 @@ SignNode<NodeWeighted>* Shingle<NodeWeighted>::computeShingle(NodeWeighted *node
 
     for (auto adjacent = node->adjacentsBegin(); adjacent != node->adjacentsEnd(); adjacent++)
     {
-        string shingle_ = to_string((*adjacent).first) + " " + to_string((*adjacent).second);
+        string shingle_ = to_string((*adjacent).first) + "," + to_string((*adjacent).second);
         //cout << shingle_ << endl;
         shingleID = hash_nodes(shingle_);
 

@@ -9,6 +9,9 @@
 
 using namespace std;
 
+float greedy = 0.1;
+const float perS = 0.2;
+
 typedef struct{
     set<unsigned> S;
     set<pair<unsigned,unsigned>> C; 
@@ -22,10 +25,10 @@ map<unsigned, set<pair<unsigned, unsigned>>>* generateBicliques(unsigned graphSi
     auto info = new map<unsigned, set<pair<unsigned, unsigned>>>();
     
     for(size_t i = 0; i < numBicliques; i++){
-        unsigned size = averageBicliqueSize + rand()%(unsigned)(averageBicliqueSize * 0.1);
-        size = size - rand()%(unsigned)(averageBicliqueSize * 0.1);
+        unsigned size = averageBicliqueSize + rand()%(unsigned)(averageBicliqueSize * greedy);
+        size = size - rand()%(unsigned)(averageBicliqueSize * greedy);
 
-        unsigned sizeS = (unsigned)(size*0.1) + rand()%(unsigned)(size * 0.12);
+        unsigned sizeS = (unsigned)(size * perS) + rand()%(unsigned)(size * perS);
         unsigned sizeC = (unsigned)(size/sizeS);
         size = sizeS * sizeC;
 
@@ -43,8 +46,8 @@ map<unsigned, set<pair<unsigned, unsigned>>>* generateBicliques(unsigned graphSi
             int tempSize = temp.C.size();
             while(temp.C.size() == tempSize){
                 unsigned ady = rand()%graphSize;
-                unsigned weight = averageWeight + rand()%(unsigned)(averageWeight * 0.5);
-                weight = weight - rand()%(unsigned)(averageWeight * 0.5);
+                unsigned weight = averageWeight + rand()%(unsigned)(averageWeight * greedy * 3);
+                weight = weight - rand()%(unsigned)(averageWeight * greedy * 3);
                 temp.C.insert(make_pair(ady,weight));
             }
         }
@@ -86,8 +89,8 @@ void generateGraph(unsigned graphNodes, unsigned averageEdges, unsigned averageW
 
 
     for(size_t i = 0; i < graphNodes; i++){
-        unsigned size = averageEdges + rand()%(unsigned)(averageEdges * 0.1);
-        size = size - rand()%(unsigned)(averageEdges * 0.1);
+        unsigned size = averageEdges + rand()%(unsigned)(averageEdges * greedy);
+        size = size - rand()%(unsigned)(averageEdges * greedy);
         set<pair<unsigned, unsigned>>* adyacents; 
         auto f = info->find(i);
         if(f != info->end()){
@@ -126,6 +129,7 @@ int main(int argc, char const *argv[])
     unsigned numBicliques = atoll(argv[3]);
     unsigned averageBicliqueSize = atoll(argv[4]);
     unsigned averageWeight = atoll(argv[5]);
+    if(argc >= 7) greedy = atof(argv[6]);
 
     if(averageWeight > averageEdges){
         averageWeight = averageEdges * 0.75;

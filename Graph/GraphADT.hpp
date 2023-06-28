@@ -5,6 +5,7 @@
 #include <vector>
 #include <string.h>
 #include <fstream>
+#include <cstdint>
 
 using namespace std;
 
