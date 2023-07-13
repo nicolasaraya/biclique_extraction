@@ -70,7 +70,7 @@ void BicliqueExtractor<GraphType, NodeType>::extract()
             }
             
         #else
-            printSignatures(signatures);
+            //printSignatures(signatures);
             computeClusters(signatures, 0);
         #endif
 
@@ -113,7 +113,6 @@ void BicliqueExtractor<GraphType, NodeType>::extract()
                 break;
         }
         iteration++;
-        break;
     }
 
     TIMERSTOP(extraction_biclique);
@@ -206,11 +205,13 @@ void BicliqueExtractor<GraphType, NodeType>::computeClusters(SignaturesType *sig
 
     for (auto cluster : candidates)
     {
+        /*
         if(cluster->size() > 5){
             cout << "*** Cluster: ***" << endl;
             printSignatures(cluster);
             cout << "~~~~~~~~~~" << endl;
         }
+        */
         
         auto clusterSize = cluster->size();
 

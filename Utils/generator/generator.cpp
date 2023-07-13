@@ -17,10 +17,14 @@ typedef struct{
     set<pair<unsigned,unsigned>> C; 
 }Biclique;
 
+void clear(){
+	system("@cls||clear");
+}
+
 map<unsigned, set<pair<unsigned, unsigned>>>* generateBicliques(unsigned graphSize, unsigned numBicliques, unsigned averageBicliqueSize, unsigned averageWeight){
     srand(time(NULL));
     ofstream file; 
-    file.open("bicliques_generated.txt", std::ofstream::out | std::ofstream::app);
+    file.open("bicliques_generated.txt", std::ofstream::out | std::ofstream::trunc);
 
     auto info = new map<unsigned, set<pair<unsigned, unsigned>>>();
     
@@ -84,11 +88,15 @@ map<unsigned, set<pair<unsigned, unsigned>>>* generateBicliques(unsigned graphSi
 
 void generateGraph(unsigned graphNodes, unsigned averageEdges, unsigned averageWeight, map<unsigned, set<pair<unsigned, unsigned>>>* info){
     ofstream file; 
-    file.open("graph_generated.txt", std::ofstream::out | std::ofstream::app);
-
-
+    file.open("graph_generated.txt", std::ofstream::out | std::ofstream::trunc);
+    clear();
+    cout << "Writing file: " << endl; 
 
     for(size_t i = 0; i < graphNodes; i++){
+        if(i % int(graphNodes/100) == 0){
+            clear();
+            cout << (i * 100) / graphNodes << "%" << endl;
+        }
         unsigned size = averageEdges + rand()%(unsigned)(averageEdges * greedy);
         size = size - rand()%(unsigned)(averageEdges * greedy);
         set<pair<unsigned, unsigned>>* adyacents; 
