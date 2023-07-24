@@ -340,7 +340,7 @@ void BicliqueExtractor<GraphType>::writeBiclique(vector<Node*>* S, vector<uInt>*
     // file.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
     string new_path = modify_path(graph->getPath(), 4 , "bicliques.txt");
     file.open(new_path, fstream::app);
-    cout << "writing: " << new_path << endl; 
+    // cout << "writing: " << new_path << endl; 
     assert(file.is_open());
 
     file << "S: ";

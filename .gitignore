@@ -13,3 +13,4 @@ log.out
 output
 output/*
 log
+generator/graph_generated*
