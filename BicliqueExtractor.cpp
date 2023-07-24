@@ -201,177 +201,70 @@ template <typename GraphType>
 void BicliqueExtractor<GraphType>::getBicliques(Cluster* c)
 {   
     vector<Biclique*>* bicliques = c->getBicliques();
-
     if (bicliques->empty()) {
         delete bicliques;
         return; 
     }
-
-    // cout << n_bicliques_iter << endl;
-
+    ofstream file;
+    string new_path = modify_path(graph->getPath(), 4 , "bicliques.txt");
+    file.open(new_path, fstream::app);
+    assert(file.is_open());
     for (auto biclique = bicliques->begin(); biclique != bicliques->end(); biclique++) {
-
         vector<Node*>* S = (*biclique)->S;
-        vector<uInt>* C = &(*biclique)->C; 
+        vector<uInt>* C = (*biclique)->C; 
+        vector<pair<uInt, uInt>>* C_w = (*biclique)->C_w;
 
-        if(S->size() * C->size() < biclique_size) {
+        uInt S_size = S->size();
+        uInt C_size = 0; 
+        if (C != nullptr) {
+            C_size = C->size();
+        } else {
+            C_size = C_w->size(); 
+        }
+
+        if(S_size* C_size < biclique_size) {
             delete *biclique;
             continue; 
         }
 
-        n_bicliques_iter++;
-        biclique_s_size += S->size();
-        biclique_c_size += C->size();
-        biclique_sxc_size += S->size() * C->size();
-
-        sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
         sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortS, this, placeholders::_1, placeholders::_2));
+        if(C != nullptr) sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
+        else sort(C_w->begin(), C_w->end(), bind(&BicliqueExtractor::sortC_w, this, placeholders::_1, placeholders::_2));
 
-        
-        //cout << "S: ";
-        for (auto i = S->begin(); i != S->end(); i++) {
-            //cout << (*i)->getId() << " "; 
-            (*i)->sort();
-        }
-
-        /*
-        cout << endl << "C: " ; 
-        for (auto i : *C) {
-            cout << i << " "; 
-        }
-        cout << endl;
-
-        */
-
-        writeBiclique(S, C);
-
+        file << "S: ";
         for(auto it = S->begin(); it != S->end(); it++){
-            (*it)->deleteExtracted(C);
+            if(C != nullptr){
+                (*it)->deleteExtracted(C);
+            } else {
+                (*it)->deleteExtracted(C_w);  
+            }
+            file << (*it)->getId() << " "; 
+            (*it)->setModified(true);
         }
 
+        file << endl << "C: ";
+        if (C != nullptr) {
+            for(auto it = C->begin(); it != C->end(); it++){
+                file << *it << " "; 
+            }
+        } else {
+            for(auto it = C_w->begin(); it != C_w->end(); it++){
+                file << "(" << (*it).first << "," << (*it).second << ") "; 
+            }
+        }
+        file << endl;
+
+        n_bicliques_iter++;
+        biclique_s_size += S_size;
+        biclique_c_size += C_size;
+        biclique_sxc_size += S_size * C_size;
         delete *biclique; 
     }
+    file.close();
     delete bicliques;
     return; 
-    /*
-    while (!possible_bicliques->empty()) {
-        // sort by size/rank
-        // sortBicliques(possible_bicliques);
-
-        // se elije el biclique con mayor rank
-        vector<NodeType*> *S = best_biclique->S;
-        vector<uInt> *C = &best_biclique->C;
-
-        // si el biclique no cumple con el tamaño deseado o es 2x2, significa que no hay mas bicliques que cumplan la condicion
-        if ((S->size() * C->size() < biclique_size) || ((S->size() - 1) * (C->size() - 1) == 1))
-        {
-
-            // cout << "Estoy eliminando posibles blicliques" << endl;
-
-            for (size_t j = 0; j < possible_bicliques->size(); j++)
-            {
-                best_biclique = possible_bicliques->at(j);
-                delete best_biclique;
-            }
-            possible_bicliques->clear();
-            // cout << "Termine de eliminar posibles blicliques" << endl;
-            break;
-        }
-        else
-            n_bicliques_iter += 1;
-
-        // cout << "S: " << S->size() << " / C: " << C->size() << endl;
-
-        // se comienza a extraer el biclique
-        biclique_s_size += S->size();
-        biclique_c_size += C->size();
-        biclique_sxc_size += S->size() * C->size();
-
-        sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortS, this, placeholders::_1, placeholders::_2));
-        // sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
-
-        writeBiclique(S, C);
-
-        delete best_biclique;
-
-        possible_bicliques->pop_back();
-
-        // se limpian el resto de bicliques
-        Biclique<NodeType> *best_biclique_to_erase;
-        vector<NodeType*> *S_to_erase;
-        vector<uInt> *C_to_erase;
-
-        // cout << "Estoy eliminando aristas de los posibles bicliques " << endl;
-        for (auto it = possible_bicliques->rbegin(); it != possible_bicliques->rend(); it++)
-        {
-            best_biclique_to_erase = *it;
-
-            S_to_erase = best_biclique_to_erase->S;
-            C_to_erase = &best_biclique_to_erase->C;
-
-            for (size_t k = 0; k < S_to_erase->size(); k++)
-            {
-                if (S_to_erase->at(k)->isModified())
-                {
-                    if (!S_to_erase->at(k)->includes(C_to_erase)) // modificado
-                    {
-                        swap(S_to_erase->at(k), S_to_erase->back());
-                        S_to_erase->pop_back();
-                        // cout << "Erase" << endl;
-                        // S_to_erase->erase(S_to_erase->begin() + k);
-                        k--;
-                    }
-                }
-            }
-        }
-    }
-    */
 }
 
-/*
-template<typename GraphType>
-void BicliqueExtractor<GraphType>::writeBiclique(vector<Node*>*S, vector<uInt>* C){}
-*/
-template<typename GraphType>
-void BicliqueExtractor<GraphType>::writeBiclique(vector<Node*>* S, vector<uInt>* C)
-{
-    std::unique_lock<mutex> lock(mtxWriteBiclique);
-    ofstream file;
-    // file.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
-    string new_path = modify_path(graph->getPath(), 4 , "bicliques.txt");
-    file.open(new_path, fstream::app);
-    // cout << "writing: " << new_path << endl; 
-    assert(file.is_open());
-
-    file << "S: ";
-    vector<uInt> weights; 
-    for (size_t j = 0; j < S->size(); j++)
-    {
-        file << S->at(j)->getId();
-        if (j != S->size() - 1)
-            file << " ";
-        // cout << "Estoy eliminando S " << j << endl;
-        weights = S->at(j)->findToErase(C);
-        S->at(j)->setModified(true);
-    }
-    file << endl
-            << "C: ";
-
-    if (weights.size() != C->size()) {
-        cout << weights.size() << endl; 
-        cout << C->size() << endl;
-    }
-
-    assert(weights.size() == C->size()); 
-
-    for (size_t j = 0; j < C->size(); j++) {
-        file << "(" << C->at(j) << "," << weights.at(j) << ")";
-        if (j != C->size() - 1) file << " ";
-    }
-    file << endl;
-    file.close();
-
-}
 
 template <typename GraphType> 
 void BicliqueExtractor<GraphType>::printSignatures(Signatures* group)
@@ -404,6 +297,12 @@ bool BicliqueExtractor<GraphType>::sortC(uint64_t a, uint64_t b)
 }
 
 template <typename GraphType> 
+bool BicliqueExtractor<GraphType>::sortC_w(pair<uInt, uInt> a, pair<uInt, uInt> b)
+{
+    return a.first < b.first;
+}
+
+template <typename GraphType> 
 bool BicliqueExtractor<GraphType>::sortS(Node* a, Node* b)
 {
     return a->getId() < b->getId();
@@ -418,5 +317,10 @@ bool BicliqueExtractor<GraphType>::compareMinHash(const SignNode* a, const SignN
 template <typename GraphType> 
 bool BicliqueExtractor<GraphType>::compareBicliqueRank(const Biclique* a, const Biclique* b)
 {
-    return a->S->size() * a->C.size() < b->S->size() * b->C.size();
+    if(a->C != nullptr and b->C != nullptr){
+        return a->S->size() * a->C->size() < b->S->size() * b->C->size();
+    } else {
+        return a->S->size() * a->C_w->size() < b->S->size() * b->C_w->size();
+    }
+    return false; 
 }

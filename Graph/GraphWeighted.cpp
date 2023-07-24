@@ -58,6 +58,11 @@ string GraphWeighted::getPath(){
 	return path;
 }
 
+void GraphWeighted::addBicliques(string path)
+{
+	return; 
+}
+
 uint64_t GraphWeighted::size()
 {
 	return matrix.size();
@@ -126,7 +131,7 @@ Node* GraphWeighted::at(uInt pos){
 }
 
 Node* GraphWeighted::find(uInt node_id){
-	if (size() == num_nodes){
+	if (size() == num_nodes) {
 		return at(node_id-1);
 	}
 	return binarySearch(0, size()-1,node_id);

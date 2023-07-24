@@ -22,9 +22,13 @@ class Node {
 		uint64_t edgesSize();
 		void addAdjacent(uInt);
 		void addAdjacent(uInt, uInt);
+		bool deleteAdjacent(uInt);
+		bool deleteAdjacent(uInt, uInt);
 		vector<uInt> findToErase(vector<uInt>*);
 		void deleteExtracted(vector<uInt>*);
+		void deleteExtracted(vector<pair<uInt, uInt>>*);
 		bool findAdjacent(uInt);
+		bool findAdjacent(uInt, uInt);
 		void shrinkToFit();
 		void sort();
 		void sortByFrecuency(unordered_map<uInt, uint32_t>*);
@@ -54,8 +58,9 @@ class Node {
 
 		bool sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, uint32_t> *mapFrecuency);
 		bool sortFrecuencyCompWeighted(const pair<uInt, uInt> &a, const pair<uInt, uInt> &b, unordered_map<string, uint32_t> *mapFrecuency);
-		bool binarySearch(uInt, uInt, uInt);
-		bool binarySearchW(uInt, uInt, uInt);
+		bool binarySearch(uint64_t, uint64_t, uInt);
+		bool binarySearchW(uint64_t, uint64_t, uInt);
+		bool binarySearchW(uint64_t, uint64_t, uInt, uInt);
 		bool sortWeighted(const pair<uInt, uInt>&a, const pair<uInt, uInt>&b);
 	};
 

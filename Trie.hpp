@@ -17,8 +17,9 @@ struct TrieNode{
 };
 
 struct Biclique{
-    vector<Node*>* S;
-    vector<uInt> C;
+    vector<Node*>* S = nullptr;
+    vector<uInt>* C = nullptr;
+    vector<pair<uInt,uInt>>* C_w = nullptr; 
 };
 
 class Trie {

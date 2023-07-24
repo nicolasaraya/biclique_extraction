@@ -48,8 +48,9 @@ uint64_t Node::edgesSize()
 {
 	if (weighted) {
 		return wAdjacentNodes.size();
+	} else {
+		return adjacentNodes.size();
 	}
-	return adjacentNodes.size();
 }
 
 void Node::addAdjacent(uInt id_adj)
@@ -67,6 +68,28 @@ void Node::addAdjacent(uInt id_adj, uInt weight_adj)
 	}
 }
 
+bool Node::deleteAdjacent(uInt key)
+{
+	if(weighted) return false; 
+	auto f = find(adjacentNodes.begin(), adjacentNodes.end(), key);
+	if (f != adjacentNodes.end()) {
+		adjacentNodes.erase(f);
+		return true; 
+	}
+    return false;
+}
+
+bool Node::deleteAdjacent(uInt key, uInt w)
+{
+	if(not weighted) return false; 
+	auto f = find(wAdjacentNodes.begin(), wAdjacentNodes.end(), make_pair(key,w));
+	if (f != wAdjacentNodes.end()) {
+		wAdjacentNodes.erase(f);
+		return true; 
+	}
+    return false;
+}
+
 void Node::shrinkToFit()
 {
 	if (weighted) {
@@ -78,32 +101,36 @@ void Node::shrinkToFit()
 
 void Node::deleteExtracted(vector<uInt>* C)
 {
-	std::sort(C->begin(), C->end());
+	if (weighted) return;
 	sort();
-	if(weighted){
-		vector<pair<uInt, uInt>> newAdj; 
-		int index = 0;
-		for(auto i : *C){
-			while(index < wAdjacentNodes.size()){
-				if(wAdjacentNodes.at(index).first != i){
-					newAdj.push_back(wAdjacentNodes.at(index));
-				}
-				index++;
+	vector<uInt> newAdj; 
+	int index = 0;
+	for(auto i : *C){
+		while(index < adjacentNodes.size()){
+			if(adjacentNodes.at(index) != i){
+				newAdj.push_back(adjacentNodes.at(index));
 			}
+			index++;
 		}
-	} else {
-		vector<uInt> newAdj; 
-		int index = 0;
-		for(auto i : *C){
-			while(index < adjacentNodes.size()){
-				if(adjacentNodes.at(index) != i){
-					newAdj.push_back(adjacentNodes.at(index));
-				}
-				index++;
+	}	
+	adjacentNodes.swap(newAdj);
+}
+
+void Node::deleteExtracted(vector<pair<uInt, uInt>>* C)
+{
+	if (not weighted) return; 
+	sort();
+	vector<pair<uInt, uInt>> newAdj; 
+	int index = 0;
+	for(auto i : *C){
+		while(index < wAdjacentNodes.size()){
+			if(wAdjacentNodes.at(index).first != i.first or wAdjacentNodes.at(index).second != i.second){
+				newAdj.push_back(wAdjacentNodes.at(index));
 			}
+			index++;
 		}
 	}
-	
+	wAdjacentNodes.swap(newAdj);
 }
 
 vector<uInt> Node::findToErase(vector<uInt> *C)
@@ -155,8 +182,11 @@ vector<uInt> Node::findToErase(vector<uInt> *C)
 }
 
 bool Node::findAdjacent(uInt num){
-	if (adjacentNodes.empty()) {
-        return true;
+	if (not weighted and adjacentNodes.empty()) {
+        return false;
+	}
+	if (weighted and wAdjacentNodes.empty()) {
+        return false;
 	}
 	if (not weighted) { 
 		return binarySearch(0, edgesSize()-1, num);
@@ -165,14 +195,21 @@ bool Node::findAdjacent(uInt num){
 	}
 }
 
-bool Node::binarySearch(uInt l, uInt r, uInt num){
+bool Node::findAdjacent(uInt num, uInt w){
+	if (not weighted or wAdjacentNodes.empty()) { 
+		return false;
+	} else {
+		return binarySearchW(0, edgesSize()-1, num, w);
+	}
+}
+
+bool Node::binarySearch(uint64_t l, uint64_t r, uInt num){
     if (r >= l) {
-        uInt mid = l + (r - l) / 2;
+        uint64_t mid = l + (r - l) / 2;
 
         if (adjacentNodes[mid] == num) {
 			return true;
 		}
- 
         if (adjacentNodes[mid] > num){
 			if(mid == 0) {
 				return false;
@@ -184,14 +221,13 @@ bool Node::binarySearch(uInt l, uInt r, uInt num){
     return false;
 }
 
-bool Node::binarySearchW(uInt l, uInt r, uInt num){
+bool Node::binarySearchW(uint64_t l, uint64_t r, uInt num){
     if (r >= l) {
-        uInt mid = l + (r - l) / 2;
+        uint64_t mid = l + (r - l) / 2;
 
         if (wAdjacentNodes[mid].first == num){
             return true;
 		}
- 
         if (wAdjacentNodes[mid].first > num){
 			if(mid == 0){
 				return false;
@@ -199,6 +235,23 @@ bool Node::binarySearchW(uInt l, uInt r, uInt num){
             return binarySearchW(l, mid - 1, num);
 		}
         return binarySearchW(mid + 1, r, num);
+    }
+    return false;
+}
+
+bool Node::binarySearchW(uint64_t l, uint64_t r, uInt num, uInt w){
+    if (r >= l) {
+        uint64_t mid = l + (r - l) / 2;
+        if (wAdjacentNodes[mid].first == num and wAdjacentNodes[mid].second == w){
+            return true;
+		}
+        if (wAdjacentNodes[mid].first > num){
+			if(mid == 0){
+				return false;
+			}
+            return binarySearchW(l, mid - 1, num, w);
+		}
+        return binarySearchW(mid + 1, r, num, w);
     }
     return false;
 }

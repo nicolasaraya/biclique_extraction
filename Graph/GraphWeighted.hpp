@@ -28,10 +28,8 @@ public:
     Node* at(uInt);
     Node* find(uInt);
     string getPath();
-    // PUBLIC VARIABLES
-
+    void addBicliques(string);
 private:
-    // PRIVATE METHODS
     vector<Node*> matrix;
     Node* binarySearch(uInt, uInt, uInt);
 };

@@ -13,4 +13,5 @@ log.out
 output
 output/*
 log
-generator/graph_generated*
+Utilst/generator/*.txt
+log.txt

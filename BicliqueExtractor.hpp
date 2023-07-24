@@ -51,7 +51,6 @@ class BicliqueExtractor {
         bool compareBicliqueRank(const Biclique*, const Biclique*);
 
         vector<Signatures*>* makeGroups(Signatures*, int);
-        void writeBiclique(vector<Node*> *, vector<uInt> *);
         //void computeClusters(vector<Signatures*> *, unsigned int);
         void computeClusters(Signatures*, unsigned int);
         Signatures* computeShingles();
@@ -60,6 +59,7 @@ class BicliqueExtractor {
         void sortBySignatures(Signatures*, int);
         void sortBicliques(vector<Biclique*> *);
         bool sortC(uint64_t, uint64_t);
+        bool sortC_w(pair<uInt, uInt>, pair<uInt,uInt>);
         bool sortS(Node*, Node*);
 
 };

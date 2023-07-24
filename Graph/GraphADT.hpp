@@ -17,7 +17,7 @@ class GraphADT
 public:
     GraphADT(string path, bool selfLoops): path(path), selfLoops(selfLoops){};
     GraphADT(){};
-    // virtual void addBicliques(string) = 0;
+    virtual void addBicliques(string) = 0;
     virtual void buildTxt() = 0;
     virtual void buildBin() = 0;
     virtual uint64_t size() = 0;

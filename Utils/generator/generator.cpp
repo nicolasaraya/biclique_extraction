@@ -8,7 +8,6 @@
 #include <algorithm>
 #include "../Utils.hpp"
 #include "../../Graph/Node.hpp"
-#include "../../Graph/NodeWeighted.hpp"
 
 using namespace std;
 
@@ -194,7 +193,7 @@ void convertToWeighted(const string path, const int weight){
 }
 
 void buildNetflixTxt(const string path){
-    vector<NodeWeighted*> matrix;
+    vector<Node*> matrix;
     cout << "format: " << "id rank ady" << endl;
 	ifstream file;
 	file.open(path);
@@ -210,7 +209,7 @@ void buildNetflixTxt(const string path){
 		uInt id = atoi(content[0].c_str()); //id
 
 		while(matrix.size() <= id){
-			matrix.push_back(new NodeWeighted(matrix.size()));
+			matrix.push_back(new Node(matrix.size(), true));
 		}
 		uInt weight = atoi(content[1].c_str()); //ratings
 		uInt adj = atoi(content[2].c_str()); //movie
@@ -231,7 +230,7 @@ void buildNetflixTxt(const string path){
     outFile.open(outPath, std::ofstream::out | std::ofstream::trunc);
     outFile << "% " << path << endl; 
     for(auto i : matrix){
-        for(auto j = i->adjacentsBegin(); j != i->adjacentsEnd(); j++){
+        for(auto j = i->wAdjacentsBegin(); j != i->wAdjacentsEnd(); j++){
             outFile << i->getId() << " " << j->first << " " << j->second << endl; 
         }
     }
@@ -276,7 +275,7 @@ int main(int argc, char const *argv[])
 
     generateGraph(graphNodes, averageEdges, averageWeight, info);
 
-    auto n = new NodeWeighted(1);
+    auto n = new Node(1);
 
     return 0;
 }

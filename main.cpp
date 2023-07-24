@@ -8,19 +8,18 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    
     std::unordered_map<std::string, std::string> input_arguments{
         {"file", "../data/dblp-2011.txt"},
         {"numSignatures", "2"},
         {"minClusterSize", "10"},
-        {"bicliqueSize", "100"},
+        {"bicliqueSize", "2000"},
         {"minAdyNodes", "2"},
-        {"bsDecrease", "10"},
+        {"bsDecrease", "200"},
         {"shingleSize", "1"},
         {"selfLoop", "1"},
-        {"threshold", "100"},
+        {"threshold", "200"},
         {"debug", "0"},
-        {"iterations", "3"}};
+        {"iterations", "10"}};
 
     auto arguments = parseArguments(argc, argv, &input_arguments);
 
@@ -40,10 +39,8 @@ int main(int argc, char *argv[])
     cout << "Threshold: " << arguments["threshold"] << endl;
     cout << "Iterations: " << arguments["iterations"] << endl;
     cout << "Bits: " << sizeof(Int) * 8 << endl;
-    
-    
+
     /*
-    
     Graph g = Graph(arguments["file"]);
     BicliqueExtractor<Graph> be(
         atoi(arguments["numSignatures"].c_str()),
@@ -58,13 +55,9 @@ int main(int argc, char *argv[])
         );
     be.setGraph(&g);
     be.extract();
-
     */
-    
-
-    
+        
     GraphWeighted g = GraphWeighted(arguments["file"]);
-    
     BicliqueExtractor<GraphWeighted> be = BicliqueExtractor<GraphWeighted>(
         atoi(arguments["numSignatures"].c_str()),
         atoi(arguments["minClusterSize"].c_str()),
@@ -80,8 +73,6 @@ int main(int argc, char *argv[])
     be.setGraph(&g);
     be.extract();
     
-
-
     return 0;
 }
 

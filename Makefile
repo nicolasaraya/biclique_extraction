@@ -8,11 +8,6 @@ OBJS	=   	main.o \
 				Trie.o \
 				Utils.o
 
-OBJS_CHECKER = 	checker.o \
-				Graph.o \
-				Node.o \
-				Utils.o
-
 SOURCE	=       main.cpp \
 				Graph/Graph.cpp \
 				Graph/GraphWeighted.cpp \
@@ -35,7 +30,6 @@ HEADER	=       Graph/Graph.hpp \
 				Utils/Utils.hpp \
 				Utils/define.hpp
 OUT	=           biclique_extractor
-OUT_CHECKER =   checker
 CC	 =          g++
 FLAGS =         -c  -std=c++20 -DBITS32
 DEBUG_FLAGS =	-O0 -g
@@ -54,9 +48,8 @@ FLAGS += $(OPT) # Si no se define DEBUG, se agregan las banderas de optimizació
 endif
 
 
-all: $(OBJS) $(OBJS_CHECKER)
+all: $(OBJS)
 	$(CC) $(OBJS) -o $(OUT) $(LFLAGS)
-	$(CC) $(OBJS_CHECKER) -o $(OUT_CHECKER)
 
 main.o: main.cpp
 	$(CC) $(FLAGS) main.cpp 

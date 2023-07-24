@@ -40,9 +40,16 @@ vector<Biclique*>* Trie::getBicliques(){
         auto tempBiclique = new Biclique();
         tempBiclique->S = i->indices; 
 
+        if(i->weight != -1) tempBiclique->C_w = new vector<pair<uInt, uInt>>();
+        else tempBiclique->C = new vector<uInt>();
+
         TrieNode* ptr = i;
         do {
-            tempBiclique->C.push_back(ptr->vertex);
+            if (ptr->weight != -1) {
+                tempBiclique->C_w->push_back(make_pair(ptr->vertex, ptr->weight));
+            } else {
+                tempBiclique->C->push_back(ptr->vertex);
+            }
             ptr = ptr->parent; 
         } while (ptr != nullptr);
         potential_bicliques->push_back(tempBiclique);
