@@ -45,8 +45,6 @@ vector<Biclique*>* Trie::getBicliques(){
             tempBiclique->C.push_back(ptr->vertex);
             ptr = ptr->parent; 
         } while (ptr != nullptr);
-
-        
         potential_bicliques->push_back(tempBiclique);
     }
     return potential_bicliques;
