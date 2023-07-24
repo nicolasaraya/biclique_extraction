@@ -13,5 +13,5 @@ log.out
 output
 output/*
 log
-Utilst/generator/*.txt
+Utils/generator/*.txt
 log.txt
