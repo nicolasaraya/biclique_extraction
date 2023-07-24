@@ -2,7 +2,7 @@
 
 // PUBLIC METHODS
 
-GraphWeighted::GraphWeighted(const string path, bool selfLoops) : GraphADT(path, selfLoops)
+GraphWeighted::GraphWeighted(const string path) : GraphADT(path, false)
 {
 	TIMERSTART(build_matrix);
 	format = ".txt";
@@ -11,12 +11,6 @@ GraphWeighted::GraphWeighted(const string path, bool selfLoops) : GraphADT(path,
 	//print();
 }
 
-GraphWeighted::GraphWeighted(const string path) : GraphADT(path, false) {
-	TIMERSTART(build_matrix);
-	format = ".txt";
-	buildTxt();
-	TIMERSTOP(build_matrix);
-}
 
 GraphWeighted::GraphWeighted() {}
 
@@ -26,103 +20,16 @@ GraphWeighted::~GraphWeighted()
 		delete i;
 }
 
-void GraphWeighted::addBicliques(string pathBiclique){
-
-}
-// g++ checker.cpp AdjacencyMatrix.cpp Node.cpp Utils.cpp -o checker
-/*void GraphWeighted::addBicliques(string path)
-{
-	cout << "Read File Bicliques" << endl;
-	ifstream file;
-	file.open(path);
-	if (!file.is_open())
-	{
-		cout << "No se puede leer fichero" << endl;
-		cout << path << endl;
-		exit(0);
-	}
-	vector<uInt> newNodesPos;
-	if( size() != back()->getId())
-		standardize(&newNodesPos);
-
-	string S;
-	string C;
-
-	cout << "Add Bicliques" << endl;
-	while (!file.eof())
-	{
-		getline(file, S);
-		if (S == "")
-			break;
-		getline(file, C);
-
-		std::vector<std::string> sources = splitString(S, " ");
-		std::vector<std::string> centers = splitString(C, " ");
-		sources.erase(sources.begin());
-		centers.erase(centers.begin());
-
-		for (auto node : sources)
-		{
-			uint64_t id = atoi(node.c_str());
-			for (auto adjacent : centers)
-			{
-				uint64_t adjId = atoi(adjacent.c_str());
-				matrix[id - 1]->addAdjacent(adjId);
-			}
-		}
-	}
-	cout << "Sorting" << endl;
-	for (auto it = matrix.begin(); it != matrix.end(); it++)
-		(*it)->sort();
-
-	cout << "Delete aux Nodes" << endl;
-	for (size_t i = 0; i < newNodesPos.size(); i++){	
-		delete matrix[newNodesPos[i]];
-		matrix[newNodesPos[i]] = nullptr;
-	}
-	newNodesPos.clear();
-}
-*/
-// funcion que agrega los nodos intermedios que no contienen ninguna arista
-// para facilitar la busqueda de los nodos source
-void GraphWeighted::standardize(vector<uInt>* aux)
-{
-	cout << "Standarize" << endl;
-	vector<NodeWeighted*> new_matrix;
-	auto it = matrix.rbegin();
-	uint64_t last_node = back()->getId();
-	for (uint64_t cont = last_node; cont > 0; it++, cont--)
-	{
-		if (it != matrix.rend() && cont == (*it)->getId())
-		{
-			//continue;
-			new_matrix.push_back(*it);
-			matrix.pop_back();
-		}
-		else
-		{
-			auto *tempNode = new NodeWeighted(cont);
-			new_matrix.push_back(tempNode);
-			aux->push_back(cont-1);
-			it--;
-		}
-	}
-
-	for (size_t cont = last_node; cont > 0; cont--){
-		matrix.push_back(new_matrix.back());
-		new_matrix.pop_back();
-	}
-
-
-}
 
 void GraphWeighted::buildTxt()
 {
+	cout << "format: " << "id ady weight" << endl;
 	ifstream file; 
 	file.open(path);
 	assert(file.is_open());
 	string line;
-	NodeWeighted* temp = nullptr;
+	Node* temp = nullptr;
+	int x = 0;
 	while(getline(file,line)){
 		if(line.front() == '%') continue; 
 		auto content = splitString(line, " ");
@@ -132,17 +39,16 @@ void GraphWeighted::buildTxt()
 		if(temp == nullptr or temp->getId() != id){
 			if(temp != nullptr) {
 				temp->shrinkToFit();
-				//temp->sort();
 			}
-			temp = new NodeWeighted(id);
+			temp = new Node(id, true);
 			matrix.push_back(temp);
 		}
 		temp->addAdjacent(adj, weight); 
 	}
 	temp->shrinkToFit();
-	//temp->sort();
-	
+	matrix.shrink_to_fit();
 }
+
 
 void GraphWeighted::buildBin(){
 
@@ -157,7 +63,7 @@ uint64_t GraphWeighted::size()
 	return matrix.size();
 }
 
-NodeWeighted* GraphWeighted::back(){
+Node* GraphWeighted::back(){
 	return matrix.back();
 }
 
@@ -171,28 +77,36 @@ uint64_t GraphWeighted::all_edges_size()
 	return size;
 }
 
-void GraphWeighted::insert(NodeWeighted *node)
+void GraphWeighted::insert(Node* node)
 {
 	matrix.push_back(node);
 }
 
 void GraphWeighted::print()
 {
-	for (size_t i = 0; i < matrix.size(); i++)
-	{
+	for (size_t i = 0; i < matrix.size(); i++) {
 		matrix[i]->print();
 	}
 }
 
 void GraphWeighted::writeAdjacencyList(string path_write_)
 {
-	
+	ofstream file;
+	string pathFile = path_write_ + ".txt";
+	cout << "Save: " << pathFile << endl;
+	file.open(pathFile, std::ofstream::out | std::ofstream::trunc); 
+	assert(file.is_open());
+	for(auto i : matrix){
+		for(auto j = i->wAdjacentsBegin(); j != i->wAdjacentsEnd(); j++){
+			file << i->getId() << " " << j->first << " " << j->second << endl;
+		}
+	}
+	file.close();
 }
 
 void GraphWeighted::restoreNodes()
 {
-	for (size_t i = 0; i < matrix.size(); i++)
-	{
+	for (size_t i = 0; i < matrix.size(); i++) {
 		matrix[i]->restore();
 	}
 }
@@ -207,30 +121,30 @@ GraphWeightedIterator GraphWeighted::end()
 	return matrix.end();
 }
 
-NodeWeighted* GraphWeighted::at(uInt pos){
+Node* GraphWeighted::at(uInt pos){
 	return matrix.at(pos);
 }
 
-NodeWeighted* GraphWeighted::find(uInt node_id){
-	if( size() == num_nodes )
+Node* GraphWeighted::find(uInt node_id){
+	if (size() == num_nodes){
 		return at(node_id-1);
+	}
 	return binarySearch(0, size()-1,node_id);
 }
 
-NodeWeighted* GraphWeighted::binarySearch(uInt l, uInt r, uInt node_id){
+Node* GraphWeighted::binarySearch(uInt l, uInt r, uInt node_id){
 
     if (r >= l) {
         uInt mid = l + (r - l) / 2;
- 
-        if (matrix[mid]->getId() == node_id)
+        if (matrix[mid]->getId() == node_id){
             return matrix[mid];
-
-        if (matrix[mid]->getId() > node_id){
-			if(mid == 0)
+		}
+        if (matrix[mid]->getId() > node_id) {
+			if (mid == 0) {
 				return nullptr;
+			}
             return binarySearch(l, mid - 1, node_id);
 		}
- 
         return binarySearch(mid + 1, r, node_id);
     }
     return nullptr;

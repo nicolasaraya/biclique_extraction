@@ -6,6 +6,9 @@
 #include <time.h>
 #include <set>
 #include <algorithm>
+#include "../Utils.hpp"
+#include "../../Graph/Node.hpp"
+#include "../../Graph/NodeWeighted.hpp"
 
 using namespace std;
 
@@ -159,11 +162,99 @@ void generateGraph(unsigned graphNodes, unsigned averageEdges, unsigned averageW
 }
 
 
+void convertToWeighted(const string path, const int weight){
+    ifstream file;
+    file.open(path);
+
+    string outPath = path;
+    while(outPath.back() != '.') outPath.pop_back();
+    outPath.pop_back();
+    ofstream outFile;
+    outFile.open(outPath + "_weighted.txt", std::ofstream::out | std::ofstream::trunc);
+
+    assert(file.is_open());
+    assert(outFile.is_open());
+
+
+    string line; 
+
+    while(getline(file, line)){
+        auto adjacents = splitString(line, " ");
+        if(adjacents.empty()) continue; 
+
+        long long int id = atoi(adjacents.at(0).c_str());
+
+        for(int i = 1; i < adjacents.size(); i++){
+            outFile << id << " " << adjacents[i] << " " << weight << endl;
+        }
+
+    }
+    file.close();
+    outFile.close();
+}
+
+void buildNetflixTxt(const string path){
+    vector<NodeWeighted*> matrix;
+    cout << "format: " << "id rank ady" << endl;
+	ifstream file;
+	file.open(path);
+	assert(file.is_open());
+	string line; 
+
+
+    cout << "Reading file" << endl;
+	long long int count = 0;
+	while(getline(file, line)){
+		if(line.front() < '0' and line.front() > '9') continue;
+		auto content = splitString(line, " ");
+		uInt id = atoi(content[0].c_str()); //id
+
+		while(matrix.size() <= id){
+			matrix.push_back(new NodeWeighted(matrix.size()));
+		}
+		uInt weight = atoi(content[1].c_str()); //ratings
+		uInt adj = atoi(content[2].c_str()); //movie
+		(matrix.at(id))->addAdjacent(adj, weight);
+		if(count++ == 6000000) break;
+	}
+	
+    cout << "Writing File" << endl; 
+
+
+    string outPath = path;
+    while(outPath.back() != '.'){
+        outPath.pop_back();
+    }
+    outPath.pop_back();
+    outPath += "normalized.txt"; 
+    ofstream outFile; 
+    outFile.open(outPath, std::ofstream::out | std::ofstream::trunc);
+    outFile << "% " << path << endl; 
+    for(auto i : matrix){
+        for(auto j = i->adjacentsBegin(); j != i->adjacentsEnd(); j++){
+            outFile << i->getId() << " " << j->first << " " << j->second << endl; 
+        }
+    }
+
+}
+
+
+
 int main(int argc, char const *argv[])
 {
+    if(argc == 3){
+        convertToWeighted(argv[1], atoi(argv[2]));
+        return 0;
+    }
+
+    if(argc == 2){
+        buildNetflixTxt(argv[1]);
+    }
+
     if(argc < 6){
         return 0;
     } 
+
     unsigned graphNodes = atoll(argv[1]);
     unsigned averageEdges = atoll(argv[2]);
     unsigned numBicliques = atoll(argv[3]);
@@ -184,6 +275,8 @@ int main(int argc, char const *argv[])
                                     averageWeight   );
 
     generateGraph(graphNodes, averageEdges, averageWeight, info);
+
+    auto n = new NodeWeighted(1);
 
     return 0;
 }

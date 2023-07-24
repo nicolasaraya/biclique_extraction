@@ -1,41 +1,78 @@
 #ifndef NODE_HPP
 #define NODE_HPP
 
-#include "NodeADT.hpp"
+#include "../Utils/Utils.hpp"
 
 using namespace std;
 
-class Node : public NodeADT
-{
-public:
-	// PUBLIC METHODS
-	Node(uInt);
-	~Node();
-	uint64_t edgesSize();
-	void addAdjacent(uInt);
-	void find_to_erase(vector<uInt> *);
-	bool findAdjacent(uInt);
-	void shrinkToFit();
-	void sort();
-	void sortByFrecuency(unordered_map<uInt, uint32_t> *);
-	bool includes(vector<uInt> *);
-	bool removeAdjacent(uInt);
-	void moveToCache(unordered_map<uInt, uint32_t> *, uint16_t);
+typedef vector<pair<uInt, uInt>>::iterator WeightedIt;
+typedef vector<uInt>::iterator AdjacentsIt; 
 
-	AdjacentsIterator adjacentsBegin();
-	AdjacentsIterator adjacentsEnd();
-	uInt getFrontAdjacent();
-	bool restore();
-	void print();
+class Node {
+	public:
+		Node(uInt);
+		Node(uInt, bool);
+		~Node();
+		uInt getId();
+		void setModified(bool);
+		bool isModified();
+		bool hasSelfLoop();
+		void setSelfLoop(bool);
+		bool isWeighted();
+		uint64_t edgesSize();
+		void addAdjacent(uInt);
+		void addAdjacent(uInt, uInt);
+		vector<uInt> findToErase(vector<uInt>*);
+		void deleteExtracted(vector<uInt>*);
+		bool findAdjacent(uInt);
+		void shrinkToFit();
+		void sort();
+		void sortByFrecuency(unordered_map<uInt, uint32_t>*);
+		void sortByFrecuency(unordered_map<string, uint32_t>*);
+		bool includes(vector<uInt>*);
+		bool removeAdjacent(uInt);
+		void moveToCache(unordered_map<uInt, uint32_t> *, uint16_t);
+		void moveToCache(unordered_map<string, uint32_t> *, uint16_t);
+		AdjacentsIt adjacentsBegin();
+		AdjacentsIt adjacentsEnd();
+		WeightedIt wAdjacentsBegin();
+		WeightedIt wAdjacentsEnd();
+		uInt getFrontAdjacent();
+		pair<uInt, uInt> getFrontWeighted();
+		bool restore();
+		void print();
 
-private:
-	// PRIVATE VARIABLES
-	vector<uInt> adjacentNodes;
-	vector<uInt> cacheNodes;
+	private:
+		vector<uInt> adjacentNodes;
+		vector<pair<uInt, uInt>> wAdjacentNodes; 
+		vector<pair<uInt, uInt>> wCacheNodes;
+		vector<uInt> cacheNodes;
+		bool weighted = false; 
+		bool modified = false;
+		bool selfLoop = false;
+		uInt id;
 
-	// PRIVATE METHODS
-	bool sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, uint32_t> *mapFrecuency);
-	bool binarySearch(uInt, uInt, uInt);
+		bool sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, uint32_t> *mapFrecuency);
+		bool sortFrecuencyCompWeighted(const pair<uInt, uInt> &a, const pair<uInt, uInt> &b, unordered_map<string, uint32_t> *mapFrecuency);
+		bool binarySearch(uInt, uInt, uInt);
+		bool binarySearchW(uInt, uInt, uInt);
+		bool sortWeighted(const pair<uInt, uInt>&a, const pair<uInt, uInt>&b);
+	};
+
+struct compareIncludes {
+    bool operator()(const std::pair<int, int>& p, int value) const {
+        return p.first < value;
+    }
+
+    bool operator()(int value, const std::pair<int, int>& p) const {
+        return value < p.first;
+    }
+};
+
+struct CompareFind {
+    bool operator()(const std::pair<int, int>& p, int value) const {
+        return p.first == value;
+    }
 };
 
 #endif

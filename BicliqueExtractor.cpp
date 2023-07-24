@@ -2,8 +2,8 @@
 
 // PUBLIC METHODS
 
-template <typename GraphType, typename NodeType> 
-BicliqueExtractor<GraphType, NodeType>::BicliqueExtractor(
+template <typename GraphType> 
+BicliqueExtractor<GraphType>::BicliqueExtractor(
     uint16_t num_signatures, uint16_t minClusterSize, uint16_t minAdyNodes, uint32_t biclique_size, uint16_t bs_decrease, uint32_t shingleSize, bool selfLoop, uint32_t threshold, uint16_t iterations) : num_signatures(num_signatures), minClusterSize(minClusterSize), biclique_size(biclique_size), minAdyNodes(minAdyNodes), bs_decrease(bs_decrease), shingleSize(shingleSize), selfLoop(selfLoop), threshold(threshold), iterations(iterations)
 {
     iteration = 1;
@@ -15,18 +15,16 @@ BicliqueExtractor<GraphType, NodeType>::BicliqueExtractor(
     n_bicliques_iter = 0;
 }
 
-template <typename GraphType, typename NodeType> 
-BicliqueExtractor<GraphType, NodeType>::~BicliqueExtractor()
-{
-    //delete(graph);
-}
+template <typename GraphType> 
+BicliqueExtractor<GraphType>::~BicliqueExtractor() {}
 
-template <typename GraphType, typename NodeType> 
-void BicliqueExtractor<GraphType, NodeType>::setGraph(GraphType* g){
+template <typename GraphType> 
+void BicliqueExtractor<GraphType>::setGraph(GraphType* g){
     graph = g;
 } 
-template <typename GraphType, typename NodeType> 
-void BicliqueExtractor<GraphType, NodeType>::extract()
+
+template <typename GraphType> 
+void BicliqueExtractor<GraphType>::extract()
 {
     assert(graph);
 
@@ -41,39 +39,19 @@ void BicliqueExtractor<GraphType, NodeType>::extract()
     file.close();
 
     TIMERSTART(extraction_biclique);
-    while (true)
-    {
+    while (true) {
         n_bicliques_iter = 0;
         cout << "Iteration: " << iteration << endl;
         cout << "Compute Shingles" << endl;
         TIMERSTART(compute_shingles);
         auto signatures = computeShingles();
         TIMERSTOP(compute_shingles);
-
         assert(not signatures->empty());
 
         cout << "Compute Clusters and Extract Bicliques" << endl;
         TIMERSTART(compute_clusters_and_bicliques);
-        sortSignatures(signatures, 0);
-
-        #if defined(parallel)
-            uInt division = signatures->size() / NUM_THREADS;
-            std::vector<std::thread> threads(NUM_THREADS);
-            for(int i_thread = 0; i_thread < NUM_THREADS; i_thread++){
-                uInt l = i_thread * division;
-                uInt r = (i_thread + 1) * division;
-                if (r > signatures->size() ) r = signatures->size() ;
-                threads[i_thread] = std::thread(&BicliqueExtractor::parallelExtraction, this, signatures, l, r);
-            }
-            for(int i_thread = 0; i_thread < NUM_THREADS; i_thread++){
-                threads[i_thread].join();
-            }
-            
-        #else
-            //printSignatures(signatures);
-            computeClusters(signatures, 0);
-        #endif
-
+        sortBySignatures(signatures, 0);
+        computeClusters(signatures, 0);
         TIMERSTOP(compute_clusters_and_bicliques);
 
         for (auto i : *signatures) delete i;
@@ -136,165 +114,63 @@ void BicliqueExtractor<GraphType, NodeType>::extract()
     graph->writeAdjacencyList(path_write);
 }
 
-// PRIVATE METHODS
-#if defined(parallel)
-template <typename GraphType, typename NodeType> 
-void BicliqueExtractor<GraphType, NodeType>::parallelExtraction(Signatures* signatures, uInt l, uInt r){
-    //std::cout << l << ", " << r << endl;
-    vector<Signatures *> group = makeGroups(signatures, l, r,  0);
-    computeClusters(&group, 1);
-}
-
-
-template <typename GraphType, typename NodeType> 
-void BicliqueExtractor<GraphType, NodeType>::makeGroups(Signatures *signatures, uInt l, uInt r, int column)
+template <typename GraphType>
+vector<Signatures*>* BicliqueExtractor<GraphType>::makeGroups(Signatures* group, int column)
 {
-    vector<Signatures *> group;
-    Signatures *partition = new Signatures();
-    group.push_back(partition);
+    vector<Signatures*>* groups = new vector<Signatures*>(); 
+    Signatures* partition = new Signatures();
+    groups->push_back(partition);
 
-    for(uInt i = l; i < r; i++){
-        auto signNode = signatures->at(i); 
-         if (partition->empty())
-        {
-            partition->push_back(signNode);
-        }
-        else if (partition->front()->minHash.at(column) == (signNode)->minHash.at(column))
-        {
-            partition->push_back(signNode);
-        }
-        else
-        {
-            partition = new Signatures();
-            group.push_back(partition);
-        }
-
-    }
-    return group;
-}
-#endif
-
-template <typename GraphType, typename NodeType> 
-vector<typename Shingle<NodeType>::Signatures*> BicliqueExtractor<GraphType, NodeType>::makeGroups(SignaturesType *signatures, int column)
-{
-    vector<SignaturesType*> group;
-    SignaturesType *partition = new SignaturesType();
-    group.push_back(partition);
-
-    for (SignIterator signNode = signatures->begin(); signNode != signatures->end(); signNode++)
-    {
+    for (auto signNode = group->begin(); signNode != group->end(); signNode++) {
         if (not partition->empty() and partition->front()->minHash.at(column) != (*signNode)->minHash.at(column)){
-            partition = new SignaturesType();
-            group.push_back(partition);
+            partition = new Signatures();
+            groups->push_back(partition);
         }
         partition->push_back(*signNode);
     }
-
-    return group;
+    return groups;
 }
 
 
 
-template <typename GraphType, typename NodeType> 
-void BicliqueExtractor<GraphType, NodeType>::computeClusters(SignaturesType *sign_cluster, unsigned int column)
-{
-    sortSignatures(sign_cluster, column);
-    vector<SignaturesType *> candidates = makeGroups(sign_cluster, column);
+template <typename GraphType> 
+void BicliqueExtractor<GraphType>::computeClusters(Signatures* group, unsigned int column)
+{       
+    sortBySignatures(group, column);
+    vector<Signatures*>* candidates = makeGroups(group, column);
 
-    auto discarted = new vector<NodeType *>();
+    if(column == 0) cout << "num candidates: " << candidates->size() << endl;
 
-    for (auto cluster : candidates)
-    {
-        /*
-        if(cluster->size() > 5){
-            cout << "*** Cluster: ***" << endl;
-            printSignatures(cluster);
-            cout << "~~~~~~~~~~" << endl;
-        }
-        */
-        
-        auto clusterSize = cluster->size();
+    vector<Node*>* discarted = new vector<Node*>();
 
-        if (clusterSize >= minClusterSize and (int) column < num_signatures - 1)
-        {
-            computeClusters(cluster, column + 1);
+    for (auto cluster = candidates->begin(); cluster != candidates->end(); cluster++){
+        //printSignatures(*cluster);
+        uInt clusterSize = (*cluster)->size();
+
+        if (clusterSize >= minClusterSize and (int)column < num_signatures - 1) {
+            computeClusters(*cluster, column+1);
+        } else if (clusterSize > 1) {   
+            auto newCluster = new vector<Node*>();
+            for (auto node = (*cluster)->begin(); node != (*cluster)->end(); node++) {
+                newCluster->push_back((*node)->ptrNode);
+            }        
+            extractBicliques(new Cluster(newCluster)); 
+        } else if (clusterSize == 1) {
+            discarted->push_back((*cluster)->front()->ptrNode);
         }
-        else if (clusterSize > 1)
-        {   
-            auto newCluster = new vector<NodeType*>();
-            for (auto node : *cluster)
-            {
-                newCluster->push_back(node->ptrNode);
-            }
-            extractBicliques(new Cluster<NodeType>(newCluster));            
-        }
-        else if (clusterSize == 1)
-        {
-            discarted->push_back(cluster->front()->ptrNode);
-        }
-        delete cluster;
+        delete *cluster;
     }
-
-    if (discarted->size() > 1)
-    {
-        extractBicliques(new Cluster<NodeType>(discarted));
-    }
-    else
-    {
+    if (discarted->size() > 1) {
+        extractBicliques(new Cluster(discarted));
+    } else {
         delete discarted;
     }
-
-    candidates.clear();
+    delete candidates;
 }
 
-template <typename GraphType, typename NodeType> 
-void BicliqueExtractor<GraphType, NodeType>::computeClusters(vector<SignaturesType *> *groups, unsigned int column)
-{
-    for (size_t i = 0; i < groups->size(); i++)
-    {
-        uint64_t numberEntries = groups->at(i)->size();
 
-        if ((num_signatures + (uint64_t)1) < numberEntries)
-        {
-            sortSignatures(groups->at(i), column);
-            vector<SignaturesType*> new_groups = makeGroups(groups->at(i), column);
-
-            vector<NodeType *> *new_cluster_single_elements = new vector<NodeType *>();
-
-            for (size_t j = 0; j < new_groups.size(); j++)
-            {
-                uint64_t numberEntries_new_group = new_groups[j]->size();
-
-                if (numberEntries_new_group >= minClusterSize && column < num_signatures - (unsigned int)1)
-                {
-                    vector<SignaturesType *> groups_new_cluster;
-                    groups_new_cluster.push_back(new_groups[j]);
-                    computeClusters(&groups_new_cluster, column + 1);
-                }
-                else if (numberEntries_new_group > 1)
-                {
-                    vector<NodeType *> *new_cluster = new vector<NodeType*>();
-                    for (size_t k = 0; k < new_groups[j]->size(); k++)
-                        new_cluster->push_back(new_groups[j]->at(k)->ptrNode);
-
-                    extractBicliques(new Cluster<NodeType>(new_cluster));
-                }
-                else if (numberEntries_new_group == 1)
-                    new_cluster_single_elements->push_back(new_groups[j]->at(0)->ptrNode);
-
-                delete new_groups[j];
-            }
-            if (new_cluster_single_elements->size() > 1)
-                extractBicliques(new Cluster<NodeType>(new_cluster_single_elements));
-            else
-                delete new_cluster_single_elements;
-        }
-        delete groups->at(i);
-    }
-}
-
-template <typename GraphType, typename NodeType> 
-void BicliqueExtractor<GraphType, NodeType>::extractBicliques(Cluster<NodeType> *c)
+template <typename GraphType> 
+void BicliqueExtractor<GraphType>::extractBicliques(Cluster* c)
 {
     cluster_size++;
     c->computeTrie();
@@ -302,77 +178,87 @@ void BicliqueExtractor<GraphType, NodeType>::extractBicliques(Cluster<NodeType> 
     delete c;
 }
 
-template <typename GraphType, typename NodeType> 
-typename Shingle<NodeType>::Signatures* BicliqueExtractor<GraphType, NodeType>::computeShingles()
+template <typename GraphType> 
+Signatures* BicliqueExtractor<GraphType>::computeShingles()
 {
-    auto shingle = new Shingle<NodeType>(num_signatures, minAdyNodes, shingleSize);
-    SignaturesType *sg = new SignaturesType();
+    auto shingle = new Shingle(num_signatures, minAdyNodes, shingleSize);
+    Signatures* group = new Signatures(); 
 
-    #if defined(parallel)
-        uInt partitionSize = graph->size()/NUM_THREADS;
-        vector<std::thread> threads(NUM_THREADS);
-        for(Int i = 0; i < NUM_THREADS; i++){
-            uInt l = i * partitionSize;
-            uInt r = (i+1) * partitionSize; 
-            if (r > graph->size()) r = graph->size();
-            threads[i] = std::thread(&BicliqueExtractor::shingleParallel, this, shingle, sg, l, r);
+    for (auto i = graph->begin(); i != graph->end(); i++) {
+        SignNode* sn = shingle->computeShingle(*i);
+        if (sn != nullptr) {
+            group->push_back(sn);
+        } else {
+            delete sn;
         }
-        for(Int i = 0; i < NUM_THREADS; i++){
-            threads[i].join();
-        }
-
-
-    #else
-        for (auto i = graph->begin(); i != graph->end(); i++)
-        {
-            SignNode<NodeType> *sn = shingle->computeShingle(*i);
-            if (sn != nullptr){
-                sg->push_back(sn);
-            }
-            else
-                delete sn;
-        }
-    #endif
-
+    }
     delete shingle;
-    return sg;
+    return group;
 }
 
-#if defined(parallel)
-void BicliqueExtractor::shingleParallel(Shingle* shingle, Signatures* sg, uInt l, uInt r){
-    for(uInt i = l; i < r; i++){
-        SignNode *sn = shingle->computeShingle(graph->at(i));
-         if (sn != nullptr){
-            std::unique_lock<mutex> lock(mtxSignatures);
-            sg->push_back(sn);
-        }
-        else
-            delete sn;
+
+template <typename GraphType> 
+void BicliqueExtractor<GraphType>::getBicliques(Cluster* c)
+{   
+    vector<Biclique*>* bicliques = c->getBicliques();
+
+    if (bicliques->empty()) {
+        delete bicliques;
+        return; 
     }
 
-}
-#endif
+    // cout << n_bicliques_iter << endl;
 
-template <typename GraphType, typename NodeType> 
-void BicliqueExtractor<GraphType, NodeType>::getBicliques(Cluster<NodeType> *c)
-{
-    
-    vector<Biclique<NodeType>*> *possible_bicliques = c->getBicliques();
+    for (auto biclique = bicliques->begin(); biclique != bicliques->end(); biclique++) {
 
-    if (possible_bicliques->empty())
-        return;
+        vector<Node*>* S = (*biclique)->S;
+        vector<uInt>* C = &(*biclique)->C; 
 
-    for (size_t i = 0; i < possible_bicliques->size(); i++)
-        sort(possible_bicliques->at(i)->C.begin(), possible_bicliques->at(i)->C.end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
+        if(S->size() * C->size() < biclique_size) {
+            delete *biclique;
+            continue; 
+        }
 
-    while (!possible_bicliques->empty())
-    {
+        n_bicliques_iter++;
+        biclique_s_size += S->size();
+        biclique_c_size += C->size();
+        biclique_sxc_size += S->size() * C->size();
+
+        sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
+        sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortS, this, placeholders::_1, placeholders::_2));
+
+        
+        //cout << "S: ";
+        for (auto i = S->begin(); i != S->end(); i++) {
+            //cout << (*i)->getId() << " "; 
+            (*i)->sort();
+        }
+
+        /*
+        cout << endl << "C: " ; 
+        for (auto i : *C) {
+            cout << i << " "; 
+        }
+        cout << endl;
+
+        */
+
+        writeBiclique(S, C);
+
+        for(auto it = S->begin(); it != S->end(); it++){
+            (*it)->deleteExtracted(C);
+        }
+
+        delete *biclique; 
+    }
+    delete bicliques;
+    return; 
+    /*
+    while (!possible_bicliques->empty()) {
         // sort by size/rank
-        sortBicliques(possible_bicliques);
+        // sortBicliques(possible_bicliques);
 
         // se elije el biclique con mayor rank
-        Biclique<NodeType> *best_biclique = possible_bicliques->at(possible_bicliques->size() - 1);
-
         vector<NodeType*> *S = best_biclique->S;
         vector<uInt> *C = &best_biclique->C;
 
@@ -439,48 +325,24 @@ void BicliqueExtractor<GraphType, NodeType>::getBicliques(Cluster<NodeType> *c)
             }
         }
     }
+    */
 }
 
-template <typename GraphType, typename NodeType> 
-void BicliqueExtractor<GraphType, NodeType>::writeBiclique(vector<NodeType*>* S, vector<uInt>* C){
+/*
+template<typename GraphType>
+void BicliqueExtractor<GraphType>::writeBiclique(vector<Node*>*S, vector<uInt>* C){}
+*/
+template<typename GraphType>
+void BicliqueExtractor<GraphType>::writeBiclique(vector<Node*>* S, vector<uInt>* C)
+{
     std::unique_lock<mutex> lock(mtxWriteBiclique);
     ofstream file;
     // file.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
     string new_path = modify_path(graph->getPath(), 4 , "bicliques.txt");
     file.open(new_path, fstream::app);
-    file << "S: ";
-    for (size_t j = 0; j < S->size(); j++)
-    {
-        file << S->at(j)->getId();
-        if (j != S->size() - 1)
-            file << " ";
-        // cout << "Estoy eliminando S " << j << endl;
-        S->at(j)->find_to_erase(C);
-        S->at(j)->setModified(true);
-    }
-    file << endl
-            << "C: ";
+    cout << "writing: " << new_path << endl; 
+    assert(file.is_open());
 
-    for (size_t j = 0; j < C->size(); j++)
-    {
-        file << C->at(j);
-        if (j != C->size() - 1)
-            file << " ";
-    }
-
-    file << endl;
-    
-    file.close();
-
-}
-
-template <> 
-void BicliqueExtractor<GraphWeighted, NodeWeighted>::writeBiclique(vector<NodeWeighted*>* S, vector<uInt>* C){
-    std::unique_lock<mutex> lock(mtxWriteBiclique);
-    ofstream file;
-    // file.open(name+"_bicliques-"+to_string(iteration)+".txt", std::ofstream::out | std::ofstream::trunc); //limpia el contenido del fichero
-    string new_path = modify_path(graph->getPath(), 4 , "bicliques.txt");
-    file.open(new_path, fstream::app);
     file << "S: ";
     vector<uInt> weights; 
     for (size_t j = 0; j < S->size(); j++)
@@ -489,77 +351,72 @@ void BicliqueExtractor<GraphWeighted, NodeWeighted>::writeBiclique(vector<NodeWe
         if (j != S->size() - 1)
             file << " ";
         // cout << "Estoy eliminando S " << j << endl;
-        weights = S->at(j)->find_to_erase(C);
+        weights = S->at(j)->findToErase(C);
         S->at(j)->setModified(true);
     }
     file << endl
             << "C: ";
 
-    for (size_t j = 0; j < C->size(); j++)
-    {
-        file << "(" <<C->at(j) << "," << weights.at(j) << ")";
-        if (j != C->size() - 1)
-            file << " ";
+    if (weights.size() != C->size()) {
+        cout << weights.size() << endl; 
+        cout << C->size() << endl;
     }
 
+    assert(weights.size() == C->size()); 
+
+    for (size_t j = 0; j < C->size(); j++) {
+        file << "(" << C->at(j) << "," << weights.at(j) << ")";
+        if (j != C->size() - 1) file << " ";
+    }
     file << endl;
-    
     file.close();
 
 }
 
-template <typename GraphType, typename NodeType> 
-void BicliqueExtractor<GraphType, NodeType>::printSignatures(SignaturesType *signatures)
+template <typename GraphType> 
+void BicliqueExtractor<GraphType>::printSignatures(Signatures* group)
 {
-    for (auto i : *signatures)
-    {
+    for (auto i : *group) {
         cout << i->ptrNode->getId();
-        for (int j = 0; j < num_signatures; j++)
-        {
+        for (int j = 0; j < num_signatures; j++) {
             cout << " | MH[" << j << "]: " << i->minHash.at(j);
         }
         cout << endl;
     }
 }
 
-/*
- *
- * sort
- *
- */
-
-template <typename GraphType, typename NodeType> 
-void BicliqueExtractor<GraphType, NodeType>::sortSignatures(SignaturesType *signs, int signature_index)
+template <typename GraphType> 
+void BicliqueExtractor<GraphType>::sortBySignatures(Signatures* group, int signature_index)
 {
-    sort(signs->begin(), signs->end(), bind(&BicliqueExtractor::compareMinHash, this, placeholders::_1, placeholders::_2, signature_index));
+    sort(group->begin(), group->end(), bind(&BicliqueExtractor::compareMinHash, this, placeholders::_1, placeholders::_2, signature_index));
 }
 
-template <typename GraphType, typename NodeType> 
-void BicliqueExtractor<GraphType, NodeType>::sortBicliques(vector<Biclique<NodeType> *> *bicliques)
+template <typename GraphType> 
+void BicliqueExtractor<GraphType>::sortBicliques(vector<Biclique*>* bicliques)
 {
     sort(bicliques->begin(), bicliques->end(), bind(&BicliqueExtractor::compareBicliqueRank, this, placeholders::_1, placeholders::_2));
 }
 
-template <typename GraphType, typename NodeType> 
-bool BicliqueExtractor<GraphType, NodeType>::sortC(uint64_t a, uint64_t b)
+template <typename GraphType> 
+bool BicliqueExtractor<GraphType>::sortC(uint64_t a, uint64_t b)
 {
     return a < b;
 }
 
-template <typename GraphType, typename NodeType> 
-bool BicliqueExtractor<GraphType, NodeType>::sortS(NodeType *a, NodeType *b)
+template <typename GraphType> 
+bool BicliqueExtractor<GraphType>::sortS(Node* a, Node* b)
 {
     return a->getId() < b->getId();
 }
 
-template <typename GraphType, typename NodeType> 
-bool BicliqueExtractor<GraphType, NodeType>::compareMinHash(const SignNode<NodeType> *a, const SignNode<NodeType> *b, int signature_index)
+template <typename GraphType> 
+bool BicliqueExtractor<GraphType>::compareMinHash(const SignNode* a, const SignNode* b, int signature_index)
 {
     return (a->minHash.at(signature_index) < b->minHash.at(signature_index)); // signNode->vector->minHash
 }
 
-template <typename GraphType, typename NodeType> 
-bool BicliqueExtractor<GraphType, NodeType>::compareBicliqueRank(const Biclique<NodeType> *a, const Biclique<NodeType> *b)
+template <typename GraphType> 
+bool BicliqueExtractor<GraphType>::compareBicliqueRank(const Biclique* a, const Biclique* b)
 {
     return a->S->size() * a->C.size() < b->S->size() * b->C.size();
 }

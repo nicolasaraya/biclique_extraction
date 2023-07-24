@@ -4,7 +4,6 @@ OBJS	=   	main.o \
 				BicliqueExtractor.o \
 				Cluster.o \
 				Node.o \
-				NodeWeighted.o \
 				Shingle.o \
 				Trie.o \
 				Utils.o
@@ -18,7 +17,6 @@ SOURCE	=       main.cpp \
 				Graph/Graph.cpp \
 				Graph/GraphWeighted.cpp \
 				Graph/Node.cpp \
-				Graph/NodeWeighted.cpp \
 				Graph/NodeADT.hpp \
 				BicliqueExtractor.cpp \
 				Cluster.cpp \
@@ -29,7 +27,6 @@ HEADER	=       Graph/Graph.hpp \
 				Graph/GraphADT.hpp \
 				Graph/GraphWeighted.hpp \
 				Graph/Node.hpp \
-				Graph/NodeWeighted.hpp \
 				Graph/NodeADT.hpp \
 				BicliqueExtractor.hpp \
 				Cluster.hpp \
@@ -40,9 +37,22 @@ HEADER	=       Graph/Graph.hpp \
 OUT	=           biclique_extractor
 OUT_CHECKER =   checker
 CC	 =          g++
-FLAGS =         -c  -std=c++20 -O0 -DBITS32 -g
+FLAGS =         -c  -std=c++20 -DBITS32
+DEBUG_FLAGS =	-O0 -g
+OPT = 			-O3
 LFLAGS	=       -lm -lpthread
 				
+# Define una variable que se utilizará para pasar las banderas
+# de compilación al objetivo "all" y sus dependencias
+
+
+# Si la variable DEBUG está definida, agrega las DEBUG_FLAGS
+ifdef DEBUG
+FLAGS := $(FLAGS) $(DEBUG_FLAGS)
+else
+FLAGS += $(OPT) # Si no se define DEBUG, se agregan las banderas de optimización
+endif
+
 
 all: $(OBJS) $(OBJS_CHECKER)
 	$(CC) $(OBJS) -o $(OUT) $(LFLAGS)
