@@ -48,6 +48,7 @@ FLAGS += $(OPT) # Si no se define DEBUG, se agregan las banderas de optimizació
 endif
 
 
+
 all: $(OBJS)
 	$(CC) $(OBJS) -o $(OUT) $(LFLAGS)
 

@@ -122,15 +122,21 @@ void Node::deleteExtracted(vector<pair<uInt, uInt>>* C)
 	sort();
 	vector<pair<uInt, uInt>> newAdj; 
 	int index = 0;
+	int countC = 0; 
 	for(auto i : *C){
 		while(index < wAdjacentNodes.size()){
 			if(wAdjacentNodes.at(index).first != i.first or wAdjacentNodes.at(index).second != i.second){
 				newAdj.push_back(wAdjacentNodes.at(index));
 			}
+			else{
+				countC++;
+			}
 			index++;
 		}
 	}
-	wAdjacentNodes.swap(newAdj);
+	//assert(C->size() + newAdj.size() == wAdjacentNodes.size());
+	//cout << id << ": " << countC << endl;
+	wAdjacentNodes.swap(newAdj); 
 }
 
 vector<uInt> Node::findToErase(vector<uInt> *C)

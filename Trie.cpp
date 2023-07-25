@@ -213,16 +213,35 @@ void Trie::insertInTree(TrieNode* root, Node* node)
                 ptr->childrens->push_back(t_node);
             }
             
-            //check SxC;
+            //check SxC and S + C;
             uInt S_prev = candidates[root->treeIndex]->indices->size() ;
             uInt C_prev = candidates[root->treeIndex]->depth;
+            uInt SxC_prev = S_prev * C_prev;
+            float coef_prev  = (float)SxC_prev / (float)(S_prev + C_prev); 
+
             uInt S_new = t_node->indices->size();
             uInt C_new = t_node->depth;
+            uInt SxC_new = S_new * C_new; 
+            float coef_new = (float)SxC_new / (float)(S_new + C_new);
+            
             
             if(t_node->indices->size() > 1){ //evita nodos hoja de uno solo
-                if ( (S_prev * C_prev) < (S_new * C_new)){
+                /*if ( (coef_prev) < (coef)){
+                    candidates[root->treeIndex] = t_node;
+                } else {
+                    if ((SxC_prev < SxC_new)){
+                        candidates[root->treeIndex] = t_node;
+                    }
+                }*/
+                if (SxC_prev < SxC_new and coef_prev < coef_new){
                     candidates[root->treeIndex] = t_node;
                 }
+                
+                //cout << node->getId() << ", " << t_node->vertex << "," << t_node->weight  << "," << t_node->depth << "," << "|| " ;
+                //cout << "coef_prev : " << coef_prev << endl;
+                //cout << "coef new: " << coef << endl;
+                
+                    
             }
             ptr = t_node;
         }

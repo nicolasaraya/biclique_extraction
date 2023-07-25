@@ -12,12 +12,12 @@ int main(int argc, char *argv[])
         {"file", "../data/dblp-2011.txt"},
         {"numSignatures", "2"},
         {"minClusterSize", "10"},
-        {"bicliqueSize", "2000"},
+        {"bicliqueSize", "5000"},
         {"minAdyNodes", "2"},
-        {"bsDecrease", "200"},
+        {"bsDecrease", "500"},
         {"shingleSize", "1"},
         {"selfLoop", "1"},
-        {"threshold", "200"},
+        {"threshold", "500"},
         {"debug", "0"},
         {"iterations", "10"}};
 
@@ -56,6 +56,8 @@ int main(int argc, char *argv[])
     be.setGraph(&g);
     be.extract();
     */
+
+   
         
     GraphWeighted g = GraphWeighted(arguments["file"]);
     BicliqueExtractor<GraphWeighted> be = BicliqueExtractor<GraphWeighted>(
@@ -72,6 +74,30 @@ int main(int argc, char *argv[])
     //g.print();
     be.setGraph(&g);
     be.extract();
+    
+   /*
+
+   vector<Node*> g; 
+   ifstream file;
+   file.open(arguments["file"]);
+    string line;
+    Node* temp = nullptr;
+    while(getline(file,line)){
+        auto content = splitString(line, " ");
+        uInt id = atoi(content[0].c_str());
+        uInt adj = atoi(content[1].c_str());
+        uInt weight = atoi(content[2].c_str());
+        if(temp == nullptr or id != temp->getId()){
+            temp = new Node(id, true);
+            g.push_back(temp);
+        }
+        temp->addAdjacent(adj, weight);
+    }
+    Trie t;
+    t.create(&g);
+    t.printForest();
+
+    */
     
     return 0;
 }

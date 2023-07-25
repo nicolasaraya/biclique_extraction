@@ -222,7 +222,7 @@ void BicliqueExtractor<GraphType>::getBicliques(Cluster* c)
             C_size = C_w->size(); 
         }
 
-        if(S_size* C_size < biclique_size) {
+        if(S_size * C_size < biclique_size) {
             delete *biclique;
             continue; 
         }
