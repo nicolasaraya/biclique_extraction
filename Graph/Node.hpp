@@ -1,6 +1,8 @@
 #ifndef NODE_HPP
 #define NODE_HPP
 
+#include <unistd.h>
+
 #include "../Utils/Utils.hpp"
 
 using namespace std;

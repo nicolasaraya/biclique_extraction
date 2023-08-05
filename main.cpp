@@ -11,12 +11,12 @@ int main(int argc, char *argv[])
     std::unordered_map<std::string, std::string> input_arguments{
         {"file", "../data/dblp-2011.txt"},
         {"numSignatures", "2"},
-        {"minClusterSize", "10"},
+        {"minClusterSize", "100"},
         {"bicliqueSize", "5000"},
-        {"minAdyNodes", "2"},
+        {"minAdyNodes", "10"},
         {"bsDecrease", "500"},
         {"shingleSize", "1"},
-        {"selfLoop", "1"},
+        {"selfLoop", "0"},
         {"threshold", "500"},
         {"debug", "0"},
         {"iterations", "10"}};

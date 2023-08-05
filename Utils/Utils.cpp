@@ -39,13 +39,14 @@ std::unordered_map<std::string, std::string> parseArguments(int argc, char *argv
             continue;
         }
 
-        arg.erase(arg.begin());
-        arg.erase(arg.begin());
+        if(arg.front() == '-') arg.erase(arg.begin()); 
+        if(arg.front() == '-') arg.erase(arg.begin()); 
 
         auto f = arguments->find(arg);
         if (f == arguments->end())
         {
             std::cout << "No se encuentra el argumento: " << prefix + std::string(arg) << std::endl;
+            continue;
         }
 
         arguments->at(arg) = std::string(argv[i + 1]);

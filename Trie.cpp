@@ -233,7 +233,7 @@ void Trie::insertInTree(TrieNode* root, Node* node)
                         candidates[root->treeIndex] = t_node;
                     }
                 }*/
-                if (SxC_prev < SxC_new and coef_prev < coef_new){
+                if (SxC_prev <= SxC_new and coef_prev < coef_new){
                     candidates[root->treeIndex] = t_node;
                 }
                 
