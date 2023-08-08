@@ -54,8 +54,10 @@ class Node {
 		vector<pair<uInt, uInt>> wCacheNodes;
 		vector<uInt> cacheNodes;
 		bool weighted = false; 
-		bool modified = false;
+		//bool modified = false;
+		bool naturalSelfLoop = false; 
 		bool selfLoop = false;
+		bool sorted = false;
 		uInt id;
 
 		bool sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, uint32_t> *mapFrecuency);

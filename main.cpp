@@ -11,12 +11,12 @@ int main(int argc, char *argv[])
     std::unordered_map<std::string, std::string> input_arguments{
         {"file", "../data/dblp-2011.txt"},
         {"numSignatures", "2"},
-        {"minClusterSize", "100"},
-        {"bicliqueSize", "5000"},
+        {"minClusterSize", "10"},
+        {"bicliqueSize", "500"},
         {"minAdyNodes", "10"},
         {"bsDecrease", "500"},
         {"shingleSize", "1"},
-        {"selfLoop", "0"},
+        {"selfLoop", "1"},
         {"threshold", "500"},
         {"debug", "0"},
         {"iterations", "10"}};
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     cout << "Bits: " << sizeof(Int) * 8 << endl;
 
     /*
-    Graph g = Graph(arguments["file"]);
+    Graph g = Graph(arguments["file"], atoi(arguments["selfLoop"].c_str()));
     BicliqueExtractor<Graph> be(
         atoi(arguments["numSignatures"].c_str()),
         atoi(arguments["minClusterSize"].c_str()),
@@ -49,16 +49,16 @@ int main(int argc, char *argv[])
         atoi(arguments["bicliqueSize"].c_str()),
         atoi(arguments["bsDecrease"].c_str()),
         atoi(arguments["shingleSize"].c_str()),
-        atoi(arguments["selfLoop"].c_str()),
         atoi(arguments["threshold"].c_str()),
         atoi(arguments["iterations"].c_str())
         );
     be.setGraph(&g);
     be.extract();
     */
+    
 
    
-        
+    
     GraphWeighted g = GraphWeighted(arguments["file"]);
     BicliqueExtractor<GraphWeighted> be = BicliqueExtractor<GraphWeighted>(
         atoi(arguments["numSignatures"].c_str()),
@@ -67,7 +67,6 @@ int main(int argc, char *argv[])
         atoi(arguments["bicliqueSize"].c_str()),
         atoi(arguments["bsDecrease"].c_str()),
         atoi(arguments["shingleSize"].c_str()),
-        atoi(arguments["selfLoop"].c_str()),
         atoi(arguments["threshold"].c_str()),
         atoi(arguments["iterations"].c_str())
         );

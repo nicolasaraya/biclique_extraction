@@ -27,7 +27,7 @@ SignNode* Shingle::computeShingle(Node* node)
     uInt shingleHash;
     SignNode* s = new SignNode();
     s->ptrNode = node;
-    node->setModified(false);
+    //node->setModified(false);
 
     for (size_t i = 0; i < num_signatures; i++){
         s->minHash.push_back(prime);

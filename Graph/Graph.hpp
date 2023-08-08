@@ -15,7 +15,6 @@ public:
     Graph();
     ~Graph();
 
-    void addBicliques(string);
     void standardize(vector<uInt>*);
     void buildTxt();
     void buildBin();
@@ -35,6 +34,7 @@ public:
 private:
     // PRIVATE METHODS
     vector<Node*> matrix;
+    bool selfLoop = false;
     Node* binarySearch(uInt, uInt, uInt);
 };
 

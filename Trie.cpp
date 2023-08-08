@@ -13,13 +13,11 @@ Trie::~Trie()
 void Trie::create(vector<Node*>* nodes)
 {
     //cout << "size: " << nodes->size() << endl;
-    for (size_t i = 0; i < nodes->size(); i++)
-    {
+    for (size_t i = 0; i < nodes->size(); i++) {
         auto root = find_in_Forest(nodes->at(i)->getFrontAdjacent());
-        if(root != nullptr){
+        if (root != nullptr) {
             insertInTree(root, nodes->at(i));
-        }
-        else {
+        } else {
             insertNewTree(nodes->at(i));
         }
     }
@@ -32,7 +30,7 @@ vector<Biclique*>* Trie::getBicliques(){
 
     if (forest.empty()) return potential_bicliques;
 
-    for (auto i : candidates){
+    for (auto i : candidates) {
         if(i->depth < 2) continue;
         if(i->parent == nullptr) continue;
         if(i->indices->size() <= 1 ) continue;
@@ -40,7 +38,7 @@ vector<Biclique*>* Trie::getBicliques(){
         auto tempBiclique = new Biclique();
         tempBiclique->S = i->indices; 
 
-        if(i->weight != -1) tempBiclique->C_w = new vector<pair<uInt, uInt>>();
+        if (i->weight != -1) tempBiclique->C_w = new vector<pair<uInt, uInt>>();
         else tempBiclique->C = new vector<uInt>();
 
         TrieNode* ptr = i;
@@ -70,43 +68,6 @@ void Trie::printTrie()
     }
 }
 
-/*
-void Trie::computeCandidatesBicliques(TrieNode* node, vector<Biclique*>* candidate_bicliques)
-{
-    uint64_t index = (node->depth - 1) * (node->indices->size() - 1);
-    if (index > 0)
-    {
-        // comprobar en el vector
-        if (node->indices->size() != node->parent->indices->size())
-        {
-            Biclique* b = new Biclique();
-
-            b->S = node->indices;
-            for (auto it_node = b->S->begin(); it_node != b->S->end(); it_node++)
-                (*it_node)->sort();
-
-            b->C.push_back(node->vertex);
-            TrieNode* parent_node = node->parent;
-            while (parent_node != nullptr)
-            {
-                b->C.push_back(parent_node->vertex);
-                parent_node = parent_node->parent;
-            }
-            candidate_bicliques->push_back(b);
-        }
-        else
-        {
-            Biclique<NodeType> *b = candidate_bicliques->at(candidate_bicliques->size() - 1);
-            b->C.push_back(node->vertex);
-        }
-    }
-
-    if (node->childrens->size() > 0)
-    {
-        for (size_t i = 0; i < node->childrens->size(); i++)
-            computeCandidatesBicliques(node->childrens->at(i), candidate_bicliques);
-    }
-}*/
 
 TrieNode* Trie::find(uInt &vertex, TrieNode* ptr)
 {
@@ -226,22 +187,9 @@ void Trie::insertInTree(TrieNode* root, Node* node)
             
             
             if(t_node->indices->size() > 1){ //evita nodos hoja de uno solo
-                /*if ( (coef_prev) < (coef)){
-                    candidates[root->treeIndex] = t_node;
-                } else {
-                    if ((SxC_prev < SxC_new)){
-                        candidates[root->treeIndex] = t_node;
-                    }
-                }*/
                 if (SxC_prev <= SxC_new and coef_prev < coef_new){
                     candidates[root->treeIndex] = t_node;
                 }
-                
-                //cout << node->getId() << ", " << t_node->vertex << "," << t_node->weight  << "," << t_node->depth << "," << "|| " ;
-                //cout << "coef_prev : " << coef_prev << endl;
-                //cout << "coef new: " << coef << endl;
-                
-                    
             }
             ptr = t_node;
         }
@@ -266,11 +214,17 @@ void Trie::insertInTree(TrieNode* root, Node* node)
             //check SxC;
             uInt S_prev = candidates[root->treeIndex]->indices->size() ;
             uInt C_prev = candidates[root->treeIndex]->depth;
+            uInt SxC_prev = S_prev * C_prev;
+            float coef_prev  = (float)SxC_prev / (float)(S_prev + C_prev); 
+
             uInt S_new = t_node->indices->size();
             uInt C_new = t_node->depth;
+            uInt SxC_new = S_new * C_new; 
+            float coef_new = (float)SxC_new / (float)(S_new + C_new);
+
             
             if(t_node->indices->size() > 1){ //evita nodos hoja de uno solo
-                if ( (S_prev * C_prev) < (S_new * C_new)){
+                if (SxC_prev <= SxC_new and coef_prev < coef_new){
                     candidates[root->treeIndex] = t_node;
                 }
             }

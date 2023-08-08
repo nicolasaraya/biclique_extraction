@@ -40,9 +40,11 @@ void addBicliquesWeighted(string path, Graph* graph){
             uInt index = atoi(contentS[i].c_str());
             for(size_t j = 1; j < contentC.size(); j++){
                 auto values = splitString(contentC[j], ",");
-                values[0].erase(values[0].begin());
-                values[1].pop_back();
+                values[0].erase(values[0].begin()); //delete "("
+                values[1].pop_back(); //delete ")" 
+                assert(not graph->at(index)->findAdjacent(atoi(values[0].c_str()), atoi(values[1].c_str()))); //no debe estar la arista en el grafo. 
                 graph->at(index)->addAdjacent(atoi(values[0].c_str()), atoi(values[1].c_str()));
+                //assert(not graph->at(index)->findAdjacent(atoi(values[0].c_str()), atoi(values[1].c_str()))); //no debe estar la arista en el grafo. 
             }
         }
     }

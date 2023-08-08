@@ -22,26 +22,32 @@ uInt Node::getId()
 
 bool Node::hasSelfLoop()
 {
-	return selfLoop;
+	return naturalSelfLoop;
 }
 
+/*
 bool Node::isModified()
 {
 	return modified;
 }
+*/
 
 bool Node::isWeighted()
 {
 	return weighted; 
 }
 
+/*
 void Node::setModified(bool modified)
 {
 	this->modified = modified;
 }
+*/
 void Node::setSelfLoop(bool selfloop)
 {
+	if (weighted) return; 
 	this->selfLoop = selfloop;
+	addAdjacent(id);
 }
 
 uint64_t Node::edgesSize()
@@ -57,6 +63,7 @@ void Node::addAdjacent(uInt id_adj)
 {
 	if (not weighted) {
 		adjacentNodes.push_back(id_adj);
+		sorted = false;
 	}
 }
 
@@ -65,6 +72,7 @@ void Node::addAdjacent(uInt id_adj, uInt weight_adj)
 	if (adjacentNodes.empty()) {
 		wAdjacentNodes.push_back(make_pair(id_adj, weight_adj));
 		weighted = true; 
+		sorted = false;
 	}
 }
 
@@ -74,6 +82,7 @@ bool Node::deleteAdjacent(uInt key)
 	auto f = find(adjacentNodes.begin(), adjacentNodes.end(), key);
 	if (f != adjacentNodes.end()) {
 		adjacentNodes.erase(f);
+		sorted = false;
 		return true; 
 	}
     return false;
@@ -85,6 +94,7 @@ bool Node::deleteAdjacent(uInt key, uInt w)
 	auto f = find(wAdjacentNodes.begin(), wAdjacentNodes.end(), make_pair(key,w));
 	if (f != wAdjacentNodes.end()) {
 		wAdjacentNodes.erase(f);
+		sorted = false;
 		return true; 
 	}
     return false;
@@ -102,7 +112,7 @@ void Node::shrinkToFit()
 void Node::deleteExtracted(vector<uInt>* C)
 {
 	if (weighted) return;
-	sort();
+	if (not sorted) sort();
 	vector<uInt> newAdj; 
 	int index = 0;
 	for(auto i : *C){
@@ -119,7 +129,7 @@ void Node::deleteExtracted(vector<uInt>* C)
 void Node::deleteExtracted(vector<pair<uInt, uInt>>* C)
 {
 	if (not weighted) return; 
-	sort();
+	if (not sorted) sort();
 	//print();
 	vector<pair<uInt, uInt>> newAdj; 
 	int index = 0;
@@ -143,7 +153,7 @@ void Node::deleteExtracted(vector<pair<uInt, uInt>>* C)
 	wAdjacentNodes.swap(newAdj); 
 	//sleep(60);
 }
-
+/*
 vector<uInt> Node::findToErase(vector<uInt> *C)
 {
 	vector<uInt> weights;
@@ -151,18 +161,17 @@ vector<uInt> Node::findToErase(vector<uInt> *C)
 		vector<uInt> new_adjacentNodes;
 		vector<uInt>::iterator it = C->begin();
 		vector<uInt>::iterator it_end = C->end();
-		for (size_t i = 0; i < adjacentNodes.size(); i++)
-		{
-			if (it == it_end)
-			{
+		for (size_t i = 0; i < adjacentNodes.size(); i++) {
+			if (it == it_end) {
 				new_adjacentNodes.push_back(adjacentNodes.at(i));
 				continue;
 			}
 
-			if ((*it) == adjacentNodes.at(i))
+			if ((*it) == adjacentNodes.at(i)) {
 				it++;
-			else
+			} else { 
 				new_adjacentNodes.push_back(adjacentNodes.at(i));
+			}
 		}
 		adjacentNodes.swap(new_adjacentNodes);
 		new_adjacentNodes.clear(); 
@@ -170,10 +179,8 @@ vector<uInt> Node::findToErase(vector<uInt> *C)
 		vector<pair<uInt, uInt>> new_adjacentNodes;
 		auto it = C->begin();
 		auto it_end = C->end();
-		for (size_t i = 0; i < wAdjacentNodes.size(); i++)
-		{
-			if (it == it_end)
-			{
+		for (size_t i = 0; i < wAdjacentNodes.size(); i++) {
+			if (it == it_end) {
 				new_adjacentNodes.push_back(wAdjacentNodes.at(i));
 				continue;
 			}
@@ -181,8 +188,7 @@ vector<uInt> Node::findToErase(vector<uInt> *C)
 			if ((*it) == wAdjacentNodes.at(i).first){
 				weights.push_back(wAdjacentNodes.at(i).second);
 				it++;
-			}
-			else {
+			} else {
 				new_adjacentNodes.push_back(wAdjacentNodes.at(i));
 			}
 		}
@@ -190,7 +196,7 @@ vector<uInt> Node::findToErase(vector<uInt> *C)
 		new_adjacentNodes.clear();
 	}
 	return weights;
-}
+}*/
 
 bool Node::findAdjacent(uInt num){
 	if (not weighted and adjacentNodes.empty()) {
@@ -199,6 +205,7 @@ bool Node::findAdjacent(uInt num){
 	if (weighted and wAdjacentNodes.empty()) {
         return false;
 	}
+	if(not sorted) sort();
 	if (not weighted) { 
 		return binarySearch(0, edgesSize()-1, num);
 	} else {
@@ -210,6 +217,7 @@ bool Node::findAdjacent(uInt num, uInt w){
 	if (not weighted or wAdjacentNodes.empty()) { 
 		return false;
 	} else {
+		if (not sorted) sort();
 		return binarySearchW(0, edgesSize()-1, num, w);
 	}
 }
@@ -277,17 +285,20 @@ void Node::sort()
 	} else {
 		std::sort(wAdjacentNodes.begin(), wAdjacentNodes.end(), bind(&Node::sortWeighted, this, placeholders::_1, placeholders::_2)); 
 	}
+	sorted = true;
 
 }
 
 void Node::sortByFrecuency(unordered_map<uInt, uint32_t> *mapFrecuency)
 {
 	std::sort(adjacentNodes.begin(), adjacentNodes.end(), bind(&Node::sortFrecuencyComp, this, placeholders::_1, placeholders::_2, mapFrecuency));
+	sorted = false;
 }
 
 void Node::sortByFrecuency(unordered_map<string, uint32_t> *mapFrecuency)
 {
 	std::sort(wAdjacentNodes.begin(), wAdjacentNodes.end(), bind(&Node::sortFrecuencyCompWeighted, this, placeholders::_1, placeholders::_2, mapFrecuency));
+	sorted = false;
 }
 
 bool Node::includes(vector<uInt> *c)
@@ -304,6 +315,7 @@ bool Node::removeAdjacent(uInt id_adj)
 		auto element = std::find(adjacentNodes.begin(), adjacentNodes.end(), id_adj);
 		if (element != adjacentNodes.end()) {
 			adjacentNodes.erase(element);
+			sorted = false;
 			return true;
 		} else {
 			return false;
@@ -314,6 +326,7 @@ bool Node::removeAdjacent(uInt id_adj)
 		});
 		if (element != wAdjacentNodes.end()) {
 			wAdjacentNodes.erase(element);
+			sorted = false;
 			return true;
 		} else {
 			return false;

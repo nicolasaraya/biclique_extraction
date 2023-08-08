@@ -16,8 +16,8 @@ template <typename GraphType>
 class BicliqueExtractor {
     public:
         //BicliqueExtractor(const string, uint16_t, uint16_t, uint16_t, uint32_t, uint16_t, uint32_t, bool, uint32_t, uint16_t);
-        BicliqueExtractor(uint16_t, uint16_t, uint16_t, uint32_t, uint16_t, uint32_t, bool, uint32_t, uint16_t);
-        //path, num_signatures, minClusterSize, minAdyNodes, biclique_size, bs_decrease, shingleSize, selfLoop, threshold, iterations) 
+        BicliqueExtractor(uint16_t, uint16_t, uint16_t, uint32_t, uint16_t, uint32_t, uint32_t, uint16_t);
+        //path, num_signatures, minClusterSize, minAdyNodes, biclique_size, bs_decrease, shingleSize, threshold, iterations) 
         ~BicliqueExtractor();
         void extract();
         void setGraph(GraphType*); 
@@ -34,7 +34,6 @@ class BicliqueExtractor {
         mutex mtxWriteBiclique;
         mutex mtxSignatures;
 
-        bool selfLoop;
         string path;
         uint16_t iteration;
         uint64_t total_biclique;
@@ -44,7 +43,7 @@ class BicliqueExtractor {
         uint64_t cluster_size;
         uint64_t n_bicliques_iter;
         GraphType* graph = nullptr;
-        bool weighted = false; 
+        //bool weighted = false; 
 
         void extractBicliques(Cluster*);
         bool compareMinHash(const SignNode*, const SignNode*, int);

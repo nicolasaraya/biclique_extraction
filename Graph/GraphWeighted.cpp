@@ -2,7 +2,7 @@
 
 // PUBLIC METHODS
 
-GraphWeighted::GraphWeighted(const string path) : GraphADT(path, false)
+GraphWeighted::GraphWeighted(const string path) : GraphADT(path)
 {
 	TIMERSTART(build_matrix);
 	format = ".txt";

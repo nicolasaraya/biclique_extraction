@@ -4,7 +4,7 @@
 
 template <typename GraphType> 
 BicliqueExtractor<GraphType>::BicliqueExtractor(
-    uint16_t num_signatures, uint16_t minClusterSize, uint16_t minAdyNodes, uint32_t biclique_size, uint16_t bs_decrease, uint32_t shingleSize, bool selfLoop, uint32_t threshold, uint16_t iterations) : num_signatures(num_signatures), minClusterSize(minClusterSize), biclique_size(biclique_size), minAdyNodes(minAdyNodes), bs_decrease(bs_decrease), shingleSize(shingleSize), selfLoop(selfLoop), threshold(threshold), iterations(iterations)
+    uint16_t num_signatures, uint16_t minClusterSize, uint16_t minAdyNodes, uint32_t biclique_size, uint16_t bs_decrease, uint32_t shingleSize, uint32_t threshold, uint16_t iterations) : num_signatures(num_signatures), minClusterSize(minClusterSize), biclique_size(biclique_size), minAdyNodes(minAdyNodes), bs_decrease(bs_decrease), shingleSize(shingleSize), threshold(threshold), iterations(iterations)
 {
     iteration = 1;
     biclique_s_size = 0;
@@ -148,7 +148,7 @@ void BicliqueExtractor<GraphType>::computeClusters(Signatures* group, unsigned i
         uInt clusterSize = (*cluster)->size();
 
         if (clusterSize >= minClusterSize and (int)column < num_signatures - 1) {
-            computeClusters(*cluster, column+1);
+            computeClusters(*cluster, column + 1);
         } else if (clusterSize > 1) {   
             auto newCluster = new vector<Node*>();
             for (auto node = (*cluster)->begin(); node != (*cluster)->end(); node++) {
@@ -239,7 +239,7 @@ void BicliqueExtractor<GraphType>::getBicliques(Cluster* c)
                 (*it)->deleteExtracted(C_w);  
             }
             file << (*it)->getId() << " "; 
-            (*it)->setModified(true);
+            //(*it)->setModified(true);
         }
 
         file << endl << "C: ";
@@ -253,7 +253,7 @@ void BicliqueExtractor<GraphType>::getBicliques(Cluster* c)
             }
         }
         file << endl;
-
+        file << "SxC = " << C_size * S_size << endl;   
         n_bicliques_iter++;
         biclique_s_size += S_size;
         biclique_c_size += C_size;
