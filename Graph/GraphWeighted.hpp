@@ -21,6 +21,7 @@ public:
     Node* back();
     uint64_t all_edges_size();
     void print();
+    void printAsMatrix();
     void writeAdjacencyList(string);
     void restoreNodes();
     GraphWeightedIterator begin();
@@ -28,10 +29,14 @@ public:
     Node* at(uInt);
     Node* find(uInt);
     string getPath();
-    void addBicliques(string);
+    void sort();
+    //void addBicliques(string);
+    uint64_t maxValueEdge();
 private:
     vector<Node*> matrix;
     Node* binarySearch(uInt, uInt, uInt);
+    uint64_t maxEdge = 0;
+    bool compareNodes(Node* a, Node* b);
 };
 
 #endif

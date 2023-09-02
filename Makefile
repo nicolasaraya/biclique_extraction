@@ -6,7 +6,10 @@ OBJS	=   	main.o \
 				Node.o \
 				Shingle.o \
 				Trie.o \
-				Utils.o
+				Utils.o \
+				TaskManager.o \
+				Task.o \
+				Worker.o \
 
 SOURCE	=       main.cpp \
 				Graph/Graph.cpp \
@@ -17,7 +20,11 @@ SOURCE	=       main.cpp \
 				Cluster.cpp \
 				Shingle.cpp \
 				Trie.cpp \
-				Utils/Utils.cpp
+				Utils/Utils.cpp \
+				TaskManager/TaskManager.cpp \
+				TaskManager/Task.cpp \
+				TaskManager/Worker.cpp
+
 HEADER	=       Graph/Graph.hpp \
 				Graph/GraphADT.hpp \
 				Graph/GraphWeighted.hpp \
@@ -28,7 +35,11 @@ HEADER	=       Graph/Graph.hpp \
 				Shingle.hpp \
 				Trie.hpp \
 				Utils/Utils.hpp \
-				Utils/define.hpp
+				Utils/define.hpp \
+				TaskManager/TaskManager.hpp \
+				TaskManager/Task.hpp \
+				TaskManager/Worker.hpp
+
 OUT	=           biclique_extractor
 CC	 =          g++
 FLAGS =         -c  -std=c++20 -DBITS32
@@ -87,6 +98,15 @@ Trie.o: Trie.cpp
 
 Utils.o: Utils/Utils.cpp
 	$(CC) $(FLAGS) Utils/Utils.cpp 
+
+TaskManager.o: TaskManager/TaskManager.cpp
+	$(CC) $(FLAGS) TaskManager/TaskManager.cpp
+
+Task.o: TaskManager/Task.cpp
+	$(CC) $(FLAGS) TaskManager/Task.cpp
+
+Worker.o: TaskManager/Worker.cpp
+	$(CC) $(FLAGS) TaskManager/Worker.cpp
 
 clean:
 	rm -f $(OBJS) $(OBJS_CHECKER) $(OUT) $(OUT_CHECKER)

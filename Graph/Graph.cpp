@@ -105,7 +105,7 @@ void Graph::buildTxt()
 		}
 		tempNode->shrinkToFit();
 		tempNode->sort();
-		matrix.push_back(tempNode);
+		insert(tempNode);
 	}
 	file.close();
 	matrix.shrink_to_fit();
@@ -129,6 +129,7 @@ void Graph::buildBin()
         if((*buffer) < 0) {
 			uint64_t id = (*buffer) * -1;
 			if (tempNode != nullptr) {
+				insert(tempNode);
 				tempNode->sort();
 				tempNode->shrinkToFit();
 			}
@@ -136,7 +137,6 @@ void Graph::buildBin()
 			if (selfLoop) {
 				tempNode->setSelfLoop(true);
 			}
-			matrix.push_back(tempNode);
         } else {
 			if (tempNode == nullptr) {
 				continue; //num de aristas
@@ -146,6 +146,7 @@ void Graph::buildBin()
     }
 
 	if (tempNode != nullptr) {
+		insert(tempNode);
 		tempNode->sort();
 		tempNode->shrinkToFit();
 	}
@@ -177,12 +178,35 @@ uint64_t Graph::all_edges_size()
 void Graph::insert(Node *node)
 {
 	matrix.push_back(node);
+	cout << node->getId() << " " <<node->getBackAdjacent() << endl; 
+	if(node->getBackAdjacent() > maxEdge) {
+		maxEdge = node->getBackAdjacent();
+	}
+}
+
+uint64_t Graph::maxValueEdge()
+{
+	return maxEdge;
 }
 
 void Graph::print()
 {
 	for (size_t i = 0; i < matrix.size(); i++) {
 		matrix[i]->print();
+	}
+}
+
+void Graph::printAsMatrix()
+{
+	for (size_t i = 0; i < matrix.size(); i++) {
+		if(i < matrix[i]->getId() - 1) {
+			int temp = i; 
+			while(temp < matrix[i]->getId()) {
+				cout << "Node " << temp << ": " << 0 << endl;
+				temp++; 
+			}
+		}
+		matrix[i]->printBinary();
 	}
 }
 

@@ -65,9 +65,17 @@ void Cluster::computeHistogram()
 {
     computeFrecuency();
 
-    for (auto node : *nodes)
-    {
-        if(weighted){
+    for (auto *node : *nodes) {
+        if (weighted) {
+            //using std::placeholders::_1;
+            //std::function<void()> sortNode = [node, this](){node->sortByFrecuency(&mapFrecuencyWeighted);};
+            //std::function<void()> moveNode = [node, this](){node->moveToCache(&mapFrecuencyWeighted, minFreq);};
+            //
+            //TaskManager::get().submit(moveNode);    
+
+            //auto sortNode = std::bind(static_cast<void(Node::*)(unordered_map<string, uint32_t> *)>(&Node::sortByFrecuency), &node, &mapFrecuencyWeighted);
+            //std::function<void()> sortNode = [this, node](){node->sortByFrecuency(&mapFrecuencyWeighted);};
+            //TaskManager::get().submit(sortNode);
             node->sortByFrecuency(&mapFrecuencyWeighted);
             node->moveToCache(&mapFrecuencyWeighted, minFreq);
         } else {
@@ -75,17 +83,18 @@ void Cluster::computeHistogram()
             node->moveToCache(&mapFrecuency, minFreq);
         }
     }
-    sort(nodes->begin(), nodes->end(), bind(&Cluster::sortSizeComp, this, placeholders::_1, placeholders::_2));
+    //cout << "********+ finish push ***********+" << endl;
+    std::sort(nodes->begin(), nodes->end(), bind(&Cluster::sortSizeComp, this, placeholders::_1, placeholders::_2));
 }
 
 void Cluster::computeTrie()
 {
-    if(nodes != nullptr){
+    if (nodes != nullptr) {
         computeHistogram();
         t->create(nodes);
     }
-    mapFrecuency.clear();
-    mapFrecuencyWeighted.clear();
+    //mapFrecuency.clear();
+    //mapFrecuencyWeighted.clear();
     
 }
 

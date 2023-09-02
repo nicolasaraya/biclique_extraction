@@ -23,6 +23,7 @@ public:
     Node* back();
     uint64_t all_edges_size();
     void print();
+    void printAsMatrix();
     void writeAdjacencyList(string);
     void restoreNodes();
     AdjMatrixIterator begin();
@@ -30,12 +31,14 @@ public:
     Node* at(uInt);
     Node* find(uInt);
     string getPath();
+    uint64_t maxValueEdge();
 
 private:
     // PRIVATE METHODS
     vector<Node*> matrix;
     bool selfLoop = false;
     Node* binarySearch(uInt, uInt, uInt);
+    uint64_t maxEdge = 0;
 };
 
 #endif

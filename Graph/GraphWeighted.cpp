@@ -12,12 +12,20 @@ GraphWeighted::GraphWeighted(const string path) : GraphADT(path)
 }
 
 
-GraphWeighted::GraphWeighted() {}
+GraphWeighted::GraphWeighted() 
+{
+	format = ".txt";
+}
 
 GraphWeighted::~GraphWeighted()
 {
 	for (auto i : matrix)
-		delete i;
+		if(i != nullptr) delete i;
+}
+
+void GraphWeighted::buildBin()
+{
+	
 }
 
 
@@ -38,29 +46,34 @@ void GraphWeighted::buildTxt()
 		uInt weight = atoi(content[2].c_str());
 		if(temp == nullptr or temp->getId() != id){
 			if(temp != nullptr) {
+				insert(temp);
 				temp->shrinkToFit();
+				temp->sort();
 			}
-			temp = new Node(id, true);
-			matrix.push_back(temp);
+			temp = nullptr;
+			temp = find(id);
+			if(temp == nullptr) temp = new Node(id, true);
 		}
 		temp->addAdjacent(adj, weight); 
+		//cout << id << " " << adj << " " << weight << endl;
 	}
+	insert(temp);
 	temp->shrinkToFit();
+	temp->sort();
 	matrix.shrink_to_fit();
+	sort();
+	file.close();
+	//print();
 }
 
-
-void GraphWeighted::buildBin(){
-
-}
 
 string GraphWeighted::getPath(){
 	return path;
 }
 
-void GraphWeighted::addBicliques(string path)
+uint64_t GraphWeighted::maxValueEdge()
 {
-	return; 
+    return maxEdge;
 }
 
 uint64_t GraphWeighted::size()
@@ -85,12 +98,30 @@ uint64_t GraphWeighted::all_edges_size()
 void GraphWeighted::insert(Node* node)
 {
 	matrix.push_back(node);
+	if (node->getBackAdjacent() > maxEdge) {
+		maxEdge = node->getBackAdjacent();
+	}
 }
 
 void GraphWeighted::print()
 {
 	for (size_t i = 0; i < matrix.size(); i++) {
 		matrix[i]->print();
+	}
+}
+
+
+void GraphWeighted::printAsMatrix()
+{
+	for (size_t i = 0; i < matrix.size(); i++) {
+		if(i < matrix[i]->getId() - 1) {
+			int temp = i; 
+			while(temp < matrix[i]->getId()) {
+				cout << "Node " << temp << ": " << 0 << endl;
+				temp++; 
+			}
+		}
+		matrix[i]->printBinary();
 	}
 }
 
@@ -131,6 +162,10 @@ Node* GraphWeighted::at(uInt pos){
 }
 
 Node* GraphWeighted::find(uInt node_id){
+	if(matrix.empty()) {
+		return nullptr;
+	}
+
 	if (size() == num_nodes) {
 		return at(node_id-1);
 	}
@@ -153,4 +188,15 @@ Node* GraphWeighted::binarySearch(uInt l, uInt r, uInt node_id){
         return binarySearch(mid + 1, r, node_id);
     }
     return nullptr;
+}
+
+void GraphWeighted::sort() 
+{
+	std::sort(matrix.begin(), matrix.end(), bind(&GraphWeighted::compareNodes, this, placeholders::_1, placeholders::_2));
+}
+
+
+bool GraphWeighted::compareNodes(Node *a, Node *b)
+{
+    return a->getId() < b->getId();
 }

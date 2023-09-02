@@ -8,6 +8,8 @@
 
 #include "Graph/Node.hpp"
 #include "Trie.hpp"
+#include "TaskManager/TaskManager.hpp"
+#include "TaskManager/Task.hpp"
 
 using namespace std;
 

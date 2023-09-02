@@ -16,8 +16,8 @@ class Node {
 		Node(uInt, bool);
 		~Node();
 		uInt getId();
-		void setModified(bool);
-		bool isModified();
+		//void setModified(bool);
+		//bool isModified();
 		bool hasSelfLoop();
 		void setSelfLoop(bool);
 		bool isWeighted();
@@ -31,6 +31,8 @@ class Node {
 		void deleteExtracted(vector<pair<uInt, uInt>>*);
 		bool findAdjacent(uInt);
 		bool findAdjacent(uInt, uInt);
+		uInt findAdjacentWeighted(uInt);
+		bool increaseWeight(uInt, uInt);
 		void shrinkToFit();
 		void sort();
 		void sortByFrecuency(unordered_map<uInt, uint32_t>*);
@@ -44,9 +46,12 @@ class Node {
 		WeightedIt wAdjacentsBegin();
 		WeightedIt wAdjacentsEnd();
 		uInt getFrontAdjacent();
+		uInt getBackAdjacent();
 		pair<uInt, uInt> getFrontWeighted();
+		pair<uInt, uInt> getBackWeighted();
 		bool restore();
 		void print();
+		void printBinary();
 
 	private:
 		vector<uInt> adjacentNodes;

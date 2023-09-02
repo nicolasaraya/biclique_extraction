@@ -11,13 +11,13 @@ int main(int argc, char *argv[])
     std::unordered_map<std::string, std::string> input_arguments{
         {"file", "../data/dblp-2011.txt"},
         {"numSignatures", "2"},
-        {"minClusterSize", "10"},
-        {"bicliqueSize", "500"},
-        {"minAdyNodes", "10"},
-        {"bsDecrease", "500"},
+        {"minClusterSize", "3"},
+        {"bicliqueSize", "5"},
+        {"minAdyNodes", "2"},
+        {"bsDecrease", "10"},
         {"shingleSize", "1"},
         {"selfLoop", "1"},
-        {"threshold", "500"},
+        {"threshold", "5"},
         {"debug", "0"},
         {"iterations", "10"}};
 
@@ -56,8 +56,6 @@ int main(int argc, char *argv[])
     be.extract();
     */
     
-
-   
     
     GraphWeighted g = GraphWeighted(arguments["file"]);
     BicliqueExtractor<GraphWeighted> be = BicliqueExtractor<GraphWeighted>(

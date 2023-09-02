@@ -15,20 +15,12 @@ TaskManager::~TaskManager()
     std::unique_lock<std::mutex> lock(freeMutex);
     cv.wait(lock, [this]{ return ready; });
     cout << "delete TaskMgr" << endl;
-    
-    
 }
 
 TaskManager& TaskManager::get()
 {
     static TaskManager instance2; 
     return instance2; 
-   
-   /* if (not instance) {
-        instance = new TaskManager;
-    }
-    return *instance; 
-    */
 }
 
 

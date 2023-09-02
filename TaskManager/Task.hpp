@@ -4,6 +4,8 @@
 #include <functional>
 #include <iostream>
 
+#include "../Utils/Utils.hpp"
+
 class Task {
     public:
         Task() {}
@@ -22,4 +24,25 @@ class SimpleTask : public Task {
         RoutineType routine; 
 };
 
+/*
+class NodeTask : public Task {
+    public:
+        typedef std::function<void(unordered_map<uInt, uint32_t>*)> RoutineSortByFrecuency;
+        typedef std::function<void(unordered_map<string, uint32_t>*)> RoutineSortByFrecuencyWeighted;
+        typedef std::function<void(unordered_map<uInt, uint32_t> *, uint16_t)> RoutineMoveToCache;
+        typedef std::function<void(unordered_map<string, uint32_t> *, uint16_t)> RoutineMoveToCacheWeighted;
+    public:
+        NodeTask(RoutineSortByFrecuency);
+        NodeTask(RoutineSortByFrecuencyWeighted);
+        NodeTask(RoutineMoveToCache);
+        NodeTask(RoutineMoveToCacheWeighted);
+        virtual ~NodeTask();
+        virtual void run();
+    private:
+        RoutineMoveToCache rmtc;
+        RoutineMoveToCacheWeighted rmtcw;
+        RoutineSortByFrecuency rsbf;
+        RoutineSortByFrecuencyWeighted rsbfw; 
+};
+*/
 #endif
