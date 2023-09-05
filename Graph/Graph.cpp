@@ -178,7 +178,7 @@ uint64_t Graph::all_edges_size()
 void Graph::insert(Node *node)
 {
 	matrix.push_back(node);
-	cout << node->getId() << " " <<node->getBackAdjacent() << endl; 
+	//cout << node->getId() << " " <<node->getBackAdjacent() << endl; 
 	if(node->getBackAdjacent() > maxEdge) {
 		maxEdge = node->getBackAdjacent();
 	}
