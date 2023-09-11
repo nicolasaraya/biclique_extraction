@@ -13,10 +13,17 @@ BicliqueExtractor<GraphType>::BicliqueExtractor(
     total_biclique = 0;
     cluster_size = 0;
     n_bicliques_iter = 0;
+
+    if (saveCompressed) {
+        compBicl = new CompactBiclique(); 
+    }
 }
 
 template <typename GraphType> 
-BicliqueExtractor<GraphType>::~BicliqueExtractor() {}
+BicliqueExtractor<GraphType>::~BicliqueExtractor() {
+    writeCompactStructure();
+    delete compBicl;
+}
 
 template <typename GraphType> 
 void BicliqueExtractor<GraphType>::setGraph(GraphType* g){
@@ -205,6 +212,105 @@ void BicliqueExtractor<GraphType>::getBicliques(Cluster* c)
         delete bicliques;
         return; 
     }
+    if (saveCompressed) saveCompactStructure(bicliques);
+    writeBicliques(bicliques);
+    return; 
+}
+
+
+template <typename GraphType> 
+void BicliqueExtractor<GraphType>::saveCompactStructure(vector<Biclique*>* bicliques)
+{   
+    for (auto biclique = bicliques->begin(); biclique != bicliques->end(); biclique++) {
+        vector<Node*>* S = (*biclique)->S;
+        vector<uInt>* C = (*biclique)->C; 
+        vector<pair<uInt, uInt>>* C_w = (*biclique)->C_w;
+
+        uInt S_size = S->size();
+        uInt C_size = 0; 
+        if (C != nullptr) {
+            C_size = C->size();
+        } else {
+            C_size = C_w->size(); 
+        }
+
+        if(S_size * C_size < biclique_size) {
+            continue; 
+        }
+
+        sort(S->begin(), S->end(), bind(&BicliqueExtractor::sortS, this, placeholders::_1, placeholders::_2));
+        if(C != nullptr) sort(C->begin(), C->end(), bind(&BicliqueExtractor::sortC, this, placeholders::_1, placeholders::_2));
+        else sort(C_w->begin(), C_w->end(), bind(&BicliqueExtractor::sortC_w, this, placeholders::_1, placeholders::_2));
+
+
+        C_values bicl_C_values;
+        if (C != nullptr) {
+            for(auto it = C->begin(); it != C->end(); it++){
+                //file << *it << " "; 
+            }
+        } else {
+            for(auto it = C_w->begin(); it != C_w->end(); it++){
+                compBicl->weights_values.insert((*it).second);
+                bicl_C_values.push_back(make_pair((*it).first, (*it).second)); 
+            }
+        }
+        compBicl->c_bicliques.push_back(bicl_C_values);
+
+        for(auto it = S->begin(); it != S->end(); it++){
+            uInt id = (*it)->getId();
+            vector<pair<uInt, vector<uInt>>>::iterator f = std::find_if( compBicl->linked_s.begin(), compBicl->linked_s.end(),
+                [id](const std::pair<uInt, vector<uInt>>& element){ return element.first == id;} );
+
+            if (f == compBicl->linked_s.end()) {
+                pair<uInt, vector<uInt>> p; 
+                p.first = id; 
+                p.second.push_back(compBicl->c_bicliques.size()-1);
+                compBicl->linked_s.push_back(p);
+            } else {
+                (*f).second.push_back(compBicl->c_bicliques.size()-1);
+            }
+            //file << (*it)->getId() << " "; 
+            //(*it)->setModified(true);
+        }
+        //file << endl << "C: "; 
+    }
+    return; 
+}
+template <typename GraphType> 
+void BicliqueExtractor<GraphType>::writeCompactStructure()
+{   
+
+    std::sort(compBicl->linked_s.begin(), compBicl->linked_s.end(), [](pair<uInt, vector<uInt>> a, pair<uInt, vector<uInt>> b){ return a.first < b.first; });
+    
+    cout << "Compact Structure:" << endl;
+    for(auto i : compBicl->weights_values) {
+        cout << i << " " ;
+    }
+    cout << endl;
+    cout << "++++++++++++" << endl;
+    for (auto i : compBicl->linked_s) {
+        cout << i.first << ": "; 
+        for (auto j : i.second) {
+            cout << j << " "; 
+        }
+        cout << endl;
+    }
+    cout << "***********" << endl;
+    for (size_t i = 0; i < compBicl->c_bicliques.size(); i++) {
+        cout << i << " "; 
+        for(auto j : compBicl->c_bicliques.at(i)) {
+            cout << "(" << j.first << "," << j.second << ")" << " ";
+        } 
+        cout << endl;
+    }
+
+    cout << endl;
+    return; 
+}
+
+template <typename GraphType>
+void BicliqueExtractor<GraphType>::writeBicliques(vector<Biclique*>* bicliques)
+{
     ofstream file;
     string new_path = modify_path(graph->getPath(), 4 , "bicliques.txt");
     file.open(new_path, fstream::app);
@@ -254,6 +360,7 @@ void BicliqueExtractor<GraphType>::getBicliques(Cluster* c)
         }
         file << endl;
         file << "SxC = " << C_size * S_size << endl;   
+        file << "SxC - C = " << (C_size * S_size) - C_size << endl; 
         n_bicliques_iter++;
         biclique_s_size += S_size;
         biclique_c_size += C_size;

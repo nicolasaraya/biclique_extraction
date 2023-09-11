@@ -29,6 +29,7 @@
 #include <future>
 #include <type_traits>
 #include <limits.h>
+#include <set>
 
 #if defined(BITS32)
     typedef int Int;

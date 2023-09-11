@@ -68,7 +68,16 @@ int main(int argc, char *argv[])
         atoi(arguments["threshold"].c_str()),
         atoi(arguments["iterations"].c_str())
         );
-    //g.print();
+    /*
+    g.print();
+    cout << "Transposed" << g.isTransposed() << endl;
+    g.transpose(); 
+    g.print();
+    cout << "Transposed" << g.isTransposed() << endl;
+    g.transpose(); 
+    g.print();
+    cout << "Transposed" << g.isTransposed() << endl;
+    */
     be.setGraph(&g);
     be.extract();
     

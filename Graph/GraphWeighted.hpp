@@ -32,10 +32,13 @@ public:
     void sort();
     //void addBicliques(string);
     uint64_t maxValueEdge();
+    void transpose();
+    bool isTransposed();
 private:
     vector<Node*> matrix;
     Node* binarySearch(uInt, uInt, uInt);
     uint64_t maxEdge = 0;
+    bool transposed = false;
     bool compareNodes(Node* a, Node* b);
 };
 

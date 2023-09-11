@@ -11,6 +11,32 @@
 using namespace std;
 
 typedef vector<SignNode*> Signatures;
+typedef vector<pair<uInt, uInt>> C_values;
+
+struct CompactBiclique {
+    set<uInt> weights_values;
+    // set<uInt> S_values; 
+    vector<C_values> c_bicliques; 
+    vector<pair<uInt, vector<uInt>>> linked_s; //S_value to C_values index   
+};
+
+
+/*
+ * 2 : (1,e) - (3,a) - (6,b) - (7,c) - (8,f) - (10,d)
+ * 3 : (3,a) - (6,b) - (7,c) - (10,d) 
+ * 4 : (1,e) - (8,f)
+ * 5 : (3,a) - (6,b) - (7,c) - (10, d) 
+ * 
+ *  weights_values : [a,b,c,d,e,f]
+ *  c_bicliques[0] : [(1,3), (2,6), (3,7), (4,10)]  => (3,a), (6,b), (7,c), (10,d)
+ *  c_bicliques[1] : [(5,1), (6,8)]  => (1,e), (8,f)
+ * 
+ *  linkedS[0]: <2, [0, 1]>
+ *  linkedS[1]: <3, [0]>
+ *  linkedS[2]: <4, [1]>
+ *  linkedS[3]: <5, [0]>
+*/
+
 
 template <typename GraphType> 
 class BicliqueExtractor {
@@ -43,6 +69,10 @@ class BicliqueExtractor {
         uint64_t cluster_size;
         uint64_t n_bicliques_iter;
         GraphType* graph = nullptr;
+        
+        bool saveCompressed = true; 
+        CompactBiclique* compBicl = nullptr; 
+
         //bool weighted = false; 
 
         void extractBicliques(Cluster*);
@@ -60,6 +90,9 @@ class BicliqueExtractor {
         bool sortC(uint64_t, uint64_t);
         bool sortC_w(pair<uInt, uInt>, pair<uInt,uInt>);
         bool sortS(Node*, Node*);
+        void writeBicliques(vector<Biclique*>*);
+        void saveCompactStructure(vector<Biclique*>*); 
+        void writeCompactStructure();
 
 };
 

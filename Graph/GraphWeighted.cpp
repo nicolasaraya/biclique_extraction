@@ -66,6 +66,30 @@ void GraphWeighted::buildTxt()
 	//print();
 }
 
+void GraphWeighted::transpose()
+{
+	vector<Node*> transposedMatrix; 
+
+	for (size_t i = 0; i < matrix.size(); i++) { 
+		while (transposedMatrix.size() <= matrix.at(i)->getBackWeighted().first) {
+			transposedMatrix.push_back(new Node(transposedMatrix.size(), true)); 
+		}
+
+		for (auto it = matrix.at(i)->wAdjacentsBegin(); it != matrix.at(i)->wAdjacentsEnd(); it++) {
+			transposedMatrix[(*it).first]->addAdjacent(matrix.at(i)->getId(), (*it).second);
+		}
+		delete matrix.at(i);
+	}
+	matrix.clear();
+	matrix = transposedMatrix; 
+	transposed = not transposed; 
+}
+
+bool GraphWeighted::isTransposed()
+{
+	return transposed;
+}
+
 
 string GraphWeighted::getPath(){
 	return path;
@@ -75,6 +99,7 @@ uint64_t GraphWeighted::maxValueEdge()
 {
     return maxEdge;
 }
+
 
 uint64_t GraphWeighted::size()
 {
@@ -106,7 +131,7 @@ void GraphWeighted::insert(Node* node)
 void GraphWeighted::print()
 {
 	for (size_t i = 0; i < matrix.size(); i++) {
-		matrix[i]->print();
+		if(matrix.at(i)->edgesSize() > 0) matrix.at(i)->print();
 	}
 }
 
