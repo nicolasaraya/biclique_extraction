@@ -218,10 +218,10 @@ bool Node::findAdjacent(uInt num){
 }
 
 uInt Node::findAdjacentWeighted(uInt num){
-	if (not weighted) return false;
+	if (not weighted) return 0;
 	auto it = std::find_if(wAdjacentNodes.begin(), wAdjacentNodes.end(),
-              [&](const pair<uInt, uInt>& pair) { return pair.first == num; });
-	if (it != wAdjacentsEnd()) return (*it).second;
+              [&](const pair<uInt, uInt>& pair) { return pair.first == num; });	
+	if (it != wAdjacentNodes.end()) return (*it).second;
 	return 0;
 }
 

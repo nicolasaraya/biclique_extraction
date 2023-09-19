@@ -13,7 +13,7 @@ using namespace std;
 typedef vector<SignNode*> Signatures;
 typedef vector<pair<uInt, uInt>> C_values;
 
-struct CompactBiclique {
+struct CompactBicliqueWeighted {
     set<uInt> weights_values;
     // set<uInt> S_values; 
     vector<C_values> c_bicliques; 
@@ -71,9 +71,7 @@ class BicliqueExtractor {
         GraphType* graph = nullptr;
         
         bool saveCompressed = true; 
-        CompactBiclique* compBicl = nullptr; 
-
-        //bool weighted = false; 
+        CompactBicliqueWeighted* compBicl = nullptr; 
 
         void extractBicliques(Cluster*);
         bool compareMinHash(const SignNode*, const SignNode*, int);
@@ -93,6 +91,8 @@ class BicliqueExtractor {
         void writeBicliques(vector<Biclique*>*);
         void saveCompactStructure(vector<Biclique*>*); 
         void writeCompactStructure();
+        void writeCompactStructureBin();
+
 
 };
 

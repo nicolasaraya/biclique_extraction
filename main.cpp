@@ -6,15 +6,15 @@
 
 using namespace std;
 
-int main(int argc, char *argv[])
+int main(int argc, char const *argv[])
 {
     std::unordered_map<std::string, std::string> input_arguments{
         {"file", "../data/dblp-2011.txt"},
         {"numSignatures", "2"},
-        {"minClusterSize", "3"},
-        {"bicliqueSize", "5"},
-        {"minAdyNodes", "2"},
-        {"bsDecrease", "10"},
+        {"minClusterSize", "50"},
+        {"bicliqueSize", "5000"},
+        {"minAdyNodes", "10"},
+        {"bsDecrease", "500"},
         {"shingleSize", "1"},
         {"selfLoop", "1"},
         {"threshold", "5"},

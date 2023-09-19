@@ -1,9 +1,6 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-#if !defined(NUM_THREADS)
-    #define NUM_THREADS 4
-#endif
 #define DEBUG_LEVEL 3
 
 #include <vector>
@@ -43,6 +40,7 @@
     #define INTMAX LONG_MAX
 #endif
 
+
 #define TIMERSTART(label)                                                           \
     std::chrono::time_point<std::chrono::high_resolution_clock> a##label, b##label; \
     a##label = std::chrono::high_resolution_clock::now();
@@ -55,7 +53,8 @@
 
 std::string now_time();
 std::vector<std::string> splitString(std::string line, std::string delims);
-std::unordered_map<std::string, std::string> parseArguments(int argc, char *argv[], std::unordered_map<std::string, std::string> *);
+std::unordered_map<std::string, std::string> parseArguments(int argc, char const *argv[], std::unordered_map<std::string, std::string> *);
 std::string modify_path(std::string old_path, int n,std::string text);
+bool validateExtension(std::string, std::string);
 
 #endif

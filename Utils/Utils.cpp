@@ -25,7 +25,7 @@ std::vector<std::string> splitString(std::string line, std::string delims)
     return words;
 }
 
-std::unordered_map<std::string, std::string> parseArguments(int argc, char *argv[], std::unordered_map<std::string, std::string> *arguments)
+std::unordered_map<std::string, std::string> parseArguments(int argc, char const *argv[], std::unordered_map<std::string, std::string> *arguments)
 {
 
     const std::string prefix = "--";
@@ -56,10 +56,19 @@ std::unordered_map<std::string, std::string> parseArguments(int argc, char *argv
     return *arguments;
 }
 
-std::string modify_path(std::string old_path,int n ,std::string text){
+std::string modify_path(std::string old_path,int n ,std::string text)
+{
     std::string new_path = old_path;
     while(n--)
         new_path.pop_back();
     new_path += "_" + text;
     return new_path;
+}
+
+bool validateExtension(std::string path, std::string extension)
+{
+    if(path.find("." + extension) != std::string::npos) {
+		return true;
+	}
+    return false;
 }

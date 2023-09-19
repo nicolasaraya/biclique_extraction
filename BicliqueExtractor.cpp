@@ -15,13 +15,13 @@ BicliqueExtractor<GraphType>::BicliqueExtractor(
     n_bicliques_iter = 0;
 
     if (saveCompressed) {
-        compBicl = new CompactBiclique(); 
+        compBicl = new CompactBicliqueWeighted(); 
     }
 }
 
 template <typename GraphType> 
 BicliqueExtractor<GraphType>::~BicliqueExtractor() {
-    writeCompactStructure();
+    if (compBicl->weights_values.size() > 0) writeCompactStructure();
     delete compBicl;
 }
 
@@ -279,12 +279,27 @@ void BicliqueExtractor<GraphType>::saveCompactStructure(vector<Biclique*>* bicli
 template <typename GraphType> 
 void BicliqueExtractor<GraphType>::writeCompactStructure()
 {   
+    ofstream file;
+    string new_path = modify_path(graph->getPath(), 4 , "compact_bicliques.txt");
+    file.open(new_path, fstream::trunc);
+    assert(file.is_open());
+
 
     std::sort(compBicl->linked_s.begin(), compBicl->linked_s.end(), [](pair<uInt, vector<uInt>> a, pair<uInt, vector<uInt>> b){ return a.first < b.first; });
-    
+    /*
     cout << "Compact Structure:" << endl;
     for(auto i : compBicl->weights_values) {
         cout << i << " " ;
+    }
+    cout << endl;
+
+    cout << "***********" << endl;
+    for (size_t i = 0; i < compBicl->c_bicliques.size(); i++) {
+        cout << i << " "; 
+        for(auto j : compBicl->c_bicliques.at(i)) {
+            cout << "(" << j.first << "," << j.second << ")" << " ";
+        } 
+        cout << endl;
     }
     cout << endl;
     cout << "++++++++++++" << endl;
@@ -295,16 +310,36 @@ void BicliqueExtractor<GraphType>::writeCompactStructure()
         }
         cout << endl;
     }
-    cout << "***********" << endl;
-    for (size_t i = 0; i < compBicl->c_bicliques.size(); i++) {
-        cout << i << " "; 
-        for(auto j : compBicl->c_bicliques.at(i)) {
-            cout << "(" << j.first << "," << j.second << ")" << " ";
-        } 
-        cout << endl;
-    }
-
+    
     cout << endl;
+    */
+    //
+
+    file << "W: ";
+    for(auto i : compBicl->weights_values) {
+        file << i << " ";
+    }
+    file << endl;
+
+    //file << "Bicliques: " << endl;
+    for (size_t i = 0; i < compBicl->c_bicliques.size(); i++) {
+        file << "B[" << i << "]: ";
+        for(auto j : compBicl->c_bicliques.at(i)) {
+            file << "(" << j.first << "," << j.second << ")" << " ";
+        } 
+        file << endl;
+    }
+    file << "S: " << endl;
+    for (auto i : compBicl->linked_s) {
+        file << i.first << ": ";
+        for (auto j : i.second) {
+            file << j << " ";
+        }
+        file << endl; 
+    }
+    file << endl;
+    
+    file.close();
     return; 
 }
 
