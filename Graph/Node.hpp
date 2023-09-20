@@ -54,16 +54,16 @@ class Node {
 		void printBinary();
 
 	private:
+		uInt id;
+		bool weighted = false; 
 		vector<uInt> adjacentNodes;
 		vector<pair<uInt, uInt>> wAdjacentNodes; 
 		vector<pair<uInt, uInt>> wCacheNodes;
 		vector<uInt> cacheNodes;
-		bool weighted = false; 
 		//bool modified = false;
 		bool naturalSelfLoop = false; 
 		bool selfLoop = false;
 		bool sorted = false;
-		uInt id;
 
 		bool sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, uint32_t> *mapFrecuency);
 		bool sortFrecuencyCompWeighted(const pair<uInt, uInt> &a, const pair<uInt, uInt> &b, unordered_map<string, uint32_t> *mapFrecuency);

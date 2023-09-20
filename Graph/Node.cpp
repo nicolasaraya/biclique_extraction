@@ -3,7 +3,7 @@ using namespace std;
 
 // PUBLIC METHODS
 
-Node::Node(uInt id) : id(id) {}
+Node::Node(uInt id) : id(id), weighted(false) {}
 
 Node::Node(uInt id, bool weighted) : id(id), weighted(weighted) {}
 
@@ -118,7 +118,7 @@ void Node::deleteExtracted(vector<uInt>* C)
 	if (weighted) return;
 	if (not sorted) sort();
 	vector<uInt> newAdj; 
-	int index = 0;
+	uInt index = 0;
 	for(auto i : *C){
 		while(index < adjacentNodes.size()){
 			if(adjacentNodes.at(index) != i){
@@ -136,8 +136,8 @@ void Node::deleteExtracted(vector<pair<uInt, uInt>>* C)
 	if (not sorted) sort();
 	//print();
 	vector<pair<uInt, uInt>> newAdj; 
-	int index = 0;
-	int countC = 0; 
+	uInt index = 0;
+	//int countC = 0; 
 	for(auto i : *C){
 		for(; index < wAdjacentNodes.size(); index++) {
 			if(wAdjacentNodes.at(index).first == i.first and wAdjacentNodes.at(index).second == i.second) {
@@ -349,7 +349,7 @@ bool Node::removeAdjacent(uInt id_adj)
 			return false;
 		}
 	} else {
-		auto element = std::find_if(wAdjacentNodes.begin(), wAdjacentNodes.end(), [id_adj](const std::pair<int, int>& p){
+		auto element = std::find_if(wAdjacentNodes.begin(), wAdjacentNodes.end(), [id_adj](const std::pair<uInt, uInt>& p){
 		 	return p.first == id_adj;
 		});
 		if (element != wAdjacentNodes.end()) {
@@ -470,8 +470,8 @@ void Node::print()
 void Node::printBinary()
 {
 	cout << "Node " << id << ": ";
-	int index = 0; 
-	int i = 1;
+	uInt index = 0; 
+	uInt i = 1;
 
 	if (not weighted) {
 		while(index < adjacentNodes.size()) {

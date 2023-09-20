@@ -15,8 +15,9 @@ typedef int BinVar;
 class GraphADT
 {
 public:
-    GraphADT(string path): path(path){};
-    GraphADT(){};
+    GraphADT(string path): path(path) {};
+    GraphADT() {};
+    virtual ~GraphADT() {};
     virtual void buildTxt() = 0;
     virtual void buildBin() = 0;
     virtual uint64_t size() = 0;

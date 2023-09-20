@@ -99,7 +99,7 @@ void Graph::buildTxt()
 		if (selfLoop) {
 			tempNode->setSelfLoop(true);
 		}
-		for (int i = 1; i < adjacents.size();i++) {
+		for (size_t i = 1; i < adjacents.size();i++) {
 			uint64_t adjId = atoi(adjacents[i].c_str());
 			tempNode->addAdjacent(adjId);
 		}
@@ -200,7 +200,7 @@ void Graph::printAsMatrix()
 {
 	for (size_t i = 0; i < matrix.size(); i++) {
 		if(i < matrix[i]->getId() - 1) {
-			int temp = i; 
+			uInt temp = i; 
 			while(temp < matrix[i]->getId()) {
 				cout << "Node " << temp << ": " << 0 << endl;
 				temp++; 
@@ -217,7 +217,7 @@ void Graph::writeAdjacencyList(string path_write_)
 		return;
 	}
 	ofstream file;
-	int count = 0;
+	//int count = 0;
 	uint64_t matrix_size = size();
 
 	string path_write = path_write_ + ".txt";

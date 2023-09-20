@@ -37,7 +37,7 @@ void GraphWeighted::buildTxt()
 	assert(file.is_open());
 	string line;
 	Node* temp = nullptr;
-	int x = 0;
+	//int x = 0;
 	while(getline(file,line)){
 		if(line.front() == '%') continue; 
 		auto content = splitString(line, " ");
@@ -140,7 +140,7 @@ void GraphWeighted::printAsMatrix()
 {
 	for (size_t i = 0; i < matrix.size(); i++) {
 		if(i < matrix[i]->getId() - 1) {
-			int temp = i; 
+			uInt temp = i; 
 			while(temp < matrix[i]->getId()) {
 				cout << "Node " << temp << ": " << 0 << endl;
 				temp++; 
