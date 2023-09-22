@@ -119,13 +119,21 @@ void Node::deleteExtracted(vector<uInt>* C)
 	if (not sorted) sort();
 	vector<uInt> newAdj; 
 	uInt index = 0;
+
 	for(auto i : *C){
-		while(index < adjacentNodes.size()){
-			if(adjacentNodes.at(index) != i){
+		for(; index < adjacentNodes.size(); index++) {
+			if(adjacentNodes.at(index) == i) {
+				index++;
+				break; 
+			} else {
 				newAdj.push_back(adjacentNodes.at(index));
 			}
-			index++;
 		}
+	}
+
+	while(index < adjacentNodes.size()) {
+		newAdj.push_back(adjacentNodes.at(index));
+		index++;
 	}	
 	adjacentNodes.swap(newAdj);
 }

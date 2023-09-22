@@ -1,14 +1,14 @@
 #!/bin/bash
 
 ./biclique_extractor \
-    --numSignatures 4 \
+    --numSignatures 3 \
     --minClusterSize 10 \
-    --bicliqueSize 100 \
-    --minAdyNodes 4 \
+    --bicliqueSize 1000 \
+    --minAdyNodes 2 \
     --shingleSize 1 \
-    --bsDecrease 20 \
+    --bsDecrease 500 \
     --threshold 100 \
-    --selfLoop 1 \
+    --selfLoop 0 \
     --debug 0 \
-    --iterations 10 \
-    --file Utils/generator/graph_generated.txt
+    --iterations 100 \
+    --file ../txt/cnr-2000-hc/cnr-2000-hc.txt

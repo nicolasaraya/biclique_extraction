@@ -115,6 +115,7 @@ void BicliqueExtractor<GraphType>::extract()
     file << "Sum of C: " << biclique_c_size << endl;
     file << "Sum of S + C: " << biclique_s_size + biclique_c_size << endl;
     file << "Sum of Multiplication of S x C: " << biclique_sxc_size << endl;
+    file << " | S x C | / | S + C |: " << float(biclique_sxc_size) / float(biclique_s_size + biclique_c_size) << endl;
     file.close();
 
     string path_write = modify_path(graph->getPath(), 4 ,"compressed");
@@ -399,7 +400,7 @@ void BicliqueExtractor<GraphType>::writeBicliques(vector<Biclique*>* bicliques)
         n_bicliques_iter++;
         biclique_s_size += S_size;
         biclique_c_size += C_size;
-        biclique_sxc_size += S_size * C_size;
+        biclique_sxc_size += (S_size * C_size);
         delete *biclique; 
     }
     file.close();

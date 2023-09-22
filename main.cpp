@@ -57,8 +57,8 @@ int main(int argc, char const *argv[])
     */
     
     
-    GraphWeighted g = GraphWeighted(arguments["file"]);
-    BicliqueExtractor<GraphWeighted> be = BicliqueExtractor<GraphWeighted>(
+    Graph g = Graph(arguments["file"]);
+    BicliqueExtractor<Graph> be = BicliqueExtractor<Graph>(
         atoi(arguments["numSignatures"].c_str()),
         atoi(arguments["minClusterSize"].c_str()),
         atoi(arguments["minAdyNodes"].c_str()),
