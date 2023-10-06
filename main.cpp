@@ -8,16 +8,17 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
+    signal(SIGINT, SigHnd::signal_handler);
     std::unordered_map<std::string, std::string> input_arguments{
         {"file", "../data/dblp-2011.txt"},
         {"numSignatures", "2"},
         {"minClusterSize", "50"},
-        {"bicliqueSize", "5000"},
+        {"bicliqueSize", "2000"},
         {"minAdyNodes", "10"},
-        {"bsDecrease", "500"},
+        {"bsDecrease", "200"},
         {"shingleSize", "1"},
         {"selfLoop", "1"},
-        {"threshold", "5"},
+        {"threshold", "50"},
         {"debug", "0"},
         {"iterations", "10"}};
 
@@ -57,8 +58,8 @@ int main(int argc, char const *argv[])
     */
     
     
-    Graph g = Graph(arguments["file"]);
-    BicliqueExtractor<Graph> be = BicliqueExtractor<Graph>(
+    GraphWeighted g = GraphWeighted(arguments["file"]);
+    BicliqueExtractor<GraphWeighted> be = BicliqueExtractor<GraphWeighted>(
         atoi(arguments["numSignatures"].c_str()),
         atoi(arguments["minClusterSize"].c_str()),
         atoi(arguments["minAdyNodes"].c_str()),
@@ -68,16 +69,7 @@ int main(int argc, char const *argv[])
         atoi(arguments["threshold"].c_str()),
         atoi(arguments["iterations"].c_str())
         );
-    /*
-    g.print();
-    cout << "Transposed" << g.isTransposed() << endl;
-    g.transpose(); 
-    g.print();
-    cout << "Transposed" << g.isTransposed() << endl;
-    g.transpose(); 
-    g.print();
-    cout << "Transposed" << g.isTransposed() << endl;
-    */
+    
     be.setGraph(&g);
     be.extract();
     

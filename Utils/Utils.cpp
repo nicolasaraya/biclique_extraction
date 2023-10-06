@@ -1,5 +1,7 @@
 #include "Utils.hpp"
 
+int SigHnd::done = 0; 
+
 std::string now_time()
 {
     std::time_t t = std::time(0); // get time now
@@ -30,12 +32,10 @@ std::unordered_map<std::string, std::string> parseArguments(int argc, char const
 
     const std::string prefix = "--";
 
-    for (int i = 1; i < argc - 1; i++)
-    {
+    for (int i = 1; i < argc - 1; i++){
         auto arg = std::string(argv[i]);
 
-        if (arg.front() != '-')
-        {
+        if (arg.front() != '-') {
             continue;
         }
 
@@ -43,14 +43,13 @@ std::unordered_map<std::string, std::string> parseArguments(int argc, char const
         if(arg.front() == '-') arg.erase(arg.begin()); 
 
         auto f = arguments->find(arg);
-        if (f == arguments->end())
-        {
+        if (f == arguments->end()) {
             std::cout << "No se encuentra el argumento: " << prefix + std::string(arg) << std::endl;
             continue;
         }
 
         arguments->at(arg) = std::string(argv[i + 1]);
-        // std::cout << arg << ", " << arguments[arg] << std::endl;
+        //std::cout << arg << ", " << arguments->at(arg) << std::endl;
     }
 
     return *arguments;

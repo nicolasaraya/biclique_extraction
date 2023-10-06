@@ -21,7 +21,10 @@ BicliqueExtractor<GraphType>::BicliqueExtractor(
 
 template <typename GraphType> 
 BicliqueExtractor<GraphType>::~BicliqueExtractor() {
-    if (compBicl->weights_values.size() > 0) writeCompactStructure();
+    if (compBicl->weights_values.size() > 0) {
+        writeCompactStructure();
+        writeCompactStructureBin();
+    }
     delete compBicl;
 }
 
@@ -47,6 +50,10 @@ void BicliqueExtractor<GraphType>::extract()
 
     TIMERSTART(extraction_biclique);
     while (true) {
+        if (SigHnd::get_state()) {
+            cout << "Interrupt in " << iteration << " iteration" << endl;
+            break;
+        }
         n_bicliques_iter = 0;
         cout << "Iteration: " << iteration << endl;
         cout << "Compute Shingles" << endl;
@@ -287,34 +294,6 @@ void BicliqueExtractor<GraphType>::writeCompactStructure()
 
 
     std::sort(compBicl->linked_s.begin(), compBicl->linked_s.end(), [](pair<uInt, vector<uInt>> a, pair<uInt, vector<uInt>> b){ return a.first < b.first; });
-    /*
-    cout << "Compact Structure:" << endl;
-    for(auto i : compBicl->weights_values) {
-        cout << i << " " ;
-    }
-    cout << endl;
-
-    cout << "***********" << endl;
-    for (size_t i = 0; i < compBicl->c_bicliques.size(); i++) {
-        cout << i << " "; 
-        for(auto j : compBicl->c_bicliques.at(i)) {
-            cout << "(" << j.first << "," << j.second << ")" << " ";
-        } 
-        cout << endl;
-    }
-    cout << endl;
-    cout << "++++++++++++" << endl;
-    for (auto i : compBicl->linked_s) {
-        cout << i.first << ": "; 
-        for (auto j : i.second) {
-            cout << j << " "; 
-        }
-        cout << endl;
-    }
-    
-    cout << endl;
-    */
-    //
 
     file << "W: ";
     for(auto i : compBicl->weights_values) {
@@ -343,6 +322,63 @@ void BicliqueExtractor<GraphType>::writeCompactStructure()
     file.close();
     return; 
 }
+
+template <typename GraphType> 
+void BicliqueExtractor<GraphType>::writeCompactStructureBin()
+{   
+    typedef bool binVar; 
+    bool on = true;
+    bool off = false;
+
+    string S_path = modify_path(graph->getPath(), 4 , "S.bin");
+    string SS_path = modify_path(graph->getPath(), 4 , "SS.bin");
+    string C_path = modify_path(graph->getPath(), 4 , "C.bin");
+    string CC_path = modify_path(graph->getPath(), 4 , "CC.bin");
+
+    ofstream S, SS, C, CC;
+
+    S.open(S_path, std::ios::out | std::ios::binary | std::ios::trunc);
+    SS.open(SS_path, std::ios::out | std::ios::binary | std::ios::trunc);
+    C.open(C_path, std::ios::out | std::ios::binary | std::ios::trunc);
+    CC.open(CC_path, std::ios::out | std::ios::binary | std::ios::trunc);
+
+    assert(S.is_open());
+    assert(SS.is_open());
+    assert(C.is_open());
+    assert(CC.is_open());
+
+    std::sort(compBicl->linked_s.begin(), compBicl->linked_s.end(), [](pair<uInt, vector<uInt>> a, pair<uInt, vector<uInt>> b){ return a.first < b.first; });
+
+    //file << "Bicliques: " << endl;
+    for (size_t i = 0; i < compBicl->c_bicliques.size(); i++) {
+        //file << "B[" << i << "]: ";
+        CC.write((char*)&on, sizeof(bool));
+        for(auto j : compBicl->c_bicliques.at(i)) {
+            //file << "(" << j.first << "," << j.second << ")" << " ";
+            C.write((char*)&(j.first), sizeof(uInt));
+            C.write((char*)&(j.second), sizeof(uInt));
+            CC.write((char*)&off, sizeof(bool));
+        } 
+        //file << endl;
+    }
+    //file << "S: " << endl;
+    for (auto i : compBicl->linked_s) {
+        //file << i.first << ": ";
+        S.write((char*)&(i.first), sizeof(uInt));
+        SS.write((char*)&on, sizeof(bool));
+        for (auto j : i.second) {
+            S.write((char*)&j, sizeof(uInt));
+            SS.write((char*)&off, sizeof(bool));
+        }
+    }
+    S.close();
+    SS.close();
+    C.close();
+    CC.close();
+    
+    return; 
+}
+
 
 template <typename GraphType>
 void BicliqueExtractor<GraphType>::writeBicliques(vector<Biclique*>* bicliques)

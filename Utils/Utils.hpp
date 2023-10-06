@@ -27,6 +27,8 @@
 #include <type_traits>
 #include <limits.h>
 #include <set>
+#include <signal.h>
+
 
 #if defined(BITS32)
     typedef int Int;
@@ -56,5 +58,31 @@ std::vector<std::string> splitString(std::string line, std::string delims);
 std::unordered_map<std::string, std::string> parseArguments(int argc, char const *argv[], std::unordered_map<std::string, std::string> *);
 std::string modify_path(std::string old_path, int n,std::string text);
 bool validateExtension(std::string, std::string);
+
+class SigHnd {
+  private:
+    static int done;
+  public:
+    static void signal_handler(int) {
+        char ans = '0';
+        std::cout << "\n\nContinue, interrupt, exit? [1/2/3]\n";
+        std::cin >> ans;
+        if (ans == '1') {
+            std::cout << "continuing\n\n";
+        } else if (ans == '2') {
+            done = 1;
+            std::cout << "Interrupt next iteration \n\n";
+        } else if (ans == '3'){
+            std::cout << "exit\n";
+            exit(0);
+        } else {
+            std::cout << "continuing\n\n";
+        }
+        return;
+    }   
+    static int get_state() {
+      return done;
+    }   
+};
 
 #endif
