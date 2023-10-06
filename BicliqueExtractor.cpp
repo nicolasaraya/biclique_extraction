@@ -21,11 +21,11 @@ BicliqueExtractor<GraphType>::BicliqueExtractor(
 
 template <typename GraphType> 
 BicliqueExtractor<GraphType>::~BicliqueExtractor() {
-    if (compBicl->weights_values.size() > 0) {
+    if (compBicl != nullptr and compBicl->weights_values.size() > 0) {
         writeCompactStructure();
         writeCompactStructureBin();
+        delete compBicl;
     }
-    delete compBicl;
 }
 
 template <typename GraphType> 
@@ -44,7 +44,7 @@ void BicliqueExtractor<GraphType>::extract()
     ofstream file;
     file.open("log.txt", std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero log
     file.close();
-    string new_path = modify_path(graph->getPath(), 4 ,"bicliques.txt");
+    string new_path = modify_path(graph->getPath(), 4 ,"_bicliques.txt");
     file.open(new_path, std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero bicliques y se cierra
     file.close();
 
@@ -55,7 +55,7 @@ void BicliqueExtractor<GraphType>::extract()
             break;
         }
         n_bicliques_iter = 0;
-        cout << "Iteration: " << iteration << endl;
+        cout << endl << endl <<"Iteration: " << iteration << endl;
         cout << "Compute Shingles" << endl;
         TIMERSTART(compute_shingles);
         auto signatures = computeShingles();
@@ -96,7 +96,7 @@ void BicliqueExtractor<GraphType>::extract()
 
         if (n_bicliques_iter < threshold)
         {
-            cout << n_bicliques_iter << " " << threshold << endl;
+            //cout << n_bicliques_iter << " " << threshold << endl;
             if (bs_decrease > biclique_size)
                 break;
 
@@ -292,7 +292,7 @@ template <typename GraphType>
 void BicliqueExtractor<GraphType>::writeCompactStructure()
 {   
     ofstream file;
-    string new_path = modify_path(graph->getPath(), 4 , "compact_bicliques.txt");
+    string new_path = modify_path(graph->getPath(), 4 , "_compact_bicliques.txt");
     file.open(new_path, fstream::trunc);
     assert(file.is_open());
 
@@ -334,10 +334,10 @@ void BicliqueExtractor<GraphType>::writeCompactStructureBin()
     bool on = true;
     bool off = false;
 
-    string S_path = modify_path(graph->getPath(), 4 , "S.bin");
-    string SS_path = modify_path(graph->getPath(), 4 , "SS.bin");
-    string C_path = modify_path(graph->getPath(), 4 , "C.bin");
-    string CC_path = modify_path(graph->getPath(), 4 , "CC.bin");
+    string S_path = modify_path(graph->getPath(), 4 , "_S.bin");
+    string SS_path = modify_path(graph->getPath(), 4 , "_SS.bin");
+    string C_path = modify_path(graph->getPath(), 4 , "_C.bin");
+    string CC_path = modify_path(graph->getPath(), 4 , "_CC.bin");
 
     ofstream S, SS, C, CC;
 
@@ -388,7 +388,7 @@ template <typename GraphType>
 void BicliqueExtractor<GraphType>::writeBicliques(vector<Biclique*>* bicliques)
 {
     ofstream file;
-    string new_path = modify_path(graph->getPath(), 4 , "bicliques.txt");
+    string new_path = modify_path(graph->getPath(), 4 , "_bicliques.txt");
     file.open(new_path, fstream::app);
     assert(file.is_open());
     for (auto biclique = bicliques->begin(); biclique != bicliques->end(); biclique++) {
