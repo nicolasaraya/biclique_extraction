@@ -41,7 +41,7 @@ int main(int argc, char const *argv[])
     cout << "Iterations: " << arguments["iterations"] << endl;
     cout << "Bits: " << sizeof(Int) * 8 << endl;
 
-    /*
+    
     Graph g = Graph(arguments["file"], atoi(arguments["selfLoop"].c_str()));
     BicliqueExtractor<Graph> be(
         atoi(arguments["numSignatures"].c_str()),
@@ -55,10 +55,11 @@ int main(int argc, char const *argv[])
         );
     be.setGraph(&g);
     be.extract();
-    */
     
     
-    GraphWeighted g = GraphWeighted(arguments["file"]);
+  
+
+    /*GraphWeighted g = GraphWeighted(arguments["file"]);
     BicliqueExtractor<GraphWeighted> be = BicliqueExtractor<GraphWeighted>(
         atoi(arguments["numSignatures"].c_str()),
         atoi(arguments["minClusterSize"].c_str()),
@@ -71,7 +72,7 @@ int main(int argc, char const *argv[])
         );
     
     be.setGraph(&g);
-    be.extract();
+    be.extract();*/
     
    /*
 

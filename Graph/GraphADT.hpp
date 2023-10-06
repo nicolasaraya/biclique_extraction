@@ -9,9 +9,6 @@
 
 using namespace std;
 
-typedef int BinVar;
-//typedef long long int BinVar; 
-
 class GraphADT
 {
 public:
@@ -23,15 +20,18 @@ public:
     virtual uint64_t size() = 0;
     virtual uint64_t all_edges_size() = 0;
     virtual void print() = 0;
-    virtual void writeAdjacencyList(string) = 0;
+    virtual void writeAdjacencyList() = 0;
     virtual void restoreNodes() = 0;
     virtual string getPath() = 0;
+    virtual void writeBinaryFile() = 0;
+    void setCompressed(bool b) { compressed = b; }
 protected:
     string path;
     string format;
     bool selfLoops = false;
     bool weighted = false;
     uint64_t num_nodes = 0;
+    bool compressed = false;
 };
 
 #endif

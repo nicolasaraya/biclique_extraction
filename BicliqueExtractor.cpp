@@ -124,9 +124,13 @@ void BicliqueExtractor<GraphType>::extract()
     file << "Sum of Multiplication of S x C: " << biclique_sxc_size << endl;
     file << " | S x C | / | S + C |: " << float(biclique_sxc_size) / float(biclique_s_size + biclique_c_size) << endl;
     file.close();
+    if(total_biclique > 0) {
+        graph->setCompressed(true);
+        graph->writeAdjacencyList();
+        graph->writeBinaryFile();
+    }
 
-    string path_write = modify_path(graph->getPath(), 4 ,"compressed");
-    graph->writeAdjacencyList(path_write);
+    
 }
 
 template <typename GraphType>

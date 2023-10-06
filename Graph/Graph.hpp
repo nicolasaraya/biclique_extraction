@@ -24,7 +24,8 @@ public:
     uint64_t all_edges_size();
     void print();
     void printAsMatrix();
-    void writeAdjacencyList(string);
+    void writeAdjacencyList();
+    void writeBinaryFile();
     void restoreNodes();
     AdjMatrixIterator begin();
     AdjMatrixIterator end();

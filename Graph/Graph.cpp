@@ -117,14 +117,13 @@ void Graph::buildBin()
     binFile.open(path, ios::in | ios::binary);    
 	assert(binFile.is_open());
 
-	BinVar* nodes = new BinVar(0); 
-	binFile.read((char*)nodes, sizeof(BinVar));
-
+	Int* nodes = new Int(0); 
+	binFile.read((char*)nodes, sizeof(Int)); //num_nodes
 	//std::cout << "cantidad de nodos: " << *nodes << endl;
 	num_nodes = *nodes;
-    BinVar* buffer = new BinVar(0); 
+    Int* buffer = new Int(0); 
 	Node* tempNode = nullptr; 
-    while(binFile.read((char*)buffer, sizeof(BinVar))) {
+    while(binFile.read((char*)buffer, sizeof(Int))) {
 		//cout << *buffer << endl;
         if((*buffer) < 0) {
 			uint64_t id = (*buffer) * -1;
@@ -210,7 +209,7 @@ void Graph::printAsMatrix()
 	}
 }
 
-void Graph::writeAdjacencyList(string path_write_)
+void Graph::writeAdjacencyList()
 {
 	if (size() == 0){
 		cout << "Matrix Empty" << endl;
@@ -219,10 +218,12 @@ void Graph::writeAdjacencyList(string path_write_)
 	ofstream file;
 	//int count = 0;
 	uint64_t matrix_size = size();
-
-	string path_write = path_write_ + ".txt";
-	cout << "Writing: " << path_write << endl;
-	file.open(path_write, ofstream::out | ofstream::trunc); // limpia el contenido del fichero
+	string pathFile = modify_path(path, 4 ,".txt");
+	if (compressed) {
+		pathFile = modify_path(path, 4 ,"_compressed.txt");
+	} 
+	cout << "Writing: " << pathFile<< endl;
+	file.open(pathFile, ofstream::out | ofstream::trunc); // limpia el contenido del fichero
 
 	file << num_nodes << endl;
 
@@ -243,6 +244,41 @@ void Graph::writeAdjacencyList(string path_write_)
 		}
 		file << endl;
 	}
+	file.close();
+}
+
+void Graph::writeBinaryFile()
+{
+	ofstream file;
+	string pathFile = modify_path(path, 4 ,".bin");
+	if (compressed) {
+		pathFile = modify_path(path, 4 ,"_compressed.bin");
+	} 
+	cout << "Writing: " << pathFile << endl;
+	file.open(pathFile, ios::out | ios::binary |ios::trunc); 
+	assert(file.is_open());
+	
+	Int size = matrix.size();
+	file.write((char*)&size, sizeof(Int));
+	Int count_nodes = 0;
+	Int count_edges = 0;
+	for(auto i : matrix){
+		if (i->edgesSize() == 0) {
+			continue;
+		}
+		count_nodes++;
+		Int id = i->getId() * -1;
+		file.write((char*)&(id), sizeof(Int));
+		count_edges += i->edgesSize();
+		for(auto j = i->adjacentsBegin(); j != i->adjacentsEnd(); j++){
+			//file << i->getId() << " " << j->first << " " << j->second << endl;
+			file.write((char*)&(*j), sizeof(Int));
+		}
+	}
+
+	file.seekp(0);
+	file.write((char*)&size, sizeof(Int));
+	//file.write((char*)&count_edges, sizeof(Int));
 	file.close();
 }
 

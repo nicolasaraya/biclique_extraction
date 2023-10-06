@@ -60,7 +60,7 @@ std::string modify_path(std::string old_path,int n ,std::string text)
     std::string new_path = old_path;
     while(n--)
         new_path.pop_back();
-    new_path += "_" + text;
+    new_path += text;
     return new_path;
 }
 

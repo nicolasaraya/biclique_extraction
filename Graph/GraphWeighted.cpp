@@ -5,8 +5,13 @@
 GraphWeighted::GraphWeighted(const string path) : GraphADT(path)
 {
 	TIMERSTART(build_matrix);
-	format = ".txt";
-	buildTxt();
+	if(path.find(".txt" ) != std::string::npos) {
+		buildTxt();
+		format = "txt";
+	} else if(path.find(".bin") != std::string::npos) {
+		buildBin();
+		format = "bin";
+	}
 	TIMERSTOP(build_matrix);
 	//print();
 }
@@ -25,7 +30,38 @@ GraphWeighted::~GraphWeighted()
 
 void GraphWeighted::buildBin()
 {
-	
+	ifstream file;
+	file.open(path, ios::in | ios::binary);
+	assert(file.is_open());
+
+	uInt* buffer = new uInt(0);
+	Node* temp = nullptr;
+	while (not file.eof()) {
+		file.read((char*)buffer, sizeof(uInt));
+		uInt id = *buffer;
+		file.read((char*)buffer, sizeof(uInt));
+		uInt adj = *buffer;
+		file.read((char*)buffer, sizeof(uInt));
+		uInt w = *buffer;
+		
+		if (temp == nullptr or temp->getId() != id) {
+			if (temp != nullptr) {
+				insert(temp);
+				temp->shrinkToFit();
+				temp->sort();
+			}
+			temp = nullptr;
+			temp = find(id);
+			if(temp == nullptr) temp = new Node(id, true);
+		} 
+		temp->addAdjacent(adj, w);
+	}
+	insert(temp);
+	temp->shrinkToFit();
+	temp->sort();
+	matrix.shrink_to_fit();
+	sort();
+	file.close();
 }
 
 
@@ -150,16 +186,42 @@ void GraphWeighted::printAsMatrix()
 	}
 }
 
-void GraphWeighted::writeAdjacencyList(string path_write_)
+void GraphWeighted::writeAdjacencyList()
 {
 	ofstream file;
-	string pathFile = path_write_ + ".txt";
+	string pathFile = modify_path(path, 4 ,".txt");
+	if (compressed) {
+		pathFile = modify_path(path, 4 ,"_compressed.txt");
+	} 	
 	cout << "Save: " << pathFile << endl;
 	file.open(pathFile, std::ofstream::out | std::ofstream::trunc); 
 	assert(file.is_open());
 	for(auto i : matrix){
 		for(auto j = i->wAdjacentsBegin(); j != i->wAdjacentsEnd(); j++){
 			file << i->getId() << " " << j->first << " " << j->second << endl;
+		}
+	}
+	file.close();
+}
+
+void GraphWeighted::writeBinaryFile()
+{
+	ofstream file;
+	string pathFile = modify_path(path, 4 ,".bin");
+	if (compressed) {
+		pathFile = modify_path(path, 4 ,"_compressed.bin");
+	}
+	cout << "Save: " << pathFile << endl;
+	file.open(pathFile, ios::out | ios::binary |ios::trunc); 
+	assert(file.is_open());
+
+	for(auto i : matrix){
+		uInt id = i->getId();
+		for(auto j = i->wAdjacentsBegin(); j != i->wAdjacentsEnd(); j++){
+			//file << i->getId() << " " << j->first << " " << j->second << endl;
+			file.write((char*)&(id), sizeof(uInt));
+			file.write((char*)&(j->first), sizeof(uInt));
+			file.write((char*)&(j->second), sizeof(uInt));
 		}
 	}
 	file.close();
