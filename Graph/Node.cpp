@@ -11,8 +11,21 @@ Node::~Node()
 {
 	if (not adjacentNodes.empty()) adjacentNodes.clear();
 	if (not cacheNodes.empty()) cacheNodes.clear();
-	if (not wAdjacentNodes.empty()) wAdjacentNodes.clear();
-	if (not wCacheNodes.empty()) wCacheNodes.clear();
+	//if (not wAdjacentNodes.empty()) wAdjacentNodes.clear();
+	//if (not wCacheNodes.empty()) wCacheNodes.clear();
+
+	while (not wAdjacentNodes.empty()) {
+		if (wAdjacentNodes.back() != nullptr) {
+			delete wAdjacentNodes.back();
+		}
+		wAdjacentNodes.pop_back();
+	}
+	while (not wCacheNodes.empty()) {
+		if (wCacheNodes.back() != nullptr) {
+			delete wCacheNodes.back();
+		}
+		wCacheNodes.pop_back();
+	}
 }
 
 uInt Node::getId() 
