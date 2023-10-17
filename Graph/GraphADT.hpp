@@ -26,7 +26,7 @@ public:
     virtual void writeBinaryFile() = 0;
     void setCompressed(bool b) { compressed = b; }
 protected:
-    string path;
+    string path = "graph.txt";
     string format;
     bool selfLoops = false;
     bool weighted = false;

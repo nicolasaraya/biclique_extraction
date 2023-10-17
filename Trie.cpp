@@ -85,14 +85,14 @@ TrieNode* Trie::find(uInt &vertex, TrieNode* ptr)
     return nullptr;
 }
 
-TrieNode* Trie::find(pair<uInt, uInt> node, TrieNode* ptr)
+TrieNode* Trie::find(pair<uInt, uInt>* node, TrieNode* ptr)
 {
     if (ptr == nullptr) return nullptr;
     
-    if (ptr->vertex == node.first and ptr->weight == node.second) return ptr;
+    if (ptr->vertex == node->first and ptr->weight == node->second) return ptr;
     
     for(auto i = ptr->childrens->begin(); i != ptr->childrens->end(); i++){
-        if((*i)->vertex == node.first and (*i)->weight == node.second){
+        if((*i)->vertex == node->first and (*i)->weight == node->second){
             return *i; 
         }
     }
@@ -165,8 +165,8 @@ void Trie::insertInTree(TrieNode* root, Node* node)
                 t_node = new TrieNode();
                 t_node->indices = new vector<Node*>();
                 t_node->childrens = new vector<TrieNode*>();
-                t_node->vertex = (*adj).first;
-                t_node->weight = (*adj).second;
+                t_node->vertex = (*adj)->first;
+                t_node->weight = (*adj)->second;
                 t_node->indices->push_back(node);
                 t_node->depth = ptr->depth + 1;
                 t_node->parent = ptr;
@@ -244,7 +244,7 @@ void Trie::insertNewTree(Node* node)
     root->vertex = node->getFrontAdjacent();
     root->parent = nullptr; 
     root->depth = 1; 
-    if(node->isWeighted()) root->weight = node->getFrontWeighted().second;
+    if(node->isWeighted()) root->weight = node->getFrontWeighted()->second;
     root->treeIndex = forest.size()-1;
     insertInTree(root, node);
 }

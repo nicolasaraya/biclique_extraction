@@ -24,8 +24,11 @@ GraphWeighted::GraphWeighted()
 
 GraphWeighted::~GraphWeighted()
 {
-	for (auto i : matrix)
-		if(i != nullptr) delete i;
+	while(not matrix.empty()){
+		if(matrix.back() != nullptr) delete matrix.back();
+		matrix.pop_back();
+	}
+	matrix.clear();
 }
 
 void GraphWeighted::buildBin()
@@ -107,17 +110,35 @@ void GraphWeighted::transpose()
 	vector<Node*> transposedMatrix; 
 
 	for (size_t i = 0; i < matrix.size(); i++) { 
-		while (transposedMatrix.size() <= matrix.at(i)->getBackWeighted().first) {
+		while (transposedMatrix.size() <= matrix.at(i)->getBackWeighted()->first) {
 			transposedMatrix.push_back(new Node(transposedMatrix.size(), true)); 
 		}
 
+		if (matrix.at(i)->edgesSize() == 0) continue;
+
 		for (auto it = matrix.at(i)->wAdjacentsBegin(); it != matrix.at(i)->wAdjacentsEnd(); it++) {
-			transposedMatrix[(*it).first]->addAdjacent(matrix.at(i)->getId(), (*it).second);
+			transposedMatrix[(*it)->first]->addAdjacent(matrix.at(i)->getId(), (*it)->second);
 		}
-		delete matrix.at(i);
 	}
-	matrix.clear();
-	matrix = transposedMatrix; 
+
+	while(not matrix.empty()) {
+		if (matrix.back() != nullptr) {
+			delete matrix.back();
+		}
+		matrix.pop_back();
+	}
+
+	while (not transposedMatrix.empty()) {
+		if (transposedMatrix.back()->edgesSize() > 0) {
+			matrix.push_back(transposedMatrix.back());
+		} else {
+			delete transposedMatrix.back();
+		}
+		transposedMatrix.pop_back();
+	}
+	sort();
+	
+	//matrix = transposedMatrix; 
 	transposed = not transposed; 
 }
 
@@ -126,9 +147,13 @@ bool GraphWeighted::isTransposed()
 	return transposed;
 }
 
-
 string GraphWeighted::getPath(){
 	return path;
+}
+
+void GraphWeighted::setPath(string path)
+{
+    this->path = path;
 }
 
 uint64_t GraphWeighted::maxValueEdge()
@@ -174,14 +199,14 @@ void GraphWeighted::print()
 
 void GraphWeighted::printAsMatrix()
 {
+	uInt temp = 0;
 	for (size_t i = 0; i < matrix.size(); i++) {
-		if(i < matrix[i]->getId() - 1) {
-			uInt temp = i; 
-			while(temp < matrix[i]->getId()) {
-				cout << "Node " << temp << ": " << 0 << endl;
-				temp++; 
-			}
+		while(temp < matrix[i]->getId() ) {
+			cout << "Node " << temp << ": " << 0 << endl;
+			temp++; 
 		}
+		temp++;
+		
 		matrix[i]->printBinary();
 	}
 }
@@ -198,7 +223,7 @@ void GraphWeighted::writeAdjacencyList()
 	assert(file.is_open());
 	for(auto i : matrix){
 		for(auto j = i->wAdjacentsBegin(); j != i->wAdjacentsEnd(); j++){
-			file << i->getId() << " " << j->first << " " << j->second << endl;
+			file << i->getId() << " " << (*j)->first << " " << (*j)->second << endl;
 		}
 	}
 	file.close();
@@ -220,8 +245,8 @@ void GraphWeighted::writeBinaryFile()
 		for(auto j = i->wAdjacentsBegin(); j != i->wAdjacentsEnd(); j++){
 			//file << i->getId() << " " << j->first << " " << j->second << endl;
 			file.write((char*)&(id), sizeof(uInt));
-			file.write((char*)&(j->first), sizeof(uInt));
-			file.write((char*)&(j->second), sizeof(uInt));
+			file.write((char*)&((*j)->first), sizeof(uInt));
+			file.write((char*)&((*j)->second), sizeof(uInt));
 		}
 	}
 	file.close();

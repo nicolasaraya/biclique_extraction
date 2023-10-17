@@ -7,7 +7,7 @@
 
 using namespace std;
 
-typedef vector<pair<uInt, uInt>>::iterator WeightedIt;
+typedef vector<pair<uInt, uInt>*>::iterator WeightedIt;
 typedef vector<uInt>::iterator AdjacentsIt; 
 
 class Node {
@@ -47,8 +47,8 @@ class Node {
 		WeightedIt wAdjacentsEnd();
 		uInt getFrontAdjacent();
 		uInt getBackAdjacent();
-		pair<uInt, uInt> getFrontWeighted();
-		pair<uInt, uInt> getBackWeighted();
+		pair<uInt, uInt>* getFrontWeighted();
+		pair<uInt, uInt>* getBackWeighted();
 		bool restore();
 		void print();
 		void printBinary();
@@ -57,8 +57,8 @@ class Node {
 		uInt id;
 		bool weighted = false; 
 		vector<uInt> adjacentNodes;
-		vector<pair<uInt, uInt>> wAdjacentNodes; 
-		vector<pair<uInt, uInt>> wCacheNodes;
+		vector<pair<uInt, uInt>*> wAdjacentNodes; 
+		vector<pair<uInt, uInt>*> wCacheNodes;
 		vector<uInt> cacheNodes;
 		//bool modified = false;
 		bool naturalSelfLoop = false; 
@@ -66,26 +66,26 @@ class Node {
 		bool sorted = false;
 
 		bool sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, uint32_t> *mapFrecuency);
-		bool sortFrecuencyCompWeighted(const pair<uInt, uInt> &a, const pair<uInt, uInt> &b, unordered_map<string, uint32_t> *mapFrecuency);
+		bool sortFrecuencyCompWeighted(pair<uInt, uInt> *a, pair<uInt, uInt> *b, unordered_map<string, uint32_t> *mapFrecuency);
 		bool binarySearch(uint64_t, uint64_t, uInt);
 		bool binarySearchW(uint64_t, uint64_t, uInt);
 		bool binarySearchW(uint64_t, uint64_t, uInt, uInt);
-		bool sortWeighted(const pair<uInt, uInt>&a, const pair<uInt, uInt>&b);
+		bool sortWeighted(pair<uInt, uInt>*a, pair<uInt, uInt>*b);
 	};
 
 struct compareIncludes {
-    bool operator()(const std::pair<int, int>& p, int value) const {
-        return p.first < value;
+    bool operator()(std::pair<uInt, uInt>* p, uInt value) const {
+        return p->first < value;
     }
 
-    bool operator()(int value, const std::pair<int, int>& p) const {
-        return value < p.first;
+    bool operator()(uInt value, std::pair<uInt, uInt>* p) const {
+        return value < p->first;
     }
 };
 
 struct CompareFind {
-    bool operator()(const std::pair<int, int>& p, int value) const {
-        return p.first == value;
+    bool operator()(std::pair<uInt, uInt>* p, uInt value) const {
+        return p->first == value;
     }
 };
 

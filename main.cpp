@@ -13,12 +13,12 @@ int main(int argc, char const *argv[])
         {"file", "../data/dblp-2011.txt"},
         {"numSignatures", "2"},
         {"minClusterSize", "50"},
-        {"bicliqueSize", "2000"},
+        {"bicliqueSize", "1000"},
         {"minAdyNodes", "10"},
-        {"bsDecrease", "200"},
+        {"bsDecrease", "100"},
         {"shingleSize", "1"},
         {"selfLoop", "1"},
-        {"threshold", "50"},
+        {"threshold", "200"},
         {"debug", "0"},
         {"iterations", "10"}};
 
@@ -60,6 +60,7 @@ int main(int argc, char const *argv[])
   
 
     GraphWeighted g = GraphWeighted(arguments["file"]);
+    g.writeBinaryFile();
     BicliqueExtractor<GraphWeighted> be = BicliqueExtractor<GraphWeighted>(
         atoi(arguments["numSignatures"].c_str()),
         atoi(arguments["minClusterSize"].c_str()),

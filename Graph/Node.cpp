@@ -9,10 +9,10 @@ Node::Node(uInt id, bool weighted) : id(id), weighted(weighted) {}
 
 Node::~Node()
 {
-	adjacentNodes.clear();
-	cacheNodes.clear();
-	wAdjacentNodes.clear();
-	wCacheNodes.clear();
+	if (not adjacentNodes.empty()) adjacentNodes.clear();
+	if (not cacheNodes.empty()) cacheNodes.clear();
+	if (not wAdjacentNodes.empty()) wAdjacentNodes.clear();
+	if (not wCacheNodes.empty()) wCacheNodes.clear();
 }
 
 uInt Node::getId() 
@@ -74,9 +74,9 @@ void Node::addAdjacent(uInt id_adj)
 void Node::addAdjacent(uInt id_adj, uInt weight_adj)
 {
 	if (adjacentNodes.empty()) {
-		wAdjacentNodes.push_back(make_pair(id_adj, weight_adj));
+		if (wAdjacentNodes.size() > 0 and id_adj < wAdjacentNodes.back()->first) sorted = false;
+		wAdjacentNodes.push_back(new pair<uInt,uInt>(id_adj, weight_adj));
 		weighted = true; 
-		sorted = false;
 	}
 }
 
@@ -95,7 +95,7 @@ bool Node::deleteAdjacent(uInt key)
 bool Node::deleteAdjacent(uInt key, uInt w)
 {
 	if(not weighted) return false; 
-	auto f = find(wAdjacentNodes.begin(), wAdjacentNodes.end(), make_pair(key,w));
+	auto f = find(wAdjacentNodes.begin(), wAdjacentNodes.end(), new pair<uInt,uInt>(key,w));
 	if (f != wAdjacentNodes.end()) {
 		wAdjacentNodes.erase(f);
 		sorted = false;
@@ -143,12 +143,12 @@ void Node::deleteExtracted(vector<pair<uInt, uInt>>* C)
 	if (not weighted) return; 
 	if (not sorted) sort();
 	//print();
-	vector<pair<uInt, uInt>> newAdj; 
+	vector<pair<uInt, uInt>*> newAdj; 
 	uInt index = 0;
 	//int countC = 0; 
 	for(auto i : *C){
 		for(; index < wAdjacentNodes.size(); index++) {
-			if(wAdjacentNodes.at(index).first == i.first and wAdjacentNodes.at(index).second == i.second) {
+			if(wAdjacentNodes.at(index)->first == i.first and wAdjacentNodes.at(index)->second == i.second) {
 				index++;
 				break; 
 			} else {
@@ -228,8 +228,8 @@ bool Node::findAdjacent(uInt num){
 uInt Node::findAdjacentWeighted(uInt num){
 	if (not weighted) return 0;
 	auto it = std::find_if(wAdjacentNodes.begin(), wAdjacentNodes.end(),
-              [&](const pair<uInt, uInt>& pair) { return pair.first == num; });	
-	if (it != wAdjacentNodes.end()) return (*it).second;
+              [&](const pair<uInt, uInt>* pair) { return pair->first == num; });	
+	if (it != wAdjacentNodes.end()) return (*it)->second;
 	return 0;
 }
 
@@ -237,11 +237,11 @@ bool Node::increaseWeight(uInt id, uInt increase)
 {
 	if (not weighted) return false;
 	auto it = std::find_if(wAdjacentNodes.begin(), wAdjacentNodes.end(),
-              [&](pair<uInt, uInt>& pair) { return pair.first == id; });
+              [&](pair<uInt, uInt>* pair) { return pair->first == id; });
 	if (it != wAdjacentsEnd()) {
 		//cout << "Encuentra el nodo adj " << id << "en el nodo " << id << endl; 
 		//cout << "previo valor: " << (*it).second << endl;
-		(*it).second += increase;
+		(*it)->second += increase;
 		//cout << "nuevo valor: " << (*it).second << endl; 
 		 return true; 
 	}
@@ -280,10 +280,10 @@ bool Node::binarySearchW(uint64_t l, uint64_t r, uInt num){
     if (r >= l) {
         uint64_t mid = l + (r - l) / 2;
 
-        if (wAdjacentNodes[mid].first == num){
+        if (wAdjacentNodes[mid]->first == num){
             return true;
 		}
-        if (wAdjacentNodes[mid].first > num){
+        if (wAdjacentNodes[mid]->first > num){
 			if(mid == 0){
 				return false;
 			}
@@ -297,10 +297,10 @@ bool Node::binarySearchW(uint64_t l, uint64_t r, uInt num){
 bool Node::binarySearchW(uint64_t l, uint64_t r, uInt num, uInt w){
     if (r >= l) {
         uint64_t mid = l + (r - l) / 2;
-        if (wAdjacentNodes[mid].first == num and wAdjacentNodes[mid].second == w){
+        if (wAdjacentNodes[mid]->first == num and wAdjacentNodes[mid]->second == w){
             return true;
 		}
-        if (wAdjacentNodes[mid].first > num){
+        if (wAdjacentNodes[mid]->first > num){
 			if(mid == 0){
 				return false;
 			}
@@ -357,8 +357,8 @@ bool Node::removeAdjacent(uInt id_adj)
 			return false;
 		}
 	} else {
-		auto element = std::find_if(wAdjacentNodes.begin(), wAdjacentNodes.end(), [id_adj](const std::pair<uInt, uInt>& p){
-		 	return p.first == id_adj;
+		auto element = std::find_if(wAdjacentNodes.begin(), wAdjacentNodes.end(), [id_adj](std::pair<uInt, uInt>* p){
+		 	return p->first == id_adj;
 		});
 		if (element != wAdjacentNodes.end()) {
 			wAdjacentNodes.erase(element);
@@ -386,7 +386,7 @@ void Node::moveToCache(unordered_map<uInt, uint32_t> *mapFrecuency, uint16_t min
 void Node::moveToCache(unordered_map<string , uint32_t> *mapFrecuency, uint16_t minFreq)
 {
 	for (auto it = (wAdjacentNodes.end() - 1); it != wAdjacentNodes.begin(); it--) { // eliminar freq 1
-		string it_id = to_string((*it).first) + "," + to_string((*it).second);
+		string it_id = to_string((*it)->first) + "," + to_string((*it)->second);
 		if (mapFrecuency->at(it_id) <= minFreq) {
 			wCacheNodes.push_back(*it);
 			wAdjacentNodes.erase(it);
@@ -401,7 +401,7 @@ uInt Node::getFrontAdjacent()
 	if (not weighted and adjacentNodes.size() > 0) {
 		return adjacentNodes.front();	
 	} else if (weighted and wAdjacentNodes.size() > 0){
-		return wAdjacentNodes.front().first;
+		return wAdjacentNodes.front()->first;
 	}
 	return -1;
 }
@@ -411,25 +411,25 @@ uInt Node::getBackAdjacent()
     if (not weighted and adjacentNodes.size() > 0) {
 		return adjacentNodes.back();	
 	} else if (weighted and wAdjacentNodes.size() > 0){
-		return wAdjacentNodes.back().first;
+		return wAdjacentNodes.back()->first;
 	}
 	return 0;
 }
 
-pair<uInt, uInt> Node::getFrontWeighted()
+pair<uInt, uInt>* Node::getFrontWeighted()
 {
 	if (weighted and not wAdjacentNodes.empty()){
 		return wAdjacentNodes.front();
 	}
-	return make_pair(-1,-1);
+	return nullptr;
 }
 
-pair<uInt, uInt> Node::getBackWeighted()
+pair<uInt, uInt>* Node::getBackWeighted()
 {
 	if (weighted and not wAdjacentNodes.empty()){
 		return wAdjacentNodes.back();
 	}
-	return make_pair(0,0);
+	return nullptr;
 }
 
 bool Node::restore()
@@ -463,13 +463,13 @@ void Node::print()
 			cout << cacheNodes[j] << " ";
 	} else {
 		for (size_t i = 0; i < wAdjacentNodes.size(); i++) {
-			cout <<"("<< wAdjacentNodes.at(i).first << "," << wAdjacentNodes.at(i).second << ") ";
+			cout <<"("<< wAdjacentNodes.at(i)->first << "," << wAdjacentNodes.at(i)->second << ") ";
 		}
 		if (cacheNodes.size() > 0) {
 			cout << " || ";
 		}
 		for (size_t j = 0; j < wCacheNodes.size(); j++) {
-			cout <<"("<< wCacheNodes.at(j).first << "," << wCacheNodes.at(j).second << ") ";
+			cout <<"("<< wCacheNodes.at(j)->first << "," << wCacheNodes.at(j)->second << ") ";
 		}
 	}
 	cout << endl;
@@ -493,11 +493,11 @@ void Node::printBinary()
 		}
 	} else {
 		while(index < wAdjacentNodes.size()) {
-			while(i < wAdjacentNodes.at(index).first ) {
+			while(i < wAdjacentNodes.at(index)->first ) {
 				cout << "0 ";
 				i++;
 			}
-			cout << wAdjacentNodes.at(index).second << " ";
+			cout << wAdjacentNodes.at(index)->second << " ";
 			index++; 
 			i++;
 		}
@@ -538,28 +538,28 @@ bool Node::sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, u
 	}
 }
 
-bool Node::sortFrecuencyCompWeighted(const pair<uInt, uInt> &a, const pair<uInt, uInt> &b, unordered_map<string, uint32_t> *mapFrecuency)
+bool Node::sortFrecuencyCompWeighted(pair<uInt, uInt> *a, pair<uInt, uInt> *b, unordered_map<string, uint32_t> *mapFrecuency)
 {
 	try {
-		string a_id = to_string(a.first) + "," + to_string(a.second);
-		string b_id = to_string(b.first) + "," + to_string(b.second);
+		string a_id = to_string(a->first) + "," + to_string(a->second);
+		string b_id = to_string(b->first) + "," + to_string(b->second);
 		if (mapFrecuency->at(a_id) > mapFrecuency->at(b_id)) {
 			return true;
 		} else if (mapFrecuency->at(a_id) == mapFrecuency->at(b_id)) {
-			return a.first < b.first;
+			return a->first < b->first;
 		} else {
 			return false;
 		}
 	} catch (std::exception &e) {
 		cout << "a ref: " << &a << endl;
-		cout << "A: " << a.first << "," << a.second << endl;
-		cout << "B: " << b.first << "," << b.second << endl;
+		cout << "A: " << a->first << "," << a->second << endl;
+		cout << "B: " << b->first << "," << b->second << endl;
 		cout << e.what() << endl;
 		 
 	}
 	return false;
 }
 
-bool Node::sortWeighted(const pair<uInt, uInt> &a, const pair<uInt, uInt> &b){
-	return a.first < b.first; 
+bool Node::sortWeighted(pair<uInt, uInt>*a, pair<uInt, uInt>*b){
+	return a->first < b->first; 
 }

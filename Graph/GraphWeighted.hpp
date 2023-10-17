@@ -30,6 +30,7 @@ public:
     Node* at(uInt);
     Node* find(uInt);
     string getPath();
+    void setPath(string); 
     void sort();
     //void addBicliques(string);
     uint64_t maxValueEdge();
