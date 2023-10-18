@@ -85,7 +85,7 @@ TrieNode* Trie::find(uInt &vertex, TrieNode* ptr)
     return nullptr;
 }
 
-TrieNode* Trie::find(pair<uInt, uInt>* node, TrieNode* ptr)
+TrieNode* Trie::find(Pair* node, TrieNode* ptr)
 {
     if (ptr == nullptr) return nullptr;
     

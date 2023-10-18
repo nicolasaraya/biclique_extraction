@@ -7,8 +7,22 @@
 
 using namespace std;
 
-typedef vector<pair<uInt, uInt>*>::iterator WeightedIt;
+
+struct Pair{
+	uInt first;
+	uInt second; 
+
+	Pair(uInt f, uInt s) 
+	{
+		first = f;
+		second = s;
+	};
+};
+
+
+typedef vector<Pair*>::iterator WeightedIt;
 typedef vector<uInt>::iterator AdjacentsIt; 
+
 
 class Node {
 	public:
@@ -47,8 +61,8 @@ class Node {
 		WeightedIt wAdjacentsEnd();
 		uInt getFrontAdjacent();
 		uInt getBackAdjacent();
-		pair<uInt, uInt>* getFrontWeighted();
-		pair<uInt, uInt>* getBackWeighted();
+		Pair* getFrontWeighted();
+		Pair* getBackWeighted();
 		bool restore();
 		void print();
 		void printBinary();
@@ -57,8 +71,8 @@ class Node {
 		uInt id;
 		bool weighted = false; 
 		vector<uInt> adjacentNodes;
-		vector<pair<uInt, uInt>*> wAdjacentNodes; 
-		vector<pair<uInt, uInt>*> wCacheNodes;
+		vector<Pair*> wAdjacentNodes; 
+		vector<Pair*> wCacheNodes;
 		vector<uInt> cacheNodes;
 		//bool modified = false;
 		bool naturalSelfLoop = false; 
@@ -66,25 +80,25 @@ class Node {
 		bool sorted = false;
 
 		bool sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, uint32_t> *mapFrecuency);
-		bool sortFrecuencyCompWeighted(pair<uInt, uInt> *a, pair<uInt, uInt> *b, unordered_map<string, uint32_t> *mapFrecuency);
+		bool sortFrecuencyCompWeighted(Pair *a, Pair *b, unordered_map<string, uint32_t> *mapFrecuency);
 		bool binarySearch(uint64_t, uint64_t, uInt);
 		bool binarySearchW(uint64_t, uint64_t, uInt);
 		bool binarySearchW(uint64_t, uint64_t, uInt, uInt);
-		bool sortWeighted(pair<uInt, uInt>*a, pair<uInt, uInt>*b);
+		bool sortWeighted(Pair*a, Pair*b);
 	};
 
 struct compareIncludes {
-    bool operator()(std::pair<uInt, uInt>* p, uInt value) const {
+    bool operator()(Pair* p, uInt value) const {
         return p->first < value;
     }
 
-    bool operator()(uInt value, std::pair<uInt, uInt>* p) const {
+    bool operator()(uInt value, Pair* p) const {
         return value < p->first;
     }
 };
 
 struct CompareFind {
-    bool operator()(std::pair<uInt, uInt>* p, uInt value) const {
+    bool operator()(Pair* p, uInt value) const {
         return p->first == value;
     }
 };

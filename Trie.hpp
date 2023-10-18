@@ -35,7 +35,7 @@ class Trie {
         vector<TrieNode*> forest;
         vector<TrieNode*> candidates; 
         TrieNode* find(uInt &, TrieNode*);
-        TrieNode* find(pair<uInt, uInt>*, TrieNode*);
+        TrieNode* find(Pair*, TrieNode*);
         void clear(TrieNode*);
         void computeCandidatesBicliques(TrieNode*, vector<Biclique*> *);
         TrieNode* find_in_Forest(uInt);

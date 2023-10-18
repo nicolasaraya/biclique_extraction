@@ -2,8 +2,11 @@
 
 // PUBLIC METHODS
 
+using namespace std;
+
 GraphWeighted::GraphWeighted(const string path) : GraphADT(path)
 {
+	matrix = new vector<Node*>();
 	TIMERSTART(build_matrix);
 	if(path.find(".txt" ) != std::string::npos) {
 		buildTxt();
@@ -19,22 +22,25 @@ GraphWeighted::GraphWeighted(const string path) : GraphADT(path)
 
 GraphWeighted::GraphWeighted() 
 {
+	matrix = new vector<Node*>();
 	format = ".txt";
 }
 
 GraphWeighted::~GraphWeighted()
 {
-	while(not matrix.empty()){
-		if(matrix.back() != nullptr) delete matrix.back();
-		matrix.pop_back();
+	for (auto it = matrix->begin(); it != matrix->end(); it++) {
+		//(*it)->print();
+		delete (*it);
 	}
-	matrix.clear();
+	matrix->clear();
+	delete matrix;
 }
 
 void GraphWeighted::buildBin()
 {
 	ifstream file;
 	file.open(path, ios::in | ios::binary);
+	file.seekg (0, file.beg);
 	assert(file.is_open());
 
 	uInt* buffer = new uInt(0);
@@ -46,7 +52,6 @@ void GraphWeighted::buildBin()
 		uInt adj = *buffer;
 		file.read((char*)buffer, sizeof(uInt));
 		uInt w = *buffer;
-		
 		if (temp == nullptr or temp->getId() != id) {
 			if (temp != nullptr) {
 				insert(temp);
@@ -58,12 +63,16 @@ void GraphWeighted::buildBin()
 			if(temp == nullptr) temp = new Node(id, true);
 		} 
 		temp->addAdjacent(adj, w);
+		//if (matrix->size() > 400000 ) break;
 	}
-	insert(temp);
-	temp->shrinkToFit();
-	temp->sort();
-	matrix.shrink_to_fit();
+	if(temp->edgesSize() > 0) {
+		//insert(temp);
+		temp->shrinkToFit();
+		temp->sort();
+	}
+	matrix->shrink_to_fit();
 	sort();
+	delete buffer;
 	file.close();
 }
 
@@ -99,7 +108,7 @@ void GraphWeighted::buildTxt()
 	insert(temp);
 	temp->shrinkToFit();
 	temp->sort();
-	matrix.shrink_to_fit();
+	matrix->shrink_to_fit();
 	sort();
 	file.close();
 	//print();
@@ -107,35 +116,62 @@ void GraphWeighted::buildTxt()
 
 void GraphWeighted::transpose()
 {
-	vector<Node*> transposedMatrix; 
+	vector<Node*> t_matrix; 
+	//print();
 
-	for (size_t i = 0; i < matrix.size(); i++) { 
-		while (transposedMatrix.size() <= matrix.at(i)->getBackWeighted()->first) {
+	for(auto i : *matrix) {
+		
+		if (i->edgesSize() == 0){
+			delete i;
+			continue;
+		} 
+
+		while (t_matrix.size() <= (i->getBackWeighted())->first) {
+			t_matrix.push_back(new Node(t_matrix.size(), true));
+		}
+
+		for (auto it = i->wAdjacentsBegin(); it != i->wAdjacentsEnd(); it++) {
+			t_matrix.at((*it)->first)->addAdjacent(i->getId(), (*it)->second);
+		}
+		delete i;
+		
+	}
+	matrix->clear();
+
+	for (auto i : t_matrix) {
+		if (i->edgesSize() > 0) {
+			matrix->push_back(i);
+		} else {
+			delete i;
+		}
+	}
+	t_matrix.clear();
+
+	/*for (auto i : matrix) { 
+		i->print();
+		if (i->edgesSize() == 0) continue;
+
+		while (transposedMatrix.size() <= i->getBackWeighted()->first) {
 			transposedMatrix.push_back(new Node(transposedMatrix.size(), true)); 
 		}
 
-		if (matrix.at(i)->edgesSize() == 0) continue;
-
-		for (auto it = matrix.at(i)->wAdjacentsBegin(); it != matrix.at(i)->wAdjacentsEnd(); it++) {
-			transposedMatrix[(*it)->first]->addAdjacent(matrix.at(i)->getId(), (*it)->second);
+		for (auto it = i->wAdjacentsBegin(); it != i->wAdjacentsEnd(); it++) {
+			transposedMatrix[(*it)->first]->addAdjacent(i->getId(), (*it)->second);
 		}
+		delete i;
 	}
 
-	while(not matrix.empty()) {
-		if (matrix.back() != nullptr) {
-			delete matrix.back();
-		}
-		matrix.pop_back();
-	}
+	matrix.clear();
 
-	while (not transposedMatrix.empty()) {
-		if (transposedMatrix.back()->edgesSize() > 0) {
-			matrix.push_back(transposedMatrix.back());
+	for (size_t i = 0; i < transposedMatrix.size(); i++) {
+		if (transposedMatrix[i]->edgesSize() > 0) {
+			matrix.push_back(transposedMatrix[i]);
 		} else {
-			delete transposedMatrix.back();
+			delete transposedMatrix[i];
 		}
-		transposedMatrix.pop_back();
-	}
+	}*/
+
+
 	sort();
 	
 	//matrix = transposedMatrix; 
@@ -164,17 +200,17 @@ uint64_t GraphWeighted::maxValueEdge()
 
 uint64_t GraphWeighted::size()
 {
-	return matrix.size();
+	return matrix->size();
 }
 
 Node* GraphWeighted::back(){
-	return matrix.back();
+	return matrix->back();
 }
 
 uint64_t GraphWeighted::all_edges_size()
 {
 	uint64_t size = 0;
-	for (auto it : matrix)
+	for (auto it : *matrix)
 	{
 		size += it->edgesSize();
 	}
@@ -183,7 +219,7 @@ uint64_t GraphWeighted::all_edges_size()
 
 void GraphWeighted::insert(Node* node)
 {
-	matrix.push_back(node);
+	matrix->push_back(node);
 	if (node->getBackAdjacent() > maxEdge) {
 		maxEdge = node->getBackAdjacent();
 	}
@@ -191,8 +227,8 @@ void GraphWeighted::insert(Node* node)
 
 void GraphWeighted::print()
 {
-	for (size_t i = 0; i < matrix.size(); i++) {
-		if(matrix.at(i)->edgesSize() > 0) matrix.at(i)->print();
+	for (size_t i = 0; i < matrix->size(); i++) {
+		if(matrix->at(i)->edgesSize() > 0) matrix->at(i)->print();
 	}
 }
 
@@ -200,14 +236,14 @@ void GraphWeighted::print()
 void GraphWeighted::printAsMatrix()
 {
 	uInt temp = 0;
-	for (size_t i = 0; i < matrix.size(); i++) {
-		while(temp < matrix[i]->getId() ) {
+	for (size_t i = 0; i < matrix->size(); i++) {
+		while(temp < matrix->at(i)->getId() ) {
 			cout << "Node " << temp << ": " << 0 << endl;
 			temp++; 
 		}
 		temp++;
 		
-		matrix[i]->printBinary();
+		matrix->at(i)->printBinary();
 	}
 }
 
@@ -221,7 +257,7 @@ void GraphWeighted::writeAdjacencyList()
 	cout << "Save: " << pathFile << endl;
 	file.open(pathFile, std::ofstream::out | std::ofstream::trunc); 
 	assert(file.is_open());
-	for(auto i : matrix){
+	for(auto i : *matrix){
 		for(auto j = i->wAdjacentsBegin(); j != i->wAdjacentsEnd(); j++){
 			file << i->getId() << " " << (*j)->first << " " << (*j)->second << endl;
 		}
@@ -240,7 +276,7 @@ void GraphWeighted::writeBinaryFile()
 	file.open(pathFile, ios::out | ios::binary |ios::trunc); 
 	assert(file.is_open());
 
-	for(auto i : matrix){
+	for(auto i : *matrix){
 		uInt id = i->getId();
 		for(auto j = i->wAdjacentsBegin(); j != i->wAdjacentsEnd(); j++){
 			//file << i->getId() << " " << j->first << " " << j->second << endl;
@@ -254,27 +290,27 @@ void GraphWeighted::writeBinaryFile()
 
 void GraphWeighted::restoreNodes()
 {
-	for (size_t i = 0; i < matrix.size(); i++) {
-		matrix[i]->restore();
+	for (size_t i = 0; i < matrix->size(); i++) {
+		matrix->at(i)->restore();
 	}
 }
 
 GraphWeightedIterator GraphWeighted::begin()
 {
-	return matrix.begin();
+	return matrix->begin();
 }
 
 GraphWeightedIterator GraphWeighted::end()
 {
-	return matrix.end();
+	return matrix->end();
 }
 
 Node* GraphWeighted::at(uInt pos){
-	return matrix.at(pos);
+	return matrix->at(pos);
 }
 
 Node* GraphWeighted::find(uInt node_id){
-	if(matrix.empty()) {
+	if(matrix->empty()) {
 		return nullptr;
 	}
 
@@ -288,10 +324,10 @@ Node* GraphWeighted::binarySearch(uInt l, uInt r, uInt node_id){
 
     if (r >= l) {
         uInt mid = l + (r - l) / 2;
-        if (matrix[mid]->getId() == node_id){
-            return matrix[mid];
+        if (matrix->at(mid)->getId() == node_id){
+            return matrix->at(mid);
 		}
-        if (matrix[mid]->getId() > node_id) {
+        if (matrix->at(mid)->getId() > node_id) {
 			if (mid == 0) {
 				return nullptr;
 			}
@@ -304,7 +340,7 @@ Node* GraphWeighted::binarySearch(uInt l, uInt r, uInt node_id){
 
 void GraphWeighted::sort() 
 {
-	std::sort(matrix.begin(), matrix.end(), bind(&GraphWeighted::compareNodes, this, placeholders::_1, placeholders::_2));
+	std::sort(matrix->begin(), matrix->end(), bind(&GraphWeighted::compareNodes, this, placeholders::_1, placeholders::_2));
 }
 
 

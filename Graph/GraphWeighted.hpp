@@ -37,7 +37,7 @@ public:
     void transpose();
     bool isTransposed();
 private:
-    vector<Node*> matrix;
+    vector<Node*>* matrix = nullptr;
     Node* binarySearch(uInt, uInt, uInt);
     uint64_t maxEdge = 0;
     bool transposed = false;
