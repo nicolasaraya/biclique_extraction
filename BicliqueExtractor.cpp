@@ -84,7 +84,7 @@ void BicliqueExtractor<GraphType>::extract()
 
         total_biclique += n_bicliques_iter;
         uint64_t current_edges = graph->all_edges_size();
-        double compressionPercentage = (double(current_edges) * 100) / double(num_edges);
+        double compressionPercentage = 100 - ((double(current_edges) * 100) / double(num_edges));
 
         cout << "biclique iteration: " << n_bicliques_iter << endl;
         cout << "total: " << total_biclique << endl;
