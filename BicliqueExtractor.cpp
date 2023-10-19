@@ -42,11 +42,17 @@ void BicliqueExtractor<GraphType>::extract()
     uint64_t adjacencyMatrixOriginalEdgesSize = graph->all_edges_size();
 
     ofstream file;
-    file.open("log.txt", std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero log
+    string pathlog = graph->getPath();
+    while(pathlog.back() != '/') pathlog.pop_back(); 
+    pathlog += "log.txt";
+    file.open(pathlog, std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero log
     file.close();
+
     string new_path = modify_path(graph->getPath(), 4 ,"_bicliques.txt");
     file.open(new_path, std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero bicliques y se cierra
     file.close();
+
+    uint64_t num_edges = adjacencyMatrixOriginalEdgesSize;
 
     TIMERSTART(extraction_biclique);
     while (true) {
@@ -55,7 +61,7 @@ void BicliqueExtractor<GraphType>::extract()
             break;
         }
         n_bicliques_iter = 0;
-        cout << endl << endl <<"Iteration: " << iteration << endl;
+        cout << endl << endl << "Iteration: " << iteration << endl;
         cout << "Compute Shingles" << endl;
         TIMERSTART(compute_shingles);
         auto signatures = computeShingles();
@@ -71,45 +77,54 @@ void BicliqueExtractor<GraphType>::extract()
         for (auto i : *signatures) delete i;
         delete (signatures);
 
-        total_biclique += n_bicliques_iter;
-
-        cout << "biclique iteracion: " << n_bicliques_iter << endl;
-        cout << "total: " << total_biclique << endl;
-
-        file.open("log.txt", fstream::app);
-        file << "****************************************************************" << endl;
-        file << "Iteracion: " << iteration << endl;
-        file << "Adjacency Matrix Size: " << graph->size() << endl;
-        file << "Current Edges Size AdjacencyMatrix: " << graph->all_edges_size() << endl;
-        file << "Min Bilcique Size: " << biclique_size << endl;
-        file << "Clusters encontrados: " << cluster_size << endl;
-        file << "Bilciques encontrados: " << n_bicliques_iter << endl;
-        file.close();
-
         TIMERSTART(restaure_nodes);
-        cout << "Restaurando Nodos" << endl;
+        cout << "Restoring nodes" << endl;
         graph->restoreNodes();
         TIMERSTOP(restaure_nodes);
 
-        if (iteration == iterations)
-            break;
+        total_biclique += n_bicliques_iter;
+        uint64_t current_edges = graph->all_edges_size();
+        double compressionPercentage = (double(current_edges) * 100) / double(num_edges);
 
-        if (n_bicliques_iter < threshold)
-        {
-            //cout << n_bicliques_iter << " " << threshold << endl;
-            if (bs_decrease > biclique_size)
+        cout << "biclique iteration: " << n_bicliques_iter << endl;
+        cout << "total: " << total_biclique << endl;
+        cout << "Compression percentage iteration: " << compressionPercentage << endl;
+
+        file.open(pathlog, fstream::app);
+        file << "****************************************************************" << endl;
+        file << "Iteration nº: " << iteration << endl;
+        file << "Adjacency Matrix Size: " << graph->size() << endl;
+        file << "Current Edges Size AdjacencyMatrix: " << current_edges << endl;
+        file << "Min Biclique Size: " << biclique_size << endl;
+        file << "Clusters found: " << cluster_size << endl;
+        file << "Bicliques found: " << n_bicliques_iter << endl;
+        file << "Compression percentage iteration: " << compressionPercentage << endl;
+        file.close();
+
+        num_edges = current_edges; 
+
+        if (iteration == iterations) {
+            break;
+        }
+
+        if (n_bicliques_iter < threshold) {
+            if (bs_decrease > biclique_size) {
                 break;
+            }
 
             biclique_size -= bs_decrease;
-            if (biclique_size < 20)
-                break;
+            if (biclique_size < 20) {
+                break; 
+            }
         }
         iteration++;
     }
 
     TIMERSTOP(extraction_biclique);
 
-    file.open("log.txt", fstream::app);
+    double compressionPercentage = (double(num_edges) * 100) / double(adjacencyMatrixOriginalEdgesSize);
+
+    file.open(pathlog, fstream::app);
     file << "****************************************************************" << endl;
     file << "Original Size AdjacencyMatrix: " << adjacencyMatrixOriginalSize << endl;
     file << "Current Size AdjacencyMatrix: " << graph->size() << endl
@@ -123,7 +138,9 @@ void BicliqueExtractor<GraphType>::extract()
     file << "Sum of S + C: " << biclique_s_size + biclique_c_size << endl;
     file << "Sum of Multiplication of S x C: " << biclique_sxc_size << endl;
     file << " | S x C | / | S + C |: " << float(biclique_sxc_size) / float(biclique_s_size + biclique_c_size) << endl;
+    file << "Compression percentage: " << compressionPercentage << endl;
     file.close();
+
     if(total_biclique > 0) {
         graph->setCompressed(true);
         graph->writeAdjacencyList();

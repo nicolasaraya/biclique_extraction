@@ -9,6 +9,7 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
     signal(SIGINT, SigHnd::signal_handler);
+
     std::unordered_map<std::string, std::string> input_arguments{
         {"file", "../data/dblp-2011.txt"},
         {"numSignatures", "2"},
