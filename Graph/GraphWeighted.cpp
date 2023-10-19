@@ -23,13 +23,11 @@ GraphWeighted::GraphWeighted(const string path) : GraphADT(path)
 GraphWeighted::GraphWeighted() 
 {
 	matrix = new vector<Node*>();
-	format = ".txt";
 }
 
 GraphWeighted::~GraphWeighted()
 {
 	for (auto it = matrix->begin(); it != matrix->end(); it++) {
-		//(*it)->print();
 		delete (*it);
 	}
 	matrix->clear();
@@ -117,7 +115,6 @@ void GraphWeighted::buildTxt()
 void GraphWeighted::transpose()
 {
 	vector<Node*> t_matrix; 
-	//print();
 
 	for(auto i : *matrix) {
 		
@@ -147,34 +144,8 @@ void GraphWeighted::transpose()
 	}
 	t_matrix.clear();
 
-	/*for (auto i : matrix) { 
-		i->print();
-		if (i->edgesSize() == 0) continue;
-
-		while (transposedMatrix.size() <= i->getBackWeighted()->first) {
-			transposedMatrix.push_back(new Node(transposedMatrix.size(), true)); 
-		}
-
-		for (auto it = i->wAdjacentsBegin(); it != i->wAdjacentsEnd(); it++) {
-			transposedMatrix[(*it)->first]->addAdjacent(i->getId(), (*it)->second);
-		}
-		delete i;
-	}
-
-	matrix.clear();
-
-	for (size_t i = 0; i < transposedMatrix.size(); i++) {
-		if (transposedMatrix[i]->edgesSize() > 0) {
-			matrix.push_back(transposedMatrix[i]);
-		} else {
-			delete transposedMatrix[i];
-		}
-	}*/
-
-
 	sort();
 	
-	//matrix = transposedMatrix; 
 	transposed = not transposed; 
 }
 
