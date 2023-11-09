@@ -4,159 +4,371 @@
 #include <map>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 #include <set>
 #include <algorithm>
 #include "../Utils.hpp"
 #include "../../Graph/Node.hpp"
+#include "../../Graph/GraphWeighted.hpp"
+
+#define DBITS32
 
 using namespace std;
 
-float greedy = 0;
-const float perS = 0.2;
-bool rndom = false;
+const float porcentaje = 0.4;
 
-typedef struct{
-    set<unsigned> S;
-    set<pair<unsigned,unsigned>> C; 
-}Biclique;
+const unsigned graphNodes = 10000; 
+const unsigned edges = 100000;
+const unsigned edgesBicl = edges * porcentaje; 
+const unsigned minWeight = 1; 
+const unsigned maxWeight = 5;
+const unsigned minBicliques = 50; 
+const unsigned maxBicliques = 100;  
+const string name = "g_" + to_string(edges) + "_" + to_string(int(porcentaje*100));
 
-void clear(){
+typedef struct {
+    set<uint32_t> S;
+    map<uint32_t,uint32_t> C; 
+} Biclique;
+
+typedef vector<pair<uint32_t, uint32_t>> C_values;
+
+struct CompactBicliqueWeighted {
+    set<uint32_t> weights_values;
+    // set<uint32_t> S_values; 
+    vector<C_values> c_bicliques; 
+    vector<pair<uint32_t, vector<uint32_t>>> linked_s; //S_value to C_values index   
+};
+
+
+void clear()
+{
 	system("@cls||clear");
 }
 
-map<unsigned, set<pair<unsigned, unsigned>>>* generateBicliques(unsigned graphSize, unsigned numBicliques, unsigned averageBicliqueSize, unsigned averageWeight){
-    srand(time(NULL));
-    ofstream file; 
-    file.open("bicliques_generated.txt", std::ofstream::out | std::ofstream::trunc);
-
-    auto info = new map<unsigned, set<pair<unsigned, unsigned>>>();
+vector<Biclique>* generateBicliques()
+{
+    cout << "generando bicliques" << endl;
+    const unsigned num_bicliques = rand()%(maxBicliques-minBicliques) + minBicliques; 
+    const unsigned edges_per_biclique = edgesBicl / num_bicliques; 
+    const unsigned size = sqrt(edges_per_biclique); 
+    set<uint32_t> C_historic;
+    set<uint32_t> S_historic;
     
-    for(size_t i = 0; i < numBicliques; i++){
-        unsigned size; 
-        unsigned sizeS;
-        unsigned sizeC; 
+    auto bicliques = new vector<Biclique>();
 
-        if(not rndom){
-            size = averageBicliqueSize;
-            sizeS = (unsigned) size * perS;
-            sizeC = size/sizeS;
-            size = sizeS * sizeC;  
-        } else {
-            size = averageBicliqueSize + rand()%(unsigned)(averageBicliqueSize * greedy);
-            size = size - rand()%(unsigned)(averageBicliqueSize * greedy);
-            sizeS = (unsigned)(size * perS) + rand()%(unsigned)(size * perS);
-            sizeC = (unsigned)(size/sizeS);
-            size = sizeS * sizeC;
-        }
+    uint64_t countEdges = 0;
+    cout << "size: " << size << endl;
+    
 
-        Biclique temp; 
-
-        while(temp.S.size() < sizeS){
-            int tempSize = temp.S.size();
-            while(temp.S.size() == tempSize){
-                unsigned id = rand()%graphSize;
-                temp.S.insert(id);
+    for (size_t i = 0; i < num_bicliques; i++) {
+        //std::cout << i << endl;
+        Biclique b; 
+        set<uint32_t> S;
+        map<uint32_t,uint32_t> C; 
+        int l = 0;
+        while(l < size) {
+            uint32_t adj = rand()%graphNodes + 1;
+            if (C_historic.find(adj) == C_historic.end() and C.find(adj) == C.end()) {
+                uint32_t weight = rand()%(maxWeight-minWeight) + minWeight;
+                C[adj] = weight;
+                C_historic.insert(adj); 
+                l++;
             }
         }
-
-        while(temp.C.size() < sizeC){
-            int tempSize = temp.C.size();
-            while(temp.C.size() == tempSize){
-                unsigned ady = rand()%graphSize; //random index 
-                unsigned weight;
-
-                if(not rndom){
-                    weight = averageWeight;
-                } else {
-                    const unsigned boostG = 3;
-                    unsigned weight = averageWeight + rand()%(unsigned)(averageWeight * greedy * boostG);
-                    weight = weight - rand()%(unsigned)(averageWeight * greedy * boostG);
-                }
-        
-                temp.C.insert(make_pair(ady,weight));
+        //cout << "done C" << endl;
+        l = 0;
+        while (l < size) {
+            uint32_t index = rand()%graphNodes + 1; 
+            if (S_historic.find(index) == S_historic.end()) {
+                S.insert(index);
+                l++;
             }
         }
+        b.C = C;
+        b.S = S;
+        bicliques->push_back(b);
+        countEdges += b.C.size() * b.S.size();
+    }
+    cout << "Edges in bicliques: " << countEdges << endl;
 
-        for(auto id : temp.S){
-           if(info->count(id) > 0){
-                for(auto it : temp.C){
-                    info->at(id).insert(it);
-                }
-            }
-            else{
-                info->insert(make_pair(id, temp.C));
-            }
-            file << id;
-            if(id != *temp.S.end()){
-                file << " ";
-            }
-        }
-        file << endl;
-        for(auto ady : temp.C){
-            file << "(" << ady.first << "," << ady.second << ")";
-            if(ady != *temp.C.end()){
-                file << " ";
-            }
-        }
-        file << endl;
+    return bicliques; 
 
-    }   
-
-    file.close(); 
-    return info;
+    
 
 }
 
-void generateGraph(unsigned graphNodes, unsigned averageEdges, unsigned averageWeight, map<unsigned, set<pair<unsigned, unsigned>>>* info){
-    ofstream file; 
-    file.open("graph_generated.txt", std::ofstream::out | std::ofstream::trunc);
-    clear();
-    cout << "Writing file: " << endl; 
+GraphWeighted* generateGraph(vector<Biclique>* bicliques)
+{
+    auto g = new GraphWeighted();
+    auto g_compress = new GraphWeighted();
 
-    for(size_t i = 0; i < graphNodes; i++){
-        if(i % int(graphNodes/100) == 0){
-            clear();
-            cout << (i * 100) / graphNodes << "%" << endl;
-        }
+    uint64_t countEdges = 0;
 
-        unsigned size;
-        if(not rndom){
-            size = averageEdges;
-        } else {
-            size = averageEdges + rand()%(unsigned)(averageEdges * greedy);
-            size = size - rand()%(unsigned)(averageEdges * greedy);
-        }
-
-        set<pair<unsigned, unsigned>>* adyacents; 
-        auto f = info->find(i);
-        if(f != info->end()){
-            adyacents = &(*f).second;
-        }
-        else {
-            adyacents = new set<pair<unsigned, unsigned>>();
-        }
-
-        while(adyacents->size() < size){
-            int tempSize = adyacents->size();
-            while(adyacents->size() == tempSize){
-                unsigned ady = rand()%graphNodes; //random index
-                unsigned weight; 
-                if(not rndom){
-                    weight = averageWeight;
-                }
-                else {
-                    weight = averageWeight + rand()%(unsigned)(averageWeight * 0.5);
-                    weight = weight - rand()%(unsigned)(averageWeight * 0.5);
-                }
-                adyacents->insert(make_pair(ady,weight));
+    cout << "insert biclique in graph" << endl;
+    for (auto i : *bicliques) {
+        for (auto j : i.S) {
+            //cout << "j:" << j << endl;
+            Node* node = g->find(j);
+            if (node == nullptr) {
+                node = new Node(j, true);
+                g->insert(node); 
+                g->sort();
             }
-
+            for (auto k : i.C) {
+                //cout << k.first << "," << k.second << "  ";
+                node->addAdjacent(k.first, k.second);
+            }
+            //cout << endl;
+            node->sort();
         }
-        for(auto ady : *adyacents){
-            file << i << " " << ady.first << " " << ady.second << endl;
+        countEdges += i.S.size() * i.C.size();
+        //cout << "current edges: " << countEdges << endl; 
+    }
+
+    cout << "filling graph" << endl;
+
+    while (countEdges < edges) {
+        uint32_t index = rand()%graphNodes + 1;
+
+        Node* node = g->find(index);
+        Node* node_compress = g_compress->find(index);
+
+        if (node_compress == nullptr) {
+            node_compress = new Node(index, true);
+            g_compress->insert(node_compress);
+            g_compress->sort();
+        }
+
+        if (node == nullptr) {
+            node = new Node(index, true);
+            g->insert(node);
+            g->sort();
+            //cout << "push: " << index << endl;
+        }
+
+        size_t cant = rand()%20 + 5; 
+        countEdges += cant;
+
+        while (cant > 0) {
+            uint32_t adj = rand()%graphNodes + 1;
+            uint32_t weight = rand()%(maxWeight-minWeight) + minWeight;
+
+            if (node->findAdjacent(adj) != 0) {
+                continue; 
+            } else {
+                node_compress->addAdjacent(adj, weight);
+                node->addAdjacent(adj, weight);
+                node_compress->sort();
+                node->sort();
+                cant--;
+            }
+        }
+        
+
+        /*
+        while (cant > 0) {
+            uint32_t adj = rand()%graphNodes + 1;
+            uint32_t weight = rand()%(maxWeight-minWeight) + minWeight; 
+            if (node == nullptr) {
+                if (node_compress->findAdjacentWeighted(adj) == 0) {
+                    node_compress->addAdjacent(adj,weight);
+                    cant--;
+                }
+            } else {
+                if (node->findAdjacentWeighted(adj) == 0 and node_compress->findAdjacentWeighted(adj) == 0){
+                    node_compress->addAdjacent(adj,weight);
+                    node->addAdjacent(adj, weight);
+                    cant--;
+                }
+            }
+        }
+        node_compress->sort();
+        if (node != nullptr)node->sort();
+        */
+        //cout << "current edges: " << countEdges << endl; 
+    }
+
+    g->setPath(name + ".txt");
+    g->writeBinaryFile();
+    g->writeAdjacencyList();
+    g_compress->setPath(name + "_compressed.txt");
+    g_compress->writeBinaryFile();
+    g_compress->writeAdjacencyList();
+    std::cout << "edges in graph: " << g_compress->all_edges_size() << endl;
+
+    return g; 
+}
+
+CompactBicliqueWeighted* generateCompactStructure(vector<Biclique>* bicliques)
+{   
+    auto compBicl = new CompactBicliqueWeighted();
+
+    for (auto biclique = bicliques->begin(); biclique != bicliques->end(); biclique++) {
+        vector<uint32_t> S; 
+        vector<pair<uint32_t,uint32_t>> C; 
+
+        uint32_t S_size = S.size();
+        uint32_t C_size = C.size(); 
+
+        C_values bicl_C_values;
+
+        for (auto it : biclique->S) {
+            S.push_back(it);
+        }
+        for (auto it : biclique->C) {
+            C.push_back(make_pair(it.first, it.second));
+        }
+
+        sort(S.begin(), S.end());
+        sort(C.begin(), C.end(), [](auto& a, auto& b){return a.first < b.first;});
+
+        for(auto it = C.begin(); it != C.end(); it++){
+            compBicl->weights_values.insert((*it).second);
+            bicl_C_values.push_back(make_pair((*it).first, (*it).second)); 
+        }
+        
+
+        compBicl->c_bicliques.push_back(bicl_C_values);
+
+        for(auto it = S.begin(); it != S.end(); it++){
+            uint32_t id = (*it);
+
+            vector<pair<uint32_t, vector<uint32_t>>>::iterator f = std::find_if( compBicl->linked_s.begin(), compBicl->linked_s.end(),
+                [id](const std::pair<uint32_t, vector<uint32_t>>& element){ return element.first == id;} );
+
+            if (f == compBicl->linked_s.end()) {
+                pair<uint32_t, vector<uint32_t>> p; 
+                p.first = id; 
+                p.second.push_back(compBicl->c_bicliques.size()-1);
+                compBicl->linked_s.push_back(p);
+            } else {
+                (*f).second.push_back(compBicl->c_bicliques.size()-1);
+            }
         }
     }
+    return compBicl; 
+}
+
+void writeCompactStructure(CompactBicliqueWeighted* compBicl)
+{   
+    ofstream file;
+    string new_path = name + "_compact_biclique.txt";
+    file.open(new_path, fstream::trunc);
+    assert(file.is_open());
+
+
+    std::sort(compBicl->linked_s.begin(), compBicl->linked_s.end(), [](pair<uint32_t, vector<uint32_t>> a, pair<uint32_t, vector<uint32_t>> b){ return a.first < b.first; });
+
+    file << "W: ";
+    for(auto i : compBicl->weights_values) {
+        file << i << " ";
+    }
+    file << endl;
+
+    //file << "Bicliques: " << endl;
+    for (size_t i = 0; i < compBicl->c_bicliques.size(); i++) {
+        file << "B[" << i << "]: ";
+        for(auto j : compBicl->c_bicliques.at(i)) {
+            file << "(" << j.first << "," << j.second << ")" << " ";
+        } 
+        file << endl;
+    }
+    file << "S: " << endl;
+    for (auto i : compBicl->linked_s) {
+        file << i.first << ": ";
+        for (auto j : i.second) {
+            file << j << " ";
+        }
+        file << endl; 
+    }
+    file << endl;
+    
     file.close();
+    return; 
+}
+
+
+void writeCompactStructureBin(CompactBicliqueWeighted* compBicl)
+{   
+    typedef bool binVar; 
+    bool on = true;
+    bool off = false;
+
+    string S_path = name + "_S.bin";
+    string SS_path = name + "_SS.bin";
+    string C_path = name + "_C.bin";
+    string CC_path = name + "_CC.bin";
+
+    ofstream S, SS, C, CC;
+
+    S.open(S_path, std::ios::out | std::ios::binary | std::ios::trunc);
+    SS.open(SS_path, std::ios::out | std::ios::binary | std::ios::trunc);
+    C.open(C_path, std::ios::out | std::ios::binary | std::ios::trunc);
+    CC.open(CC_path, std::ios::out | std::ios::binary | std::ios::trunc);
+
+    assert(S.is_open());
+    assert(SS.is_open());
+    assert(C.is_open());
+    assert(CC.is_open());
+
+    std::sort(compBicl->linked_s.begin(), compBicl->linked_s.end(), [](pair<uint32_t, vector<uint32_t>> a, pair<uint32_t, vector<uint32_t>> b){ return a.first < b.first; });
+
+    //file << "Bicliques: " << endl;
+    for (size_t i = 0; i < compBicl->c_bicliques.size(); i++) {
+        //file << "B[" << i << "]: ";
+        CC.write((char*)&on, sizeof(bool));
+        for(auto j : compBicl->c_bicliques.at(i)) {
+            //file << "(" << j.first << "," << j.second << ")" << " ";
+            C.write((char*)&(j.first), sizeof(uint32_t));
+            C.write((char*)&(j.second), sizeof(uint32_t));
+            CC.write((char*)&off, sizeof(bool));
+        } 
+        //file << endl;
+    }
+    //file << "S: " << endl;
+    for (auto i : compBicl->linked_s) {
+        //file << i.first << ": ";
+        S.write((char*)&(i.first), sizeof(uint32_t));
+        SS.write((char*)&on, sizeof(bool));
+        //cout << i.first <<  ",1: " ;
+        for (auto j : i.second) {
+            S.write((char*)&j, sizeof(uint32_t));
+            SS.write((char*)&off, sizeof(bool));
+            //cout << j << ",0" << "  ";
+        }
+        cout << endl;
+    }
+    S.close();
+    SS.close();
+    C.close();
+    CC.close();
+    
+    return; 
+}
+
+void saveBicliques(vector<Biclique>* bicliques) 
+{
+
+    auto compBicl = generateCompactStructure(bicliques);
+    writeCompactStructure(compBicl);
+    writeCompactStructureBin(compBicl);
+    /*for (size_t i = 0; i < compBicl->c_bicliques.size(); i++) { 
+        cout << "C[" << i << "]: " ; 
+        for (auto j : compBicl->c_bicliques.at(i)) {
+            cout << "(" << j.first << "," << j.second << ") ";  
+        }
+        cout << endl; 
+    }
+
+    for (size_t i = 0; i < compBicl->linked_s.size(); i++) {
+        cout << "S[" << compBicl->linked_s.at(i).first << "]: " ;
+        for (auto j : compBicl->linked_s.at(i).second) {
+            cout << j << " " ; 
+        }
+        cout << endl;
+    }*/
+
 
 }
 
@@ -206,13 +418,13 @@ void buildNetflixTxt(const string path){
 	while(getline(file, line)){
 		if(line.front() < '0' and line.front() > '9') continue;
 		auto content = splitString(line, " ");
-		uInt id = atoi(content[0].c_str()); //id
+		uint32_t id = atoi(content[0].c_str()); //id
 
 		while(matrix.size() <= id){
 			matrix.push_back(new Node(matrix.size(), true));
 		}
-		uInt weight = atoi(content[1].c_str()); //ratings
-		uInt adj = atoi(content[2].c_str()); //movie
+		uint32_t weight = atoi(content[1].c_str()); //ratings
+		uint32_t adj = atoi(content[2].c_str()); //movie
 		(matrix.at(id))->addAdjacent(adj, weight);
 		if(count++ == 6000000) break;
 	}
@@ -231,7 +443,7 @@ void buildNetflixTxt(const string path){
     outFile << "% " << path << endl; 
     for(auto i : matrix){
         for(auto j = i->wAdjacentsBegin(); j != i->wAdjacentsEnd(); j++){
-            outFile << i->getId() << " " << j->first << " " << j->second << endl; 
+            outFile << i->getId() << " " << (*j).first << " " << (*j).second << endl; 
         }
     }
 
@@ -241,41 +453,24 @@ void buildNetflixTxt(const string path){
 
 int main(int argc, char const *argv[])
 {
-    if(argc == 3){
+    cout << "size uint32_t: " << sizeof(uint32_t) << endl;
+    if (argc == 3) {
         convertToWeighted(argv[1], atoi(argv[2]));
         return 0;
     }
 
-    if(argc == 2){
+    if (argc == 2) {
         buildNetflixTxt(argv[1]);
     }
 
-    if(argc < 6){
-        return 0;
-    } 
+    if (argc == 1) {
+        auto b = generateBicliques();
+        auto g = generateGraph(b);
+        saveBicliques(b);
 
-    unsigned graphNodes = atoll(argv[1]);
-    unsigned averageEdges = atoll(argv[2]);
-    unsigned numBicliques = atoll(argv[3]);
-    unsigned averageBicliqueSize = atoll(argv[4]);
-    unsigned averageWeight = atoll(argv[5]);
-    if(argc >= 7) {
-        greedy = atof(argv[6]);
-        rndom = true;
     }
 
-    if(averageWeight > averageEdges){
-        averageWeight = averageEdges * 0.75;
-    }
 
-    auto info = generateBicliques(  graphNodes, 
-                                    numBicliques, 
-                                    averageBicliqueSize, 
-                                    averageWeight   );
-
-    generateGraph(graphNodes, averageEdges, averageWeight, info);
-
-    auto n = new Node(1);
 
     return 0;
 }

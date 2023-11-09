@@ -35,7 +35,7 @@ SignNode* Shingle::computeShingle(Node* node)
 
     if(node->isWeighted()){
         for (auto adjacent = node->wAdjacentsBegin(); adjacent != node->wAdjacentsEnd(); adjacent++){
-            string shingle_ = to_string((*adjacent)->first) + "," + to_string((*adjacent)->second);
+            string shingle_ = to_string((*adjacent).first) + "," + to_string((*adjacent).second);
             shingleID = hash_nodes(shingle_);
             for (uint16_t k = 0; k < num_signatures; k++){
                 shingleHash = (A[k] * shingleID + B[k]) % prime;

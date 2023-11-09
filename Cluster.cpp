@@ -37,7 +37,7 @@ void Cluster::computeFrecuency()
     if(weighted){
         for (auto node : *nodes) {
             for (auto j = node->wAdjacentsBegin(); j != node->wAdjacentsEnd(); j++) {   
-                string node_id = to_string((*j)->first) + "," + to_string((*j)->second); 
+                string node_id = to_string((*j).first) + "," + to_string((*j).second); 
                 auto aux = mapFrecuencyWeighted.find((node_id));
                 if (aux != mapFrecuencyWeighted.end()) { // existe
                     mapFrecuencyWeighted[node_id]++;

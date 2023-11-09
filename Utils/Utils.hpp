@@ -30,16 +30,16 @@
 #include <signal.h>
 
 
-#if defined(BITS32)
-    typedef int Int;
-    typedef unsigned int uInt;
-    #define UINTMAX 4294967295
-    #define INTMAX 2147483647
-#else
+#if defined(BITS64)
     typedef long long int Int;
     typedef unsigned long long int uInt;
     #define UINTMAX ULONG_MAX
     #define INTMAX LONG_MAX
+#else
+    typedef int Int;
+    typedef unsigned int uInt;
+    #define UINTMAX 4294967295
+    #define INTMAX 2147483647
 #endif
 
 

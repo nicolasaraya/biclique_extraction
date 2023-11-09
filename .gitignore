@@ -15,3 +15,5 @@ output/*
 log
 Utils/generator/*.txt
 log.txt
+Graph/Node.hpp.gch
+Utils/Utils.hpp.gch

@@ -20,7 +20,7 @@ struct Pair{
 };
 
 
-typedef vector<Pair*>::iterator WeightedIt;
+typedef vector<Pair>::iterator WeightedIt;
 typedef vector<uInt>::iterator AdjacentsIt; 
 
 
@@ -71,8 +71,8 @@ class Node {
 		uInt id;
 		bool weighted = false; 
 		vector<uInt> adjacentNodes;
-		vector<Pair*> wAdjacentNodes; 
-		vector<Pair*> wCacheNodes;
+		vector<Pair> wAdjacentNodes; 
+		vector<Pair> wCacheNodes;
 		vector<uInt> cacheNodes;
 		//bool modified = false;
 		bool naturalSelfLoop = false; 
@@ -80,26 +80,26 @@ class Node {
 		bool sorted = false;
 
 		bool sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, uint32_t> *mapFrecuency);
-		bool sortFrecuencyCompWeighted(Pair *a, Pair *b, unordered_map<string, uint32_t> *mapFrecuency);
+		bool sortFrecuencyCompWeighted(Pair& a, Pair& b, unordered_map<string, uint32_t> *mapFrecuency);
 		bool binarySearch(uint64_t, uint64_t, uInt);
 		bool binarySearchW(uint64_t, uint64_t, uInt);
 		bool binarySearchW(uint64_t, uint64_t, uInt, uInt);
-		bool sortWeighted(Pair*a, Pair*b);
+		bool sortWeighted(Pair& a, Pair& b);
 	};
 
 struct compareIncludes {
-    bool operator()(Pair* p, uInt value) const {
-        return p->first < value;
+    bool operator()(Pair& p, uInt value) const {
+        return p.first < value;
     }
 
-    bool operator()(uInt value, Pair* p) const {
-        return value < p->first;
+    bool operator()(uInt value, Pair& p) const {
+        return value < p.first;
     }
 };
 
 struct CompareFind {
-    bool operator()(Pair* p, uInt value) const {
-        return p->first == value;
+    bool operator()(Pair& p, uInt value) const {
+        return p.first == value;
     }
 };
 

@@ -67,7 +67,7 @@ void GraphWeighted::buildBin()
 		//insert(temp);
 		temp->shrinkToFit();
 		temp->sort();
-	}
+	} else delete temp;
 	matrix->shrink_to_fit();
 	sort();
 	delete buffer;
@@ -103,9 +103,12 @@ void GraphWeighted::buildTxt()
 		temp->addAdjacent(adj, weight); 
 		//cout << id << " " << adj << " " << weight << endl;
 	}
-	insert(temp);
-	temp->shrinkToFit();
-	temp->sort();
+	if(temp->edgesSize() > 0) {
+		insert(temp);
+		temp->shrinkToFit();
+		temp->sort();
+	} else delete temp;
+
 	matrix->shrink_to_fit();
 	sort();
 	file.close();
@@ -128,7 +131,7 @@ void GraphWeighted::transpose()
 		}
 
 		for (auto it = i->wAdjacentsBegin(); it != i->wAdjacentsEnd(); it++) {
-			t_matrix.at((*it)->first)->addAdjacent(i->getId(), (*it)->second);
+			t_matrix.at((*it).first)->addAdjacent(i->getId(), (*it).second);
 		}
 		delete i;
 		
@@ -230,7 +233,7 @@ void GraphWeighted::writeAdjacencyList()
 	assert(file.is_open());
 	for(auto i : *matrix){
 		for(auto j = i->wAdjacentsBegin(); j != i->wAdjacentsEnd(); j++){
-			file << i->getId() << " " << (*j)->first << " " << (*j)->second << endl;
+			file << i->getId() << " " << (*j).first << " " << (*j).second << endl;
 		}
 	}
 	file.close();
@@ -252,8 +255,8 @@ void GraphWeighted::writeBinaryFile()
 		for(auto j = i->wAdjacentsBegin(); j != i->wAdjacentsEnd(); j++){
 			//file << i->getId() << " " << j->first << " " << j->second << endl;
 			file.write((char*)&(id), sizeof(uInt));
-			file.write((char*)&((*j)->first), sizeof(uInt));
-			file.write((char*)&((*j)->second), sizeof(uInt));
+			file.write((char*)&((*j).first), sizeof(uInt));
+			file.write((char*)&((*j).second), sizeof(uInt));
 		}
 	}
 	file.close();
