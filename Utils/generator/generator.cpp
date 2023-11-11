@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <set>
 #include <algorithm>
+#include <random>
+
 #include "../Utils.hpp"
 #include "../../Graph/Node.hpp"
 #include "../../Graph/GraphWeighted.hpp"
@@ -15,16 +17,21 @@
 
 using namespace std;
 
-const float porcentaje = 0.4;
+float porcentaje = 0.4;
 
-const unsigned graphNodes = 10000; 
-const unsigned edges = 100000;
-const unsigned edgesBicl = edges * porcentaje; 
-const unsigned minWeight = 1; 
-const unsigned maxWeight = 5;
-const unsigned minBicliques = 50; 
-const unsigned maxBicliques = 100;  
-const string name = "g_" + to_string(edges) + "_" + to_string(int(porcentaje*100));
+unsigned graphNodes = 10000; 
+unsigned edges = 100000;
+unsigned edgesBicl = edges * porcentaje; 
+unsigned SxC_Biclique = 400; // 20 x 20 
+unsigned size_s = sqrt(SxC_Biclique);
+
+unsigned minWeight = 1; 
+unsigned maxWeight = 5;
+
+//const unsigned num_bicliques = edgesBicl / SxC_Biclique; 
+//const unsigned edges_per_biclique = SxC_Biclique; 
+
+const string name = "g_" + to_string(graphNodes) + "_" + to_string(edges) + "_" + to_string(int(porcentaje*100)) + "_" + to_string(SxC_Biclique);
 
 typedef struct {
     set<uint32_t> S;
@@ -48,21 +55,34 @@ void clear()
 
 vector<Biclique>* generateBicliques()
 {
-    cout << "generando bicliques" << endl;
-    const unsigned num_bicliques = rand()%(maxBicliques-minBicliques) + minBicliques; 
-    const unsigned edges_per_biclique = edgesBicl / num_bicliques; 
-    const unsigned size = sqrt(edges_per_biclique); 
+    std::cout << "generando bicliques" << endl;
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::normal_distribution<double> distribution(size_s, 5.0);
+    //std::normal_distribution<double> distribution(SxC_Biclique, 5.0);
+
+    //const unsigned num_bicliques = edgesBicl / SxC_Biclique; 
+    //const unsigned edges_per_biclique = SxC_Biclique; 
+    //const unsigned size = sqrt(edges_per_biclique); 
+    //const unsigned size = sqrt(edges_per_biclique); 
+
+
+    //std::cout << "num bicliques: " << num_bicliques << std::endl; 
+    //std::cout << "edges per biclique: " << edges_per_biclique << std::endl;  
     set<uint32_t> C_historic;
     set<uint32_t> S_historic;
     
     auto bicliques = new vector<Biclique>();
 
     uint64_t countEdges = 0;
-    cout << "size: " << size << endl;
-    
+    uint64_t countBicliques = 0;
 
-    for (size_t i = 0; i < num_bicliques; i++) {
-        //std::cout << i << endl;
+    while (countEdges < edgesBicl) {
+        int size = static_cast<int>(distribution(gen));
+        //int random_sxc = static_cast<int>(distribution(gen));
+        //int size = sqrt(random_sxc);
+        //std::cout << size  << ", " << countEdges << endl;
         Biclique b; 
         set<uint32_t> S;
         map<uint32_t,uint32_t> C; 
@@ -89,9 +109,15 @@ vector<Biclique>* generateBicliques()
         b.S = S;
         bicliques->push_back(b);
         countEdges += b.C.size() * b.S.size();
+        countBicliques++;
     }
-    cout << "Edges in bicliques: " << countEdges << endl;
+    
+    std::cout << "Edges in bicliques: " << countEdges << std::endl;
+    std::cout << "Num bicliques: " << countBicliques << std::endl;
 
+
+
+    //sleep(40);
     return bicliques; 
 
     
@@ -337,7 +363,7 @@ void writeCompactStructureBin(CompactBicliqueWeighted* compBicl)
             SS.write((char*)&off, sizeof(bool));
             //cout << j << ",0" << "  ";
         }
-        cout << endl;
+        //cout << endl;
     }
     S.close();
     SS.close();
@@ -453,20 +479,35 @@ void buildNetflixTxt(const string path){
 
 int main(int argc, char const *argv[])
 {
+    //srand(time(NULL));
     cout << "size uint32_t: " << sizeof(uint32_t) << endl;
     if (argc == 3) {
         convertToWeighted(argv[1], atoi(argv[2]));
         return 0;
-    }
-
-    if (argc == 2) {
+    } else if (argc == 2) {
         buildNetflixTxt(argv[1]);
-    }
-
-    if (argc == 1) {
+        return 0;
+    } else if (argc == 1) {
         auto b = generateBicliques();
         auto g = generateGraph(b);
         saveBicliques(b);
+        return 0;
+    } else if (argc == 5) { 
+        graphNodes = atoi(argv[1]);
+        edges = atoi(argv[2]);
+        porcentaje = float(atoi(argv[3]))/100;
+        SxC_Biclique = atoi(argv[4]);
+        edgesBicl = edges * porcentaje; 
+
+        std::cout << "graph nodes: " << graphNodes << std::endl;
+        std::cout << "edges: " << edges << std::endl;
+        std::cout << "compression rate: " << porcentaje << std::endl;
+        std::cout << "average edges per biclique: " << SxC_Biclique << std::endl;
+
+        auto b = generateBicliques();
+        auto g = generateGraph(b);
+        saveBicliques(b);
+        return 0;
 
     }
 
