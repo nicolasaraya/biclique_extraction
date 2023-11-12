@@ -31,7 +31,7 @@ unsigned maxWeight = 5;
 //const unsigned num_bicliques = edgesBicl / SxC_Biclique; 
 //const unsigned edges_per_biclique = SxC_Biclique; 
 
-const string name = "g_" + to_string(graphNodes) + "_" + to_string(edges) + "_" + to_string(int(porcentaje*100)) + "_" + to_string(SxC_Biclique);
+string name = "g_" + to_string(graphNodes) + "_" + to_string(edges) + "_" + to_string(int(porcentaje*100)) + "_" + to_string(SxC_Biclique);
 
 typedef struct {
     set<uint32_t> S;
@@ -498,6 +498,8 @@ int main(int argc, char const *argv[])
         porcentaje = float(atoi(argv[3]))/100;
         SxC_Biclique = atoi(argv[4]);
         edgesBicl = edges * porcentaje; 
+        name = "g_" + to_string(graphNodes) + "_" + to_string(edges) + "_" + to_string(int(porcentaje*100)) + "_" + to_string(SxC_Biclique);
+
 
         std::cout << "graph nodes: " << graphNodes << std::endl;
         std::cout << "edges: " << edges << std::endl;
