@@ -173,7 +173,7 @@ GraphWeighted* generateGraph(vector<Biclique>* bicliques)
             //cout << "push: " << index << endl;
         }
 
-        size_t cant = rand()%20 + 5; 
+        size_t cant = rand()%2 + 1; 
         countEdges += cant;
 
         while (cant > 0) {
@@ -499,7 +499,6 @@ int main(int argc, char const *argv[])
         SxC_Biclique = atoi(argv[4]);
         edgesBicl = edges * porcentaje; 
         name = "g_" + to_string(graphNodes) + "_" + to_string(edges) + "_" + to_string(int(porcentaje*100)) + "_" + to_string(SxC_Biclique);
-
 
         std::cout << "graph nodes: " << graphNodes << std::endl;
         std::cout << "edges: " << edges << std::endl;

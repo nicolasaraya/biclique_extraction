@@ -7,8 +7,7 @@
 
 using namespace std;
 
-
-struct Pair{
+struct Pair {
 	uInt first;
 	uInt second; 
 
@@ -19,10 +18,8 @@ struct Pair{
 	};
 };
 
-
 typedef vector<Pair>::iterator WeightedIt;
 typedef vector<uInt>::iterator AdjacentsIt; 
-
 
 class Node {
 	public:

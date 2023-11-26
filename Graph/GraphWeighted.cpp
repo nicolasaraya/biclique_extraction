@@ -34,7 +34,7 @@ GraphWeighted::~GraphWeighted()
 	delete matrix;
 }
 
-void GraphWeighted::buildBin()
+void GraphWeighted::buildBin_alt()
 {
 	ifstream file;
 	file.open(path, ios::in | ios::binary);
@@ -67,6 +67,51 @@ void GraphWeighted::buildBin()
 		//insert(temp);
 		temp->shrinkToFit();
 		temp->sort();
+	} else delete temp;
+	matrix->shrink_to_fit();
+	sort();
+	delete buffer;
+	file.close();
+}
+
+
+void GraphWeighted::buildBin()
+{
+	ifstream file;
+	file.open(path, ios::in | ios::binary);
+	file.seekg (0, file.beg);
+	assert(file.is_open());
+
+	Int* buffer = new Int(-1);
+	Node* temp = nullptr;
+
+	while (not file.eof()) {
+		file.read((char*)buffer, sizeof(Int));
+		if(*buffer < 0) {
+			if (temp != nullptr) {
+				temp->shrinkToFit();
+				temp->sort();
+			}
+			temp = nullptr;
+			temp = find(-(*buffer));
+			if (temp == nullptr) {
+				temp = new Node(-(*buffer), true);
+				insert(temp);
+			}
+		} else {
+			if(file.eof()) break;
+			uInt adj = *buffer;
+			file.read((char*)buffer, sizeof(Int));
+			uInt weight = *buffer;
+			temp->addAdjacent(adj, weight);
+		}
+		//temp->print();
+		//if (matrix->size() > 400000 ) break;
+	}
+	if(temp->edgesSize() > 0) {
+		temp->shrinkToFit();
+		temp->sort();
+		//insert(temp);
 	} else delete temp;
 	matrix->shrink_to_fit();
 	sort();
@@ -171,7 +216,6 @@ uint64_t GraphWeighted::maxValueEdge()
     return maxEdge;
 }
 
-
 uint64_t GraphWeighted::size()
 {
 	return matrix->size();
@@ -239,7 +283,7 @@ void GraphWeighted::writeAdjacencyList()
 	file.close();
 }
 
-void GraphWeighted::writeBinaryFile()
+void GraphWeighted::writeBinaryFile_alt()
 {
 	ofstream file;
 	string pathFile = modify_path(path, 4 ,".bin");
@@ -262,11 +306,53 @@ void GraphWeighted::writeBinaryFile()
 	file.close();
 }
 
+void GraphWeighted::writeBinaryFile()
+{
+	ofstream file;
+	string pathFile = modify_path(path, 4 ,".bin");
+	if (compressed) {
+		pathFile = modify_path(path, 4 ,"_compressed.bin");
+	}
+	cout << "Save: " << pathFile << endl;
+	file.open(pathFile, ios::out | ios::binary |ios::trunc); 
+	assert(file.is_open());
+
+	for(auto i : *matrix){
+		if (i->edgesSize() == 0) continue; 
+		Int id = -(i->getId());
+		file.write((char*)&(id), sizeof(Int));
+		for(auto j = i->wAdjacentsBegin(); j != i->wAdjacentsEnd(); j++){
+			//file << i->getId() << " " << j->first << " " << j->second << endl;
+			//file.write((char*)&(id), sizeof(uInt));
+			file.write((char*)&((*j).first), sizeof(uInt));
+			file.write((char*)&((*j).second), sizeof(uInt));
+		}
+	}
+	file.close();
+}
+
 void GraphWeighted::restoreNodes()
 {
 	for (size_t i = 0; i < matrix->size(); i++) {
 		matrix->at(i)->restore();
 	}
+}
+
+double GraphWeighted::getAverageDegree()
+{
+	double res = 0;
+	uint64_t count = 0;
+
+	for (auto i : *matrix) {
+		if (i->edgesSize() > 0) {
+			res += i->edgesSize();
+			count++;
+		}
+	}
+
+	res = res / double(count); 
+
+    return res;
 }
 
 GraphWeightedIterator GraphWeighted::begin()

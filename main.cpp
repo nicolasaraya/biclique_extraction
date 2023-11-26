@@ -62,7 +62,8 @@ int main(int argc, char const *argv[])
 
     GraphWeighted g = GraphWeighted(arguments["file"]);
     g.writeBinaryFile();
-    BicliqueExtractor<GraphWeighted> be = BicliqueExtractor<GraphWeighted>(
+    //g.print();
+    /*BicliqueExtractor<GraphWeighted> be = BicliqueExtractor<GraphWeighted>(
         atoi(arguments["numSignatures"].c_str()),
         atoi(arguments["minClusterSize"].c_str()),
         atoi(arguments["minAdyNodes"].c_str()),
@@ -75,6 +76,7 @@ int main(int argc, char const *argv[])
     
     be.setGraph(&g);
     be.extract();
+    */
     
    /*
 

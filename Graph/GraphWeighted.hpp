@@ -15,6 +15,7 @@ public:
     GraphWeighted();
     ~GraphWeighted();
     void buildBin();
+    void buildBin_alt();
     void buildTxt();
     void insert(Node*);
     uint64_t size();
@@ -24,7 +25,9 @@ public:
     void printAsMatrix();
     void writeAdjacencyList();
     void writeBinaryFile();
+    void writeBinaryFile_alt(); 
     void restoreNodes();
+    double getAverageDegree();
     GraphWeightedIterator begin();
     GraphWeightedIterator end();
     Node* at(uInt);
