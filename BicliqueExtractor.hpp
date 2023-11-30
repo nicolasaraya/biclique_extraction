@@ -70,7 +70,7 @@ class BicliqueExtractor {
         uint64_t n_bicliques_iter;
         GraphType* graph = nullptr;
         
-        bool saveCompressed = true; 
+        bool saveCompressed = false; 
         CompactBicliqueWeighted* compBicl = nullptr; 
 
         void extractBicliques(Cluster*);
