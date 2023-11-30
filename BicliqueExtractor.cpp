@@ -14,15 +14,9 @@ BicliqueExtractor<GraphType>::BicliqueExtractor(
     cluster_size = 0;
     n_bicliques_iter = 0;
 
-    if (saveCompressed) {
-        compBicl = new CompactBicliqueWeighted(); 
-    }
-
-    ofstream file;
-    string new_path = modify_path(graph->getPath(), 4 , "_bicliques.txt");
-    file.open(new_path, fstream::app);
-    assert(file.is_open());
-    file << graph->maxValueEdge() << endl;
+    //if (saveCompressed) {
+    //    compBicl = new CompactBicliqueWeighted(); 
+    //}
 }
 
 template <typename GraphType> 
@@ -56,6 +50,7 @@ void BicliqueExtractor<GraphType>::extract()
 
     string new_path = modify_path(graph->getPath(), 4 ,"_bicliques.txt");
     file.open(new_path, std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero bicliques y se cierra
+    file << graph->maxValueEdge() << endl;
     file.close();
 
     uint64_t num_edges = adjacencyMatrixOriginalEdgesSize;
