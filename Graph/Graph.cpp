@@ -237,9 +237,9 @@ void Graph::writeAdjacencyList()
 		file << matrix[i]->getId() << ":";
 
 		for (auto adj = matrix[i]->adjacentsBegin(); adj != matrix[i]->adjacentsEnd(); adj++) {
-			if (not matrix[i]->hasSelfLoop() and *adj == matrix[i]->getId()) { //si no tiene un selfloop natural 
-				continue;
-			}
+			//if (not matrix[i]->hasSelfLoop() and *adj == matrix[i]->getId()) { //si no tiene un selfloop natural 
+			//	continue;
+			//}
 			file << " " << *adj;
 		}
 		file << endl;

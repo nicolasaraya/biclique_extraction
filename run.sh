@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ./biclique_extractor \
-    --numSignatures 3 \
-    --minClusterSize 10 \
+    --numSignatures 2 \
+    --minClusterSize 4 \
     --bicliqueSize 1000 \
     --minAdyNodes 2 \
     --shingleSize 1 \
-    --bsDecrease 500 \
+    --bsDecrease 400 \
     --threshold 100 \
     --selfLoop 0 \
     --debug 0 \

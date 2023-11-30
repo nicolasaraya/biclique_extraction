@@ -17,6 +17,12 @@ BicliqueExtractor<GraphType>::BicliqueExtractor(
     if (saveCompressed) {
         compBicl = new CompactBicliqueWeighted(); 
     }
+
+    ofstream file;
+    string new_path = modify_path(graph->getPath(), 4 , "_bicliques.txt");
+    file.open(new_path, fstream::app);
+    assert(file.is_open());
+    file << graph->maxValueEdge() << endl;
 }
 
 template <typename GraphType> 
@@ -452,8 +458,8 @@ void BicliqueExtractor<GraphType>::writeBicliques(vector<Biclique*>* bicliques)
             }
         }
         file << endl;
-        file << "SxC = " << C_size * S_size << endl;   
-        file << "SxC - C = " << (C_size * S_size) - C_size << endl; 
+        //file << "SxC = " << C_size * S_size << endl;   
+        //file << "SxC - C = " << (C_size * S_size) - C_size << endl; 
         n_bicliques_iter++;
         biclique_s_size += S_size;
         biclique_c_size += C_size;
