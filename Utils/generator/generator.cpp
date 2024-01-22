@@ -8,6 +8,10 @@
 #include <set>
 #include <algorithm>
 #include <random>
+#include <omp.h>
+#include <threads.h>
+#include <mutex>
+#include <unordered_map>
 
 #include "../Utils.hpp"
 #include "../../Graph/Node.hpp"
@@ -19,14 +23,14 @@ using namespace std;
 
 float porcentaje = 0.4;
 
-unsigned graphNodes = 10000; 
-unsigned edges = 100000;
+unsigned graphNodes = 1000000; 
+unsigned edges = 1000000;
 unsigned edgesBicl = edges * porcentaje; 
 unsigned SxC_Biclique = 400; // 20 x 20 
 unsigned size_s = sqrt(SxC_Biclique);
 
 unsigned minWeight = 1; 
-unsigned maxWeight = 5;
+unsigned maxWeight = 10;
 
 //const unsigned num_bicliques = edgesBicl / SxC_Biclique; 
 //const unsigned edges_per_biclique = SxC_Biclique; 
@@ -35,7 +39,7 @@ string name = "g_" + to_string(graphNodes) + "_" + to_string(edges) + "_" + to_s
 
 typedef struct {
     set<uint32_t> S;
-    map<uint32_t,uint32_t> C; 
+    vector<pair<uint32_t,uint32_t>> C; 
 } Biclique;
 
 typedef vector<pair<uint32_t, uint32_t>> C_values;
@@ -60,18 +64,8 @@ vector<Biclique>* generateBicliques()
     std::random_device rd;
     std::mt19937 gen(rd());
     std::normal_distribution<double> distribution(size_s, 5.0);
-    //std::normal_distribution<double> distribution(SxC_Biclique, 5.0);
 
-    //const unsigned num_bicliques = edgesBicl / SxC_Biclique; 
-    //const unsigned edges_per_biclique = SxC_Biclique; 
-    //const unsigned size = sqrt(edges_per_biclique); 
-    //const unsigned size = sqrt(edges_per_biclique); 
-
-
-    //std::cout << "num bicliques: " << num_bicliques << std::endl; 
-    //std::cout << "edges per biclique: " << edges_per_biclique << std::endl;  
-    set<uint32_t> C_historic;
-    set<uint32_t> S_historic;
+    unordered_map<uint32_t, uint32_t> aux;
     
     auto bicliques = new vector<Biclique>();
 
@@ -83,30 +77,29 @@ vector<Biclique>* generateBicliques()
         //int random_sxc = static_cast<int>(distribution(gen));
         //int size = sqrt(random_sxc);
         //std::cout << size  << ", " << countEdges << endl;
+
         Biclique b; 
-        set<uint32_t> S;
-        map<uint32_t,uint32_t> C; 
-        int l = 0;
-        while(l < size) {
-            uint32_t adj = rand()%graphNodes + 1;
-            if (C_historic.find(adj) == C_historic.end() and C.find(adj) == C.end()) {
-                uint32_t weight = rand()%(maxWeight-minWeight) + minWeight;
-                C[adj] = weight;
-                C_historic.insert(adj); 
-                l++;
+        set<uint32_t>* S = &(b.S);
+        vector<pair<uint32_t,uint32_t>>* C = &(b.C); 
+
+        while (S->size() < size) {
+            uint32_t index = rand()%graphNodes + 1; 
+            S->insert(index);
+        }
+
+        for (auto i : *S) {
+            uint32_t adj = i+1; 
+            uint32_t weight = rand()%(maxWeight-minWeight) + minWeight;
+            while(aux[adj] != 0) {
+                adj++;
             }
+            aux[adj] = 1; 
+            C->push_back(make_pair(adj, weight));
+
         }
         //cout << "done C" << endl;
-        l = 0;
-        while (l < size) {
-            uint32_t index = rand()%graphNodes + 1; 
-            if (S_historic.find(index) == S_historic.end()) {
-                S.insert(index);
-                l++;
-            }
-        }
-        b.C = C;
-        b.S = S;
+        
+
         bicliques->push_back(b);
         countEdges += b.C.size() * b.S.size();
         countBicliques++;
@@ -124,29 +117,19 @@ vector<Biclique>* generateBicliques()
 
 }
 
-GraphWeighted* generateGraph(vector<Biclique>* bicliques)
+void generateGraph(vector<Biclique>* bicliques)
 {
-    auto g = new GraphWeighted();
-    auto g_compress = new GraphWeighted();
+    map<uint32_t, set<pair<uint32_t,uint32_t>>> graph;
+    map<uint32_t, set<pair<uint32_t,uint32_t>>> full_graph;
 
     uint64_t countEdges = 0;
 
     cout << "insert biclique in graph" << endl;
     for (auto i : *bicliques) {
         for (auto j : i.S) {
-            //cout << "j:" << j << endl;
-            Node* node = g->find(j);
-            if (node == nullptr) {
-                node = new Node(j, true);
-                g->insert(node); 
-                g->sort();
-            }
             for (auto k : i.C) {
-                //cout << k.first << "," << k.second << "  ";
-                node->addAdjacent(k.first, k.second);
+                full_graph[j].insert(make_pair(k.first, k.second));
             }
-            //cout << endl;
-            node->sort();
         }
         countEdges += i.S.size() * i.C.size();
         //cout << "current edges: " << countEdges << endl; 
@@ -156,22 +139,7 @@ GraphWeighted* generateGraph(vector<Biclique>* bicliques)
 
     while (countEdges < edges) {
         uint32_t index = rand()%graphNodes + 1;
-
-        Node* node = g->find(index);
-        Node* node_compress = g_compress->find(index);
-
-        if (node_compress == nullptr) {
-            node_compress = new Node(index, true);
-            g_compress->insert(node_compress);
-            g_compress->sort();
-        }
-
-        if (node == nullptr) {
-            node = new Node(index, true);
-            g->insert(node);
-            g->sort();
-            //cout << "push: " << index << endl;
-        }
+        
 
         size_t cant = rand()%2 + 1; 
         countEdges += cant;
@@ -180,50 +148,44 @@ GraphWeighted* generateGraph(vector<Biclique>* bicliques)
             uint32_t adj = rand()%graphNodes + 1;
             uint32_t weight = rand()%(maxWeight-minWeight) + minWeight;
 
-            if (node->findAdjacent(adj) != 0) {
+            set<pair<uint32_t,uint32_t>>::iterator it;
+            it = (full_graph[index]).find(pair<uint32_t, uint32_t>(adj,weight));
+
+            if (it != full_graph[index].end()) {
                 continue; 
             } else {
-                node_compress->addAdjacent(adj, weight);
-                node->addAdjacent(adj, weight);
-                node_compress->sort();
-                node->sort();
+                full_graph[index].insert(make_pair(adj,weight));
+                graph[index].insert(make_pair(adj,weight));
                 cant--;
             }
         }
-        
-
-        /*
-        while (cant > 0) {
-            uint32_t adj = rand()%graphNodes + 1;
-            uint32_t weight = rand()%(maxWeight-minWeight) + minWeight; 
-            if (node == nullptr) {
-                if (node_compress->findAdjacentWeighted(adj) == 0) {
-                    node_compress->addAdjacent(adj,weight);
-                    cant--;
-                }
-            } else {
-                if (node->findAdjacentWeighted(adj) == 0 and node_compress->findAdjacentWeighted(adj) == 0){
-                    node_compress->addAdjacent(adj,weight);
-                    node->addAdjacent(adj, weight);
-                    cant--;
-                }
-            }
-        }
-        node_compress->sort();
-        if (node != nullptr)node->sort();
-        */
-        //cout << "current edges: " << countEdges << endl; 
+         
     }
 
-    g->setPath(name + ".txt");
-    g->writeBinaryFile();
-    g->writeAdjacencyList();
-    g_compress->setPath(name + "_compressed.txt");
-    g_compress->writeBinaryFile();
-    g_compress->writeAdjacencyList();
-    std::cout << "edges in graph: " << g_compress->all_edges_size() << endl;
+    string path = name + ".txt";
 
-    return g; 
+    ofstream file;
+    file.open(path, ofstream::out | ofstream::trunc);
+
+    for (auto i : full_graph) {
+        for (auto j : (i.second)) {
+            file << i.first << " " << j.first << " " << j.second << std::endl;
+        }
+    }
+    file.close();
+
+    path = name + "_compressed.txt";
+
+    file.open(path, ofstream::out | ofstream::trunc);
+
+    for (auto i : graph) {
+        for (auto j : (i.second)) {
+            file << i.first << " " << j.first << " " << j.second << std::endl;
+        }
+    }
+    file.close();
+
+    
 }
 
 CompactBicliqueWeighted* generateCompactStructure(vector<Biclique>* bicliques)
@@ -489,7 +451,7 @@ int main(int argc, char const *argv[])
         return 0;
     } else if (argc == 1) {
         auto b = generateBicliques();
-        auto g = generateGraph(b);
+        generateGraph(b);
         saveBicliques(b);
         return 0;
     } else if (argc == 5) { 
@@ -506,7 +468,7 @@ int main(int argc, char const *argv[])
         std::cout << "average edges per biclique: " << SxC_Biclique << std::endl;
 
         auto b = generateBicliques();
-        auto g = generateGraph(b);
+        generateGraph(b);
         saveBicliques(b);
         return 0;
 
