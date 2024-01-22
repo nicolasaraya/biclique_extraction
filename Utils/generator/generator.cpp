@@ -23,8 +23,8 @@ using namespace std;
 
 float porcentaje = 0.4;
 
-unsigned graphNodes = 1000000; 
-unsigned edges = 1000000;
+unsigned graphNodes = 10000; 
+unsigned edges = 10000;
 unsigned edgesBicl = edges * porcentaje; 
 unsigned SxC_Biclique = 400; // 20 x 20 
 unsigned size_s = sqrt(SxC_Biclique);
@@ -341,6 +341,7 @@ void saveBicliques(vector<Biclique>* bicliques)
     auto compBicl = generateCompactStructure(bicliques);
     writeCompactStructure(compBicl);
     writeCompactStructureBin(compBicl);
+    delete compBicl;
     /*for (size_t i = 0; i < compBicl->c_bicliques.size(); i++) { 
         cout << "C[" << i << "]: " ; 
         for (auto j : compBicl->c_bicliques.at(i)) {
@@ -453,6 +454,7 @@ int main(int argc, char const *argv[])
         auto b = generateBicliques();
         generateGraph(b);
         saveBicliques(b);
+        delete b;
         return 0;
     } else if (argc == 5) { 
         graphNodes = atoi(argv[1]);
@@ -470,6 +472,7 @@ int main(int argc, char const *argv[])
         auto b = generateBicliques();
         generateGraph(b);
         saveBicliques(b);
+        delete b;
         return 0;
 
     }
