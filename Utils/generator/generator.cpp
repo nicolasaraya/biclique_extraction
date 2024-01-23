@@ -21,19 +21,17 @@
 
 using namespace std;
 
-float porcentaje = 0.4;
+float porcentaje = 0.8;
 
-unsigned graphNodes = 10000; 
-unsigned edges = 10000;
+unsigned graphNodes = 2000000; 
+unsigned edges = 2000000;
 unsigned edgesBicl = edges * porcentaje; 
-unsigned SxC_Biclique = 400; // 20 x 20 
+unsigned SxC_Biclique = 6400; // 20 x 20 
 unsigned size_s = sqrt(SxC_Biclique);
 
 unsigned minWeight = 1; 
 unsigned maxWeight = 10;
 
-//const unsigned num_bicliques = edgesBicl / SxC_Biclique; 
-//const unsigned edges_per_biclique = SxC_Biclique; 
 
 string name = "g_" + to_string(graphNodes) + "_" + to_string(edges) + "_" + to_string(int(porcentaje*100)) + "_" + to_string(SxC_Biclique);
 
@@ -46,7 +44,6 @@ typedef vector<pair<uint32_t, uint32_t>> C_values;
 
 struct CompactBicliqueWeighted {
     set<uint32_t> weights_values;
-    // set<uint32_t> S_values; 
     vector<C_values> c_bicliques; 
     vector<pair<uint32_t, vector<uint32_t>>> linked_s; //S_value to C_values index   
 };
@@ -74,9 +71,6 @@ vector<Biclique>* generateBicliques()
 
     while (countEdges < edgesBicl) {
         int size = static_cast<int>(distribution(gen));
-        //int random_sxc = static_cast<int>(distribution(gen));
-        //int size = sqrt(random_sxc);
-        //std::cout << size  << ", " << countEdges << endl;
 
         Biclique b; 
         set<uint32_t>* S = &(b.S);
@@ -342,6 +336,7 @@ void saveBicliques(vector<Biclique>* bicliques)
     writeCompactStructure(compBicl);
     writeCompactStructureBin(compBicl);
     delete compBicl;
+    
     /*for (size_t i = 0; i < compBicl->c_bicliques.size(); i++) { 
         cout << "C[" << i << "]: " ; 
         for (auto j : compBicl->c_bicliques.at(i)) {
