@@ -23,10 +23,10 @@ using namespace std;
 
 float porcentaje = 0.8;
 
-unsigned graphNodes = 2000000; 
-unsigned edges = 2000000;
+unsigned graphNodes = 1000000; 
+unsigned edges = 1000000;
 unsigned edgesBicl = edges * porcentaje; 
-unsigned SxC_Biclique = 6400; // 20 x 20 
+unsigned SxC_Biclique = 2500; 
 unsigned size_s = sqrt(SxC_Biclique);
 
 unsigned minWeight = 1; 
@@ -68,9 +68,13 @@ vector<Biclique>* generateBicliques()
 
     uint64_t countEdges = 0;
     uint64_t countBicliques = 0;
+    int32_t size = 10;
 
     while (countEdges < edgesBicl) {
-        int size = static_cast<int>(distribution(gen));
+        do {
+            size = static_cast<int>(distribution(gen));
+        } while (size < 3); 
+        
 
         Biclique b; 
         set<uint32_t>* S = &(b.S);
@@ -101,7 +105,6 @@ vector<Biclique>* generateBicliques()
     
     std::cout << "Edges in bicliques: " << countEdges << std::endl;
     std::cout << "Num bicliques: " << countBicliques << std::endl;
-
 
 
     //sleep(40);
@@ -242,15 +245,15 @@ void writeCompactStructure(CompactBicliqueWeighted* compBicl)
 
     std::sort(compBicl->linked_s.begin(), compBicl->linked_s.end(), [](pair<uint32_t, vector<uint32_t>> a, pair<uint32_t, vector<uint32_t>> b){ return a.first < b.first; });
 
-    file << "W: ";
+    /*file << "W: ";
     for(auto i : compBicl->weights_values) {
         file << i << " ";
     }
-    file << endl;
+    file << endl;*/
 
     //file << "Bicliques: " << endl;
     for (size_t i = 0; i < compBicl->c_bicliques.size(); i++) {
-        file << "B[" << i << "]: ";
+        file <<  i << ": ";
         for(auto j : compBicl->c_bicliques.at(i)) {
             file << "(" << j.first << "," << j.second << ")" << " ";
         } 
@@ -262,9 +265,8 @@ void writeCompactStructure(CompactBicliqueWeighted* compBicl)
         for (auto j : i.second) {
             file << j << " ";
         }
-        file << endl; 
+        if (i != *(compBicl->linked_s.end())) file << endl; 
     }
-    file << endl;
     
     file.close();
     return; 
@@ -336,24 +338,25 @@ void saveBicliques(vector<Biclique>* bicliques)
     writeCompactStructure(compBicl);
     writeCompactStructureBin(compBicl);
     delete compBicl;
-    
-    /*for (size_t i = 0; i < compBicl->c_bicliques.size(); i++) { 
-        cout << "C[" << i << "]: " ; 
-        for (auto j : compBicl->c_bicliques.at(i)) {
-            cout << "(" << j.first << "," << j.second << ") ";  
+
+    ofstream file;
+    string new_path = name + "_bicliques.txt";
+    file.open(new_path, fstream::trunc);
+    assert(file.is_open());
+
+    for (auto i : *bicliques) {
+        auto S = i.S;
+        auto C = i.C;
+
+        for (auto j : S) {
+            file << j << " ";
         }
-        cout << endl; 
+        file << ";"; 
+        for (auto j : C) {
+            file << j.first << "," << j.second << " ";
+        }
+        file << std::endl;
     }
-
-    for (size_t i = 0; i < compBicl->linked_s.size(); i++) {
-        cout << "S[" << compBicl->linked_s.at(i).first << "]: " ;
-        for (auto j : compBicl->linked_s.at(i).second) {
-            cout << j << " " ; 
-        }
-        cout << endl;
-    }*/
-
-
 }
 
 
