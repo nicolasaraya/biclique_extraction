@@ -23,8 +23,8 @@ using namespace std;
 
 float porcentaje = 0.8;
 
-unsigned graphNodes = 1000000; 
-unsigned edges = 1000000;
+unsigned graphNodes = 10000000; 
+unsigned edges = 10000000;
 unsigned edgesBicl = edges * porcentaje; 
 unsigned SxC_Biclique = 2500; 
 unsigned size_s = sqrt(SxC_Biclique);
@@ -331,12 +331,13 @@ void writeCompactStructureBin(CompactBicliqueWeighted* compBicl)
     return; 
 }
 
+
 void saveBicliques(vector<Biclique>* bicliques) 
 {
 
     auto compBicl = generateCompactStructure(bicliques);
-    writeCompactStructure(compBicl);
-    writeCompactStructureBin(compBicl);
+    //writeCompactStructure(compBicl);
+    //writeCompactStructureBin(compBicl);
     delete compBicl;
 
     ofstream file;
@@ -353,11 +354,12 @@ void saveBicliques(vector<Biclique>* bicliques)
         }
         file << ";"; 
         for (auto j : C) {
-            file << j.first << "," << j.second << " ";
+            file << " (" << j.first << "," << j.second << ")";
         }
         file << std::endl;
     }
 }
+
 
 
 void convertToWeighted(const string path, const int weight){
