@@ -463,11 +463,11 @@ int main(int argc, char const *argv[])
         saveBicliques(b);
         delete b;
         return 0;
-    } else if (argc == 5) { 
+    } else if (argc == 4) { 
         //graphNodes = atoi(argv[1]);
-        edges = atoi(argv[2]);
-        porcentaje = float(atoi(argv[3]))/100;
-        SxC_Biclique = atoi(argv[4]);
+        edges = atoi(argv[1]);
+        porcentaje = float(atoi(argv[2]))/100;
+        SxC_Biclique = atoi(argv[3]);
         edgesBicl = edges * porcentaje; 
         name = "g_" + to_string(edges) + "_" + to_string(int(porcentaje*100)) + "_" + to_string(SxC_Biclique);
 
