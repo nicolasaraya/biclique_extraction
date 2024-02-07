@@ -12,6 +12,7 @@
 #include <threads.h>
 #include <mutex>
 #include <unordered_map>
+#include <stdint.h>
 
 #include "../Utils.hpp"
 #include "../../Graph/Node.hpp"
@@ -23,17 +24,18 @@ using namespace std;
 
 float porcentaje = 0.8;
 
-unsigned graphNodes = 10000000; 
+//unsigned graphNodes = 10000000; 
 unsigned edges = 10000000;
 unsigned edgesBicl = edges * porcentaje; 
 unsigned SxC_Biclique = 2500; 
 unsigned size_s = sqrt(SxC_Biclique);
+unsigned graphNodes = std::pow(10,9); //1 000 000 000
 
 unsigned minWeight = 1; 
 unsigned maxWeight = 10;
 
 
-string name = "g_" + to_string(graphNodes) + "_" + to_string(edges) + "_" + to_string(int(porcentaje*100)) + "_" + to_string(SxC_Biclique);
+string name = "g_" + to_string(edges) + "_" + to_string(int(porcentaje*100)) + "_" + to_string(SxC_Biclique);
 
 typedef struct {
     set<uint32_t> S;
@@ -163,6 +165,7 @@ void generateGraph(vector<Biclique>* bicliques)
 
     ofstream file;
     file.open(path, ofstream::out | ofstream::trunc);
+    file << full_graph.size() << std::endl;
 
     for (auto i : full_graph) {
         for (auto j : (i.second)) {
@@ -175,12 +178,16 @@ void generateGraph(vector<Biclique>* bicliques)
 
     file.open(path, ofstream::out | ofstream::trunc);
 
+    file << graph.size() << std::endl;
+
     for (auto i : graph) {
         for (auto j : (i.second)) {
             file << i.first << " " << j.first << " " << j.second << std::endl;
         }
     }
     file.close();
+
+    std::cout << "nodes: " << full_graph.size();
 
     
 }
@@ -457,12 +464,12 @@ int main(int argc, char const *argv[])
         delete b;
         return 0;
     } else if (argc == 5) { 
-        graphNodes = atoi(argv[1]);
+        //graphNodes = atoi(argv[1]);
         edges = atoi(argv[2]);
         porcentaje = float(atoi(argv[3]))/100;
         SxC_Biclique = atoi(argv[4]);
         edgesBicl = edges * porcentaje; 
-        name = "g_" + to_string(graphNodes) + "_" + to_string(edges) + "_" + to_string(int(porcentaje*100)) + "_" + to_string(SxC_Biclique);
+        name = "g_" + to_string(edges) + "_" + to_string(int(porcentaje*100)) + "_" + to_string(SxC_Biclique);
 
         std::cout << "graph nodes: " << graphNodes << std::endl;
         std::cout << "edges: " << edges << std::endl;
