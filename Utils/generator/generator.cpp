@@ -29,7 +29,7 @@ unsigned edges = 10000000;
 unsigned edgesBicl = edges * porcentaje; 
 unsigned SxC_Biclique = 2500; 
 unsigned size_s = sqrt(SxC_Biclique);
-unsigned graphNodes = std::pow(10,9); //1 000 000 000
+unsigned graphNodes = edges + edgesBicl; 
 
 unsigned minWeight = 1; 
 unsigned maxWeight = 10;
@@ -464,7 +464,7 @@ int main(int argc, char const *argv[])
         delete b;
         return 0;
     } else if (argc == 4) { 
-        //graphNodes = atoi(argv[1]);
+        graphNodes = edges + edgesBicl;
         edges = atoi(argv[1]);
         porcentaje = float(atoi(argv[2]))/100;
         SxC_Biclique = atoi(argv[3]);
