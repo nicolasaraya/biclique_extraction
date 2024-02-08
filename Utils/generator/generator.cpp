@@ -23,7 +23,6 @@
 using namespace std;
 
 float porcentaje = 0.8;
-float desvest = 20*;
 
 //unsigned graphNodes = 10000000; 
 unsigned edges = 10000000;
