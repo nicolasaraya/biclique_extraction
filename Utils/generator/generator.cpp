@@ -23,13 +23,18 @@
 using namespace std;
 
 float porcentaje = 0.8;
+float desvest = 20*;
 
 //unsigned graphNodes = 10000000; 
 unsigned edges = 10000000;
 unsigned edgesBicl = edges * porcentaje; 
 unsigned SxC_Biclique = 2500; 
 unsigned size_s = sqrt(SxC_Biclique);
-unsigned graphNodes = edges + edgesBicl; 
+unsigned graphNodes = edges + edgesBicl;
+
+float desvest = size_s * 0.2;
+
+
 
 unsigned minWeight = 1; 
 unsigned maxWeight = 10;
@@ -62,7 +67,7 @@ vector<Biclique>* generateBicliques()
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::normal_distribution<double> distribution(size_s, 5.0);
+    std::normal_distribution<double> distribution(size_s, desvest);
 
     unordered_map<uint32_t, uint32_t> aux;
     
@@ -468,6 +473,8 @@ int main(int argc, char const *argv[])
         edges = atoi(argv[1]);
         porcentaje = float(atoi(argv[2]))/100;
         SxC_Biclique = atoi(argv[3]);
+        size_s = sqrt(SxC_Biclique);
+        desvest = size_s * 0.2;
         edgesBicl = edges * porcentaje; 
         name = "g_" + to_string(edges) + "_" + to_string(int(porcentaje*100)) + "_" + to_string(SxC_Biclique);
 
