@@ -102,10 +102,15 @@ void BicliqueExtractor<GraphType>::extract()
             if (bs_decrease > biclique_size) {
                 break;
             }
-
-            biclique_size -= bs_decrease;
-            if (biclique_size < 20) {
-                break; 
+            if(biclique_size == min_sxc_size) {
+                break;
+            }
+            else {
+                biclique_size -= bs_decrease;
+                if (biclique_size < min_sxc_size) {
+                    biclique_size = min_sxc_size;
+                    //break; 
+                }
             }
         }
         iteration++;
@@ -132,6 +137,21 @@ void BicliqueExtractor<GraphType>::extract()
     file << " | S x C | / | S + C |: " << float(biclique_sxc_size) / float(biclique_s_size + biclique_c_size) << endl;
     file << "Compression percentage: " << compressionPercentage << endl;
     file.close();
+
+    cout << "****************************************************************" << endl;
+    cout << "Original Size AdjacencyMatrix: " << adjacencyMatrixOriginalSize << endl;
+    cout << "Current Size AdjacencyMatrix: " << graph->size() << endl
+         << endl;
+    cout << "Original Edges Size AdjacencyMatrix: " << adjacencyMatrixOriginalEdgesSize << endl;
+    cout << "Current Edges Size AdjacencyMatrix: " << graph->all_edges_size() << endl
+         << endl;
+    cout << "Number of Bicliques Extracted: " << total_biclique << endl;
+    cout << "Sum of S: " << biclique_s_size << endl;
+    cout << "Sum of C: " << biclique_c_size << endl;
+    cout << "Sum of S + C: " << biclique_s_size + biclique_c_size << endl;
+    cout << "Sum of Multiplication of S x C: " << biclique_sxc_size << endl;
+    cout << " | S x C | / | S + C |: " << float(biclique_sxc_size) / float(biclique_s_size + biclique_c_size) << endl;
+    cout << "Compression percentage: " << compressionPercentage << endl;
 
     if(total_biclique > 0) {
         graph->setCompressed(true);
