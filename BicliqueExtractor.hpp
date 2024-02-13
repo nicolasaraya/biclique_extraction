@@ -67,6 +67,7 @@ class BicliqueExtractor {
         uint64_t biclique_s_size;
         uint64_t biclique_c_size;
         uint64_t biclique_sxc_size;
+        uint16_t min_sxc_size = 20;
         uint64_t cluster_size;
         uint64_t n_bicliques_iter;
         GraphType* graph = nullptr;
