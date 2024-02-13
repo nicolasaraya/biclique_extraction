@@ -106,9 +106,12 @@ void Graph::buildTxt()
 		tempNode->shrinkToFit();
 		tempNode->sort();
 		insert(tempNode);
+		num_edges += tempNode->edgesSize();
 	}
 	file.close();
 	matrix.shrink_to_fit();
+
+	cout << "nodes: " << num_nodes << ", edges: " << num_edges << endl;
 }
 
 void Graph::buildBin()
@@ -231,9 +234,7 @@ void Graph::writeAdjacencyList()
 		if(matrix[i] == nullptr) {
 			continue; 
 		}
-		if (i % 100000 == 0) {
-			cout << float(i) / float(matrix_size) * 100 << " %" << endl;
-		}
+
 		file << matrix[i]->getId() << ":";
 
 		for (auto adj = matrix[i]->adjacentsBegin(); adj != matrix[i]->adjacentsEnd(); adj++) {

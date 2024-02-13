@@ -32,6 +32,7 @@ protected:
     bool weighted = false;
     uint64_t num_nodes = 0;
     bool compressed = false;
+    uint64_t num_edges = 0;
 };
 
 #endif

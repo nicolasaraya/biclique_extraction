@@ -41,10 +41,10 @@ public:
     bool isTransposed();
 private:
     vector<Node*>* matrix = nullptr;
-    Node* binarySearch(uInt, uInt, uInt);
     uint64_t maxEdge = 0;
     bool transposed = false;
     bool compareNodes(Node* a, Node* b);
+    Node* binarySearch(uInt, uInt, uInt);
 };
 
 #endif

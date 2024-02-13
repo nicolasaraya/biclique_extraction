@@ -128,10 +128,12 @@ void GraphWeighted::buildTxt()
 	assert(file.is_open());
 	string line;
 	Node* temp = nullptr;
+
 	//int x = 0;
 	while(getline(file,line)){
 		if(line.front() == '%') continue; 
 		auto content = splitString(line, " ");
+		if (content.size() <= 1) continue;
 		uInt id = atoi(content[0].c_str());
 		uInt adj = atoi(content[1].c_str());
 		uInt weight = atoi(content[2].c_str());
@@ -145,6 +147,7 @@ void GraphWeighted::buildTxt()
 			temp = find(id);
 			if(temp == nullptr) temp = new Node(id, true);
 		}
+		num_edges++;
 		temp->addAdjacent(adj, weight); 
 		//cout << id << " " << adj << " " << weight << endl;
 	}
@@ -157,6 +160,8 @@ void GraphWeighted::buildTxt()
 	matrix->shrink_to_fit();
 	sort();
 	file.close();
+	num_nodes = matrix->size();
+	cout << "nodes: " << num_nodes << ", edges: " << num_edges << endl;
 	//print();
 }
 

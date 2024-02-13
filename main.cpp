@@ -18,9 +18,10 @@ int main(int argc, char const *argv[])
         {"minAdyNodes", "10"},
         {"bsDecrease", "100"},
         {"shingleSize", "1"},
-        {"selfLoop", "1"},
+        {"selfLoop", "0"},
         {"threshold", "200"},
         {"debug", "0"},
+        {"weighted", "0"},
         {"iterations", "10"}};
 
     auto arguments = parseArguments(argc, argv, &input_arguments);
@@ -40,67 +41,45 @@ int main(int argc, char const *argv[])
     cout << "Debug flag:  " << arguments["debug"] << endl;
     cout << "Threshold: " << arguments["threshold"] << endl;
     cout << "Iterations: " << arguments["iterations"] << endl;
+    cout << "Weighted: " << arguments["weighted"] << endl;
     cout << "Bits: " << sizeof(Int) * 8 << endl;
 
-    /*
-    Graph g = Graph(arguments["file"], atoi(arguments["selfLoop"].c_str()));
-    BicliqueExtractor<Graph> be(
-        atoi(arguments["numSignatures"].c_str()),
-        atoi(arguments["minClusterSize"].c_str()),
-        atoi(arguments["minAdyNodes"].c_str()),
-        atoi(arguments["bicliqueSize"].c_str()),
-        atoi(arguments["bsDecrease"].c_str()),
-        atoi(arguments["shingleSize"].c_str()),
-        atoi(arguments["threshold"].c_str()),
-        atoi(arguments["iterations"].c_str())
-        );
-    be.setGraph(&g);
-    be.extract();
-    */
-    
-  
+   
+    if (not atoi(arguments["weighted"].c_str())) {
+        Graph g = Graph(arguments["file"], atoi(arguments["selfLoop"].c_str()));
+        BicliqueExtractor<Graph> be(
+            atoi(arguments["numSignatures"].c_str()),
+            atoi(arguments["minClusterSize"].c_str()),
+            atoi(arguments["minAdyNodes"].c_str()),
+            atoi(arguments["bicliqueSize"].c_str()),
+            atoi(arguments["bsDecrease"].c_str()),
+            atoi(arguments["shingleSize"].c_str()),
+            atoi(arguments["threshold"].c_str()),
+            atoi(arguments["iterations"].c_str())
+            );
+        be.setGraph(&g);
+        be.extract();
 
-    Graph g = Graph(arguments["file"]);
-    //g.writeBinaryFile();
-    //g.print();
-    BicliqueExtractor<Graph> be = BicliqueExtractor<Graph>(
-        atoi(arguments["numSignatures"].c_str()),
-        atoi(arguments["minClusterSize"].c_str()),
-        atoi(arguments["minAdyNodes"].c_str()),
-        atoi(arguments["bicliqueSize"].c_str()),
-        atoi(arguments["bsDecrease"].c_str()),
-        atoi(arguments["shingleSize"].c_str()),
-        atoi(arguments["threshold"].c_str()),
-        atoi(arguments["iterations"].c_str())
-        );
-    
-    be.setGraph(&g);
-    be.extract();
-    
-    
-   /*
-
-   vector<Node*> g; 
-   ifstream file;
-   file.open(arguments["file"]);
-    string line;
-    Node* temp = nullptr;
-    while(getline(file,line)){
-        auto content = splitString(line, " ");
-        uInt id = atoi(content[0].c_str());
-        uInt adj = atoi(content[1].c_str());
-        uInt weight = atoi(content[2].c_str());
-        if(temp == nullptr or id != temp->getId()){
-            temp = new Node(id, true);
-            g.push_back(temp);
-        }
-        temp->addAdjacent(adj, weight);
+    } else {
+        GraphWeighted g = GraphWeighted(arguments["file"]);
+        //g.writeBinaryFile();
+        //g.print();
+        BicliqueExtractor<GraphWeighted> be = BicliqueExtractor<GraphWeighted>(
+            atoi(arguments["numSignatures"].c_str()),
+            atoi(arguments["minClusterSize"].c_str()),
+            atoi(arguments["minAdyNodes"].c_str()),
+            atoi(arguments["bicliqueSize"].c_str()),
+            atoi(arguments["bsDecrease"].c_str()),
+            atoi(arguments["shingleSize"].c_str()),
+            atoi(arguments["threshold"].c_str()),
+            atoi(arguments["iterations"].c_str())
+            );
+        
+        be.setGraph(&g);
+        be.extract();
     }
-    Trie t;
-    t.create(&g);
-    t.printForest();
-
-    */
+    
+   
     
     return 0;
 }
