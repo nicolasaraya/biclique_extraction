@@ -1,7 +1,6 @@
-#include "Node.hpp"
-using namespace std;
+#include <Node.hpp>
 
-// PUBLIC METHODS
+#include <functional>
 
 Node::Node(uInt id) : id(id), weighted(false) {}
 
@@ -16,7 +15,7 @@ Node::~Node()
 
 }
 
-uInt Node::getId() 
+uInt Node::getId() const
 {
 	return id; 
 }
@@ -84,7 +83,7 @@ void Node::addAdjacent(uInt id_adj, uInt weight_adj)
 bool Node::deleteAdjacent(uInt key)
 {
 	if(weighted) return false; 
-	auto f = find(adjacentNodes.begin(), adjacentNodes.end(), key);
+	auto f = std::find(adjacentNodes.begin(), adjacentNodes.end(), key);
 	if (f != adjacentNodes.end()) {
 		adjacentNodes.erase(f);
 		sorted = false;
@@ -96,7 +95,7 @@ bool Node::deleteAdjacent(uInt key)
 bool Node::deleteAdjacent(uInt key, uInt w)
 {
 	if(not weighted) return false; 
-	auto f = find_if(wAdjacentNodes.begin(), wAdjacentNodes.end(), [key, w](Pair& p){
+	auto f = std::find_if(wAdjacentNodes.begin(), wAdjacentNodes.end(), [key, w](Pair& p){
 		 	return (p.first == key) and (w == p.second);
 		});
 	if (f != wAdjacentNodes.end()) {
@@ -117,14 +116,14 @@ void Node::shrinkToFit()
 	}
 }
 
-void Node::deleteExtracted(vector<uInt>* C)
+void Node::deleteExtracted(std::vector<uInt>& C)
 {
 	if (weighted) return;
 	if (not sorted) sort();
-	vector<uInt> newAdj; 
+	std::vector<uInt> newAdj; 
 	uInt index = 0;
 
-	for(auto i : *C){
+	for(auto& i : C){
 		for(; index < adjacentNodes.size(); index++) {
 			if(adjacentNodes.at(index) == i) {
 				index++;
@@ -142,15 +141,15 @@ void Node::deleteExtracted(vector<uInt>* C)
 	adjacentNodes.swap(newAdj);
 }
 
-void Node::deleteExtracted(vector<pair<uInt, uInt>>* C)
+void Node::deleteExtracted(std::vector<Pair>& C)
 {
 	if (not weighted) return; 
 	if (not sorted) sort();
 	//print();
-	vector<Pair> newAdj; 
+	std::vector<Pair> newAdj; 
 	uInt index = 0;
 	//int countC = 0; 
-	for(auto i : *C){
+	for(auto& i : C){
 		for(; index < wAdjacentNodes.size(); index++) {
 			if(wAdjacentNodes.at(index).first == i.first and wAdjacentNodes.at(index).second == i.second) {
 				index++;
@@ -323,25 +322,25 @@ void Node::sort()
 	if(not weighted){
 		std::sort(adjacentNodes.begin(), adjacentNodes.end());
 	} else {
-		std::sort(wAdjacentNodes.begin(), wAdjacentNodes.end(), bind(&Node::sortWeighted, this, placeholders::_1, placeholders::_2)); 
+		std::sort(wAdjacentNodes.begin(), wAdjacentNodes.end(), std::bind(&Node::sortWeighted, this, std::placeholders::_1, std::placeholders::_2)); 
 	}
 	sorted = true;
 
 }
 
-void Node::sortByFrecuency(unordered_map<uInt, uint32_t> *mapFrecuency)
+void Node::sortByFrecuency(std::unordered_map<uInt, uint32_t> *mapFrecuency)
 {
-	std::sort(adjacentNodes.begin(), adjacentNodes.end(), bind(&Node::sortFrecuencyComp, this, placeholders::_1, placeholders::_2, mapFrecuency));
+	std::sort(adjacentNodes.begin(), adjacentNodes.end(), std::bind(&Node::sortFrecuencyComp, this, std::placeholders::_1, std::placeholders::_2, mapFrecuency));
 	sorted = false;
 }
 
-void Node::sortByFrecuency(unordered_map<string, uint32_t> *mapFrecuency)
+void Node::sortByFrecuency(std::unordered_map<std::string, uint32_t> *mapFrecuency)
 {
-	std::sort(wAdjacentNodes.begin(), wAdjacentNodes.end(), bind(&Node::sortFrecuencyCompWeighted, this, placeholders::_1, placeholders::_2, mapFrecuency));
+	std::sort(wAdjacentNodes.begin(), wAdjacentNodes.end(), bind(&Node::sortFrecuencyCompWeighted, this, std::placeholders::_1, std::placeholders::_2, mapFrecuency));
 	sorted = false;
 }
 
-bool Node::includes(vector<uInt> *c)
+bool Node::includes(std::vector<uInt> *c)
 {
 	if(not weighted) {
 		return std::includes(adjacentNodes.begin(), adjacentNodes.end(), c->begin(), c->end());
@@ -375,7 +374,7 @@ bool Node::removeAdjacent(uInt id_adj)
 	
 }
 
-void Node::moveToCache(unordered_map<uInt, uint32_t> *mapFrecuency, uint16_t minFreq)
+void Node::moveToCache(std::unordered_map<uInt, uint32_t> *mapFrecuency, uint16_t minFreq)
 {
 	for (auto it = (adjacentNodes.end() - 1); it != adjacentNodes.begin(); it--) { // eliminar freq 1
 		if (mapFrecuency->at(*it) <= minFreq) {
@@ -387,10 +386,10 @@ void Node::moveToCache(unordered_map<uInt, uint32_t> *mapFrecuency, uint16_t min
 	}
 }
 
-void Node::moveToCache(unordered_map<string , uint32_t> *mapFrecuency, uint16_t minFreq)
+void Node::moveToCache(std::unordered_map<std::string, uint32_t> *mapFrecuency, uint16_t minFreq)
 {
 	for (auto it = (wAdjacentNodes.end() - 1); it != wAdjacentNodes.begin(); it--) { // eliminar freq 1
-		string it_id = to_string((*it).first) + "," + to_string((*it).second);
+		std::string it_id = std::to_string((*it).first) + "," + std::to_string((*it).second);
 		if (mapFrecuency->at(it_id) <= minFreq) {
 			wCacheNodes.push_back(*it);
 			wAdjacentNodes.erase(it);
@@ -457,56 +456,56 @@ bool Node::restore()
 
 void Node::print()
 {
-	cout << "Node " << id << ": ";
+	std::cout << "Node " << id << ": ";
 	if (not weighted) {
 		for (size_t i = 0; i < adjacentNodes.size(); i++)
-			cout << adjacentNodes.at(i) << " ";
+			std::cout << adjacentNodes.at(i) << " ";
 		if (cacheNodes.size() > 0)
-			cout << " || ";
+			std::cout << " || ";
 		for (size_t j = 0; j < cacheNodes.size(); j++)
-			cout << cacheNodes[j] << " ";
+			std::cout << cacheNodes[j] << " ";
 	} else {
 		for (size_t i = 0; i < wAdjacentNodes.size(); i++) {
-			cout <<"("<< wAdjacentNodes.at(i).first << "," << wAdjacentNodes.at(i).second << ") ";
+			std::cout <<"("<< wAdjacentNodes.at(i).first << "," << wAdjacentNodes.at(i).second << ") ";
 		}
 		if (cacheNodes.size() > 0) {
-			cout << " || ";
+			std::cout << " || ";
 		}
 		for (size_t j = 0; j < wCacheNodes.size(); j++) {
-			cout <<"("<< wCacheNodes.at(j).first << "," << wCacheNodes.at(j).second << ") ";
+			std::cout <<"("<< wCacheNodes.at(j).first << "," << wCacheNodes.at(j).second << ") ";
 		}
 	}
-	cout << endl;
+	std::cout << std::endl;
 }
 
 void Node::printBinary()
 {
-	cout << "Node " << id << ": ";
+	std::cout << "Node " << id << ": ";
 	uInt index = 0; 
 	uInt i = 1;
 
 	if (not weighted) {
 		while(index < adjacentNodes.size()) {
 			while(i < adjacentNodes.at(index) ) {
-				cout << "0 ";
+				std::cout << "0 ";
 				i++;
 			}
-			cout << "1 ";
+			std::cout << "1 ";
 			index++; 
 			i++;
 		}
 	} else {
 		while(index < wAdjacentNodes.size()) {
 			while(i < wAdjacentNodes.at(index).first ) {
-				cout << "0 ";
+				std::cout << "0 ";
 				i++;
 			}
-			cout << wAdjacentNodes.at(index).second << " ";
+			std::cout << wAdjacentNodes.at(index).second << " ";
 			index++; 
 			i++;
 		}
 	}
-	cout << endl;
+	std::cout << std::endl;
 }
 
 AdjacentsIt Node::adjacentsBegin()
@@ -531,7 +530,7 @@ WeightedIt Node::wAdjacentsEnd()
 
 // PRIVATE METHODS
 
-bool Node::sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, uint32_t> *mapFrecuency)
+bool Node::sortFrecuencyComp(const uInt &a, const uInt &b, std::unordered_map<uInt, uint32_t> *mapFrecuency)
 {
 	if (mapFrecuency->at(a) > mapFrecuency->at(b)) {
 		return true;
@@ -542,11 +541,11 @@ bool Node::sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, u
 	}
 }
 
-bool Node::sortFrecuencyCompWeighted(Pair& a, Pair& b, unordered_map<string, uint32_t> *mapFrecuency)
+bool Node::sortFrecuencyCompWeighted(Pair& a, Pair& b, std::unordered_map<std::string, uint32_t> *mapFrecuency)
 {
 	try {
-		string a_id = to_string(a.first) + "," + to_string(a.second);
-		string b_id = to_string(b.first) + "," + to_string(b.second);
+		std::string a_id = std::to_string(a.first) + "," + std::to_string(a.second);
+		std::string b_id = std::to_string(b.first) + "," + std::to_string(b.second);
 		if (mapFrecuency->at(a_id) > mapFrecuency->at(b_id)) {
 			return true;
 		} else if (mapFrecuency->at(a_id) == mapFrecuency->at(b_id)) {
@@ -555,10 +554,10 @@ bool Node::sortFrecuencyCompWeighted(Pair& a, Pair& b, unordered_map<string, uin
 			return false;
 		}
 	} catch (std::exception &e) {
-		cout << "a ref: " << &a << endl;
-		cout << "A: " << a.first << "," << a.second << endl;
-		cout << "B: " << b.first << "," << b.second << endl;
-		cout << e.what() << endl;
+		std::cout << "a ref: " << &a << std::endl;
+		std::cout << "A: " << a.first << "," << a.second << std::endl;
+		std::cout << "B: " << b.first << "," << b.second << std::endl;
+		std::cout << e.what() << std::endl;
 		 
 	}
 	return false;

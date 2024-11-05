@@ -1,50 +1,22 @@
 #ifndef ADJ_MATRIXW
 #define ADJ_MATRIXW
 
-#include "GraphADT.hpp"
-#include "Node.hpp"
+#include <GraphStd.hpp>
+#include <Node.hpp>
 
-using namespace std;
-
-typedef vector<Node*>::iterator GraphWeightedIterator;
-
-class GraphWeighted : public GraphADT
+class GraphWeighted : public GraphStd
 {
-public:
-    GraphWeighted(const string);
-    GraphWeighted();
-    ~GraphWeighted();
+  public:
+    GraphWeighted(const std::string);
+    //~GraphWeighted();
     void buildBin();
     void buildBin_alt();
     void buildTxt();
-    void insert(Node*);
-    uint64_t size();
-    Node* back();
-    uint64_t all_edges_size();
-    void print();
-    void printAsMatrix();
     void writeAdjacencyList();
     void writeBinaryFile();
     void writeBinaryFile_alt(); 
-    void restoreNodes();
-    double getAverageDegree();
-    GraphWeightedIterator begin();
-    GraphWeightedIterator end();
-    Node* at(uInt);
-    Node* find(uInt);
-    string getPath();
-    void setPath(string); 
-    void sort();
-    //void addBicliques(string);
-    uint64_t maxValueEdge();
-    void transpose();
-    bool isTransposed();
-private:
-    vector<Node*>* matrix = nullptr;
-    uint64_t maxEdge = 0;
-    bool transposed = false;
-    bool compareNodes(Node* a, Node* b);
-    Node* binarySearch(uInt, uInt, uInt);
+    void writeBicliques(std::vector<BicliquePtr>& bicliques);
+    bool sortC(const Pair& a, const Pair& b);
 };
 
 #endif

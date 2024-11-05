@@ -1,93 +1,76 @@
-#include "Graph.hpp"
+#include <Graph.hpp>
+
+#include <cassert>
 
 // PUBLIC METHODS
 
-Graph::Graph(const string path, bool selfLoop) : GraphADT(path), selfLoop(selfLoop)
+Graph::Graph(const std::string path) : GraphStd(path)
 {
 	TIMERSTART(build_matrix);
 	if(path.find(".txt" )!= std::string::npos) {
 		buildTxt();
-		format = "txt";
+		_format = "txt";
 	}
 	else if(path.find(".bin")!= std::string::npos) {
 		buildBin();
-		format = "bin";
+		_format = "bin";
 	}
 	TIMERSTOP(build_matrix);
 }
 
-Graph::Graph(const string path) : GraphADT(path)
+Graph::Graph(const std::string path, bool selfLoop) : Graph(path)
 {
-	TIMERSTART(build_matrix);
-	if(path.find(".txt" )!= std::string::npos) {
-		buildTxt();
-		format = "txt";
-	}
-	else if(path.find(".bin")!= std::string::npos) {
-		buildBin();
-		format = "bin";
-	}
-	TIMERSTOP(build_matrix);
+  _selfLoop = selfLoop;
 }
 
-Graph::Graph() {}
 
-Graph::~Graph()
+std::string Graph::getPath()
 {
-	for (auto i : matrix)
-		delete i;
-}
-
-string Graph::getPath()
-{
-	return path;
+	return _path;
 }
 
 // funcion que agrega los nodos intermedios que no contienen ninguna arista
 // para facilitar la busqueda de los nodos source
-void Graph::standardize(vector<uInt>* aux)
+void Graph::standardize(std::vector<uInt>* aux)
 {
-	cout << "Standarize" << endl;
-	vector<Node*> new_matrix;
-	auto it = matrix.rbegin();
+	std::cout << "Standarize" << std::endl;
+	std::vector<NodePtr> new_matrix;
+	auto it = _matrix.rbegin();
 	uint64_t last_node = back()->getId();
 	for (uint64_t cont = last_node; cont > 0; it++, cont--) {
-		if (it != matrix.rend() && cont == (*it)->getId()) {
+		if (it != _matrix.rend() && cont == (*it)->getId()) {
 			//continue;
-			new_matrix.push_back(*it);
-			matrix.pop_back();
+			new_matrix.push_back(std::move(*it));
+			_matrix.pop_back();
 		} else {
-			Node *tempNode = new Node(cont);
-			new_matrix.push_back(tempNode);
+			new_matrix.push_back(std::make_shared<Node>(cont));
 			aux->push_back(cont-1);
 			it--;
 		}
 	}
 
 	for (size_t cont = last_node; cont > 0; cont--) {
-		matrix.push_back(new_matrix.back());
+		_matrix.push_back(std::move(new_matrix.back()));
 		new_matrix.pop_back();
 	}
-
-
 }
 
 void Graph::buildTxt()
 {
-	ifstream file;
-	file.open(path);
+	std::ifstream file;
+	file.open(_path);
 	if (!file.is_open()) {
-		cout << "No se puede leer fichero" << endl;
-		cout << path << endl;
+		std::cout << "No se puede leer fichero" << std::endl;
+		std::cout << _path << std::endl;
 		exit(0);
 	}
-	string line;
+	std::string line;
 	uInt id;
 	getline(file, line); // num nodes
-	num_nodes = atoi(line.c_str());
+	_numNodes = atoi(line.c_str());
 	while (!file.eof()) {
 		getline(file, line);
-		auto adjacents = splitString(line, " ");
+		auto adjacents = utils::splitString(line, " ");
 
 		if (adjacents.empty()) {
 			continue;
@@ -95,8 +78,8 @@ void Graph::buildTxt()
 		
 		id = atoi(adjacents.at(0).c_str());
 
-		Node *tempNode = new Node(id);
-		if (selfLoop) {
+		NodePtr tempNode = std::make_shared<Node>(id);
+		if (_selfLoop) {
 			tempNode->setSelfLoop(true);
 		}
 		for (size_t i = 1; i < adjacents.size();i++) {
@@ -106,28 +89,28 @@ void Graph::buildTxt()
 		tempNode->shrinkToFit();
 		tempNode->sort();
 		insert(tempNode);
-		num_edges += tempNode->edgesSize();
+		_numEdges += tempNode->edgesSize();
 	}
 	file.close();
-	matrix.shrink_to_fit();
+	_matrix.shrink_to_fit();
 
-	cout << "nodes: " << num_nodes << ", edges: " << num_edges << endl;
+	std::cout << "nodes: " << _numNodes << ", edges: " << _numEdges << std::endl;
 }
 
 void Graph::buildBin()
 {
-	ifstream binFile; 
-    binFile.open(path, ios::in | ios::binary);    
+	std::ifstream binFile; 
+  binFile.open(_path, std::ios::in | std::ios::binary);    
 	assert(binFile.is_open());
 
 	Int* nodes = new Int(0); 
 	binFile.read((char*)nodes, sizeof(Int)); //num_nodes
-	//std::cout << "cantidad de nodos: " << *nodes << endl;
-	num_nodes = *nodes;
-    Int* buffer = new Int(0); 
-	Node* tempNode = nullptr; 
+	//std::std::cout << "cantidad de nodos: " << *nodes << std::endl;
+	_numNodes = *nodes;
+  Int* buffer = new Int(0); 
+  NodePtr tempNode = nullptr;
     while(binFile.read((char*)buffer, sizeof(Int))) {
-		//cout << *buffer << endl;
+		//std::cout << *buffer << std::endl;
         if((*buffer) < 0) {
 			uint64_t id = (*buffer) * -1;
 			if (tempNode != nullptr) {
@@ -135,8 +118,8 @@ void Graph::buildBin()
 				tempNode->sort();
 				tempNode->shrinkToFit();
 			}
-			tempNode = new Node(id);
-			if (selfLoop) {
+			tempNode = std::make_shared<Node>(id);
+			if (_selfLoop) {
 				tempNode->setSelfLoop(true);
 			}
         } else {
@@ -154,116 +137,62 @@ void Graph::buildBin()
 	}
 	delete buffer;
 	delete nodes;
-    binFile.close();
-	
-}
-
-
-uint64_t Graph::size()
-{
-	return matrix.size();
-}
-
-Node* Graph::back(){
-	return matrix.back();
-}
-
-uint64_t Graph::all_edges_size()
-{
-	uint64_t size = 0;
-	for (auto it : matrix) {
-		size += it->edgesSize();
-	}
-	return size;
-}
-
-void Graph::insert(Node *node)
-{
-	matrix.push_back(node);
-	//cout << node->getId() << " " <<node->getBackAdjacent() << endl; 
-	if(node->getBackAdjacent() > maxEdge) {
-		maxEdge = node->getBackAdjacent();
-	}
-}
-
-uint64_t Graph::maxValueEdge()
-{
-	return maxEdge;
-}
-
-void Graph::print()
-{
-	for (size_t i = 0; i < matrix.size(); i++) {
-		matrix[i]->print();
-	}
-}
-
-void Graph::printAsMatrix()
-{
-	for (size_t i = 0; i < matrix.size(); i++) {
-		if(i < matrix[i]->getId() - 1) {
-			uInt temp = i; 
-			while(temp < matrix[i]->getId()) {
-				cout << "Node " << temp << ": " << 0 << endl;
-				temp++; 
-			}
-		}
-		matrix[i]->printBinary();
-	}
+  binFile.close();
+	return;
 }
 
 void Graph::writeAdjacencyList()
 {
 	if (size() == 0){
-		cout << "Matrix Empty" << endl;
+		std::cout << "Matrix Empty" << std::endl;
 		return;
 	}
-	ofstream file;
+	std::ofstream file;
 	//int count = 0;
 	uint64_t matrix_size = size();
-	string pathFile = modify_path(path, 4 ,".txt");
-	if (compressed) {
-		pathFile = modify_path(path, 4 ,"_compressed.txt");
+	std::string pathFile = utils::modify_path(_path, 4 ,".txt");
+	if (_compressed) {
+		pathFile = utils::modify_path(_path, 4 ,"_compressed.txt");
 	} 
-	cout << "Writing: " << pathFile<< endl;
-	file.open(pathFile, ofstream::out | ofstream::trunc); // limpia el contenido del fichero
+	std::cout << "Writing: " << pathFile<< std::endl;
+	file.open(pathFile, std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero
 
-	file << num_nodes << endl;
+	file << _numNodes << std::endl;
 
 	for (uint64_t i = 0; i < matrix_size ; i++) {
-		if(matrix[i] == nullptr) {
+		if(_matrix.at(i) == nullptr) {
 			continue; 
 		}
 
-		file << matrix[i]->getId() << ":";
+		file << _matrix.at(i)->getId() << ":";
 
-		for (auto adj = matrix[i]->adjacentsBegin(); adj != matrix[i]->adjacentsEnd(); adj++) {
+		for (auto adj = _matrix.at(i)->adjacentsBegin(); adj != _matrix.at(i)->adjacentsEnd(); adj++) {
 			//if (not matrix[i]->hasSelfLoop() and *adj == matrix[i]->getId()) { //si no tiene un selfloop natural 
 			//	continue;
 			//}
 			file << " " << *adj;
 		}
-		file << endl;
+		file << std::endl;
 	}
 	file.close();
 }
 
 void Graph::writeBinaryFile()
 {
-	ofstream file;
-	string pathFile = modify_path(path, 4 ,".bin");
-	if (compressed) {
-		pathFile = modify_path(path, 4 ,"_compressed.bin");
+	std::ofstream file;
+	std::string pathFile = utils::modify_path(_path, 4 ,".bin");
+	if (_compressed) {
+		pathFile = utils::modify_path(_path, 4 ,"_compressed.bin");
 	} 
-	cout << "Writing: " << pathFile << endl;
-	file.open(pathFile, ios::out | ios::binary |ios::trunc); 
+	std::cout << "Writing: " << pathFile << std::endl;
+	file.open(pathFile, std::ios::out | std::ios::binary | std::ios::trunc); 
 	assert(file.is_open());
 	
-	Int size = matrix.size();
+	Int size = _matrix.size();
 	file.write((char*)&size, sizeof(Int));
 	Int count_nodes = 0;
 	Int count_edges = 0;
-	for(auto i : matrix){
+	for(const auto& i : _matrix){
 		if (i->edgesSize() == 0) {
 			continue;
 		}
@@ -272,7 +201,7 @@ void Graph::writeBinaryFile()
 		file.write((char*)&(id), sizeof(Int));
 		count_edges += i->edgesSize();
 		for(auto j = i->adjacentsBegin(); j != i->adjacentsEnd(); j++){
-			//file << i->getId() << " " << j->first << " " << j->second << endl;
+			//file << i->getId() << " " << j->first << " " << j->second << std::endl;
 			file.write((char*)&(*j), sizeof(Int));
 		}
 	}
@@ -283,46 +212,50 @@ void Graph::writeBinaryFile()
 	file.close();
 }
 
-void Graph::restoreNodes()
+void Graph::writeBicliques(std::vector<BicliquePtr>& bicliques)
 {
-	for (size_t i = 0; i < matrix.size(); i++) {
-		matrix[i]->restore();
-	}
-}
+  std::ofstream file;
+  file.open(_pathBicliques, std::fstream::app);
+  assert(file.is_open());
+  for (auto& biclique : bicliques) {
+    std::vector<NodePtr>& S = biclique->S;
+    std::vector<uInt>& C = biclique->C; 
 
-AdjMatrixIterator Graph::begin()
-{
-	return matrix.begin();
-}
-
-AdjMatrixIterator Graph::end()
-{
-	return matrix.end();
-}
-
-Node* Graph::at(uInt pos){
-	return matrix.at(pos);
-}
-
-Node* Graph::find(uInt node_id){
-	if( size() == num_nodes ) {
-		return at(node_id - 1);
-	}
-	return binarySearch(0, size()-1,node_id);
-}
-
-Node* Graph::binarySearch(uInt l, uInt r, uInt node_id){
-
-    if (r >= l) {
-        uInt mid = l + (r - l) / 2;
- 
-        if (matrix[mid]->getId() == node_id) return matrix[mid];
-
-        if (matrix[mid]->getId() > node_id) {
-			if(mid == 0) return nullptr;
-            return binarySearch(l, mid - 1, node_id);
-		}
-        return binarySearch(mid + 1, r, node_id);
+    uInt S_size = S.size();
+    uInt C_size = C.size();
+      
+    if(S_size * C_size < _bicliqueSize) {
+      continue; 
     }
-    return nullptr;
+
+    std::sort(S.begin(), S.end(), bind(&GraphStd::sortS, this, std::placeholders::_1, std::placeholders::_2));
+    std::sort(C.begin(), C.end(), bind(&Graph::sortC, this, std::placeholders::_1, std::placeholders::_2));
+
+    file << "S: ";
+    for(auto& it : S){
+      it->deleteExtracted(C);
+      file << it->getId() << " "; 
+    }
+
+    file << std::endl << "C: ";
+    for(auto it : C){
+      file << it << " "; 
+    }
+    
+    file << std::endl;
+    //file << "SxC = " << C_size * S_size << endl;   
+    //file << "SxC - C = " << (C_size * S_size) - C_size << endl; 
+    _n_bicliques_iter += 1;
+    _biclique_s_size += S_size;
+    _biclique_c_size += C_size;
+    _biclique_sxc_size += (S_size * C_size);
+  }
+  file.close();
+  return; 
 }
+
+bool Graph::sortC(const uInt& a, const uInt& b)
+{
+    return a < b;
+}
+

@@ -1,127 +1,202 @@
-#include "Cluster.hpp"
+#include <Graph/GraphStd.hpp>
+
+#include <Cluster.hpp>
+#include <Trie.hpp>
+#include <Biclique.hpp>
+
+#include <iostream>
+#include <memory>
+#include <vector>
+#include <unordered_map>
+
+
+
+class Trie;
 
 // PUBLIC METHODS 
-Cluster::Cluster(vector<Node*>* entry)
+// Cluster::Cluster(std::vector<NodePtr>& entry) : nodes(entry)
+// {
+//   t = std::make_unique<Trie>();
+//   weighted = nodes.front()->isWeighted();
+// }
+
+
+Cluster::Cluster(std::vector<NodePtr>* entry) 
 {
-    t = new Trie();
-    nodes = entry;
-    weighted = entry->front()->isWeighted();
+  nodes = entry;
+  t = std::make_unique<Trie>();
+  weighted = nodes->front()->isWeighted();
 }
 
-Cluster::~Cluster()
+Cluster::Cluster(Signatures* entry) 
 {
-    mapFrecuency.clear();
-    delete t;
-    delete nodes;
+  signatures = entry;
+  t = std::make_unique<Trie>();
+  weighted = signatures->front()->ptrNode->isWeighted();
 }
 
 void Cluster::printMap()
 {
-    cout << "********MAP**********" << endl;
-    if (weighted) {
-        for (auto i : mapFrecuencyWeighted) {
-            if (i.second > 2) {
-                cout << "(" << i.first << ")" << ", freq: " << i.second << endl;
-            }
-        }
-    } else {
-        for (auto i : mapFrecuency) {
-            cout << i.first << ", freq: " << i.second << endl;
-        }
+  std::cout << "********MAP**********" << std::endl;
+  if (weighted) {
+    for (auto i : mapFrecuencyWeighted) {
+      if (i.second > 2) {
+        std::cout << "(" << i.first << ")" << ", freq: " << i.second << std::endl;
+      }
     }
-    
+  } else {
+    for (auto i : mapFrecuency) {
+      std::cout << i.first << ", freq: " << i.second << std::endl;
+    }
+  }
 }
 
+void Cluster::updateFrecuency(uInt& id) 
+{
+  auto aux = mapFrecuency.find(id);
+  if (aux != mapFrecuency.end()) { // existe
+    mapFrecuency[id]++;
+  } else {
+    mapFrecuency[id] = 1; // insert freq 1;
+  }
+}
+
+void Cluster::updateFrecuency(std::string& id)
+{
+  auto aux = mapFrecuencyWeighted.find((id));
+  if (aux != mapFrecuencyWeighted.end()) { // existe
+    mapFrecuencyWeighted[id]++;
+  } else {
+    mapFrecuencyWeighted[id] = 1; // insert freq 1;
+  }
+}
 void Cluster::computeFrecuency()
 {
-    if(weighted){
-        for (auto node : *nodes) {
-            for (auto j = node->wAdjacentsBegin(); j != node->wAdjacentsEnd(); j++) {   
-                string node_id = to_string((*j).first) + "," + to_string((*j).second); 
-                auto aux = mapFrecuencyWeighted.find((node_id));
-                if (aux != mapFrecuencyWeighted.end()) { // existe
-                    mapFrecuencyWeighted[node_id]++;
-                } else {
-                    mapFrecuencyWeighted[node_id] = 1; // insert freq 1;
-                }
-            }
-        }
+  if(weighted){
+    for (auto& node : *nodes) {
+      for (auto j = node->wAdjacentsBegin(); j != node->wAdjacentsEnd(); j++) {   
+        std::string node_id = std::to_string((*j).first) + "," + std::to_string((*j).second); 
+        updateFrecuency(node_id);
+      }
+    }
+  } else {
+    for (auto& node : *nodes) {
+      for (auto j = node->adjacentsBegin(); j != node->adjacentsEnd(); j++) {   
+        updateFrecuency(*j);
+      }
+    }
+  }   
+}
+
+void Cluster::computeFrecuencyFromSignatures()
+{
+  if(weighted){
+    for (auto& signNode : *signatures) {
+      auto& node = signNode->ptrNode;
+      for (auto j = node->wAdjacentsBegin(); j != node->wAdjacentsEnd(); j++) {   
+        std::string node_id = std::to_string((*j).first) + "," + std::to_string((*j).second); 
+        updateFrecuency(node_id);
+      }
+    }
+  } else {
+    for (auto& signNode : *signatures) {
+      auto& node = signNode->ptrNode;
+      for (auto j = node->adjacentsBegin(); j != node->adjacentsEnd(); j++) {   
+        updateFrecuency(*j);
+      }
+    }
+  }   
+}
+
+void Cluster::computeHistogramFromSignatures()
+{
+  computeFrecuency();
+
+  for (auto& signNode : *signatures) {
+    auto& node = signNode->ptrNode;
+    if (weighted) {
+      node->sortByFrecuency(&mapFrecuencyWeighted);
+      node->moveToCache(&mapFrecuencyWeighted, minFreq);
     } else {
-        for (auto node : *nodes) {
-            for (auto j = node->adjacentsBegin(); j != node->adjacentsEnd(); j++) {   
-                auto aux = mapFrecuency.find(*j);
-                if (aux != mapFrecuency.end()) { // existe
-                    mapFrecuency[*j]++;
-                } else {
-                    mapFrecuency[*j] = 1; // insert freq 1;
-                }
-            }
-        }
-    }   
+      node->sortByFrecuency(&mapFrecuency);
+      node->moveToCache(&mapFrecuency, minFreq);
+    }
+  }
+
+  std::sort(signatures->begin(), signatures->end(), std::bind(&Cluster::sortSizeCompSign, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 
 void Cluster::computeHistogram()
 {
-    computeFrecuency();
+  computeFrecuency();
 
-    for (auto *node : *nodes) {
-        if (weighted) {
-            //using std::placeholders::_1;
-            //std::function<void()> sortNode = [node, this](){node->sortByFrecuency(&mapFrecuencyWeighted);};
-            //std::function<void()> moveNode = [node, this](){node->moveToCache(&mapFrecuencyWeighted, minFreq);};
-            //
-            //TaskManager::get().submit(moveNode);    
-
-            //auto sortNode = std::bind(static_cast<void(Node::*)(unordered_map<string, uint32_t> *)>(&Node::sortByFrecuency), &node, &mapFrecuencyWeighted);
-            //std::function<void()> sortNode = [this, node](){node->sortByFrecuency(&mapFrecuencyWeighted);};
-            //TaskManager::get().submit(sortNode);
-            node->sortByFrecuency(&mapFrecuencyWeighted);
-            node->moveToCache(&mapFrecuencyWeighted, minFreq);
-        } else {
-            node->sortByFrecuency(&mapFrecuency);
-            node->moveToCache(&mapFrecuency, minFreq);
-        }
+  for (auto& node : *nodes) {
+    if (weighted) {
+      node->sortByFrecuency(&mapFrecuencyWeighted);
+      node->moveToCache(&mapFrecuencyWeighted, minFreq);
+    } else {
+      node->sortByFrecuency(&mapFrecuency);
+      node->moveToCache(&mapFrecuency, minFreq);
     }
-    //cout << "********+ finish push ***********+" << endl;
-    std::sort(nodes->begin(), nodes->end(), bind(&Cluster::sortSizeComp, this, placeholders::_1, placeholders::_2));
+  }
+
+  std::sort(nodes->begin(), nodes->end(), std::bind(&Cluster::sortSizeComp, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void Cluster::computeTrie()
 {
-    if (nodes != nullptr) {
-        computeHistogram();
-        t->create(nodes);
-    }
-    //mapFrecuency.clear();
-    //mapFrecuencyWeighted.clear();
-    
+  if (nodes) {
+    computeHistogram();
+    t->create(nodes);
+  } else {
+    computeHistogramFromSignatures();
+    t->create(signatures);
+  }
+  
 }
 
-vector<Biclique*>* Cluster::getBicliques()
+std::vector<BicliquePtr>& Cluster::getBicliques()
 {
-    return t->getBicliques();
-    
+  return t->getBicliques(); 
 }
 
 void Cluster::printCluster()
 {
-    cout << endl << "***************" << endl;
-    for (size_t i = 0; i < nodes->size(); i++) {
-        nodes->at(i)->print();
+  
+  std::cout << std::endl << "***************" << std::endl;
+  if (nodes) {
+    for (size_t i = 0; i < nodes->size(); ++i) {
+      nodes->at(i)->print();
     }
-    cout << "***************" << endl << endl;
+  } else {
+    for (size_t i = 0; i < signatures->size(); ++i) {
+      signatures->at(i)->ptrNode->print();
+    }
+  }
+  std::cout << "***************" << std::endl << std::endl;
 }
  
-bool Cluster::sortSizeComp(Node* a, Node* b)
+bool Cluster::sortSizeCompSign(const SignNode& a, const SignNode& b)
 {
-    if (a->edgesSize() > b->edgesSize()) {
-        return true;
-    } else if (a->edgesSize() == b->edgesSize()) {
-        return (a->getId() < b->getId());
-    } else {
-        return false;
-    }
+  if (a->ptrNode->edgesSize() > b->ptrNode->edgesSize()) {
+    return true;
+  } else if (a->ptrNode->edgesSize() == b->ptrNode->edgesSize()) {
+    return (a->ptrNode->getId() < b->ptrNode->getId());
+  } else {
+    return false;
+  }
+}
+
+bool Cluster::sortSizeComp(const NodePtr& a, const NodePtr& b)
+{
+  if (a->edgesSize() > b->edgesSize()) {
+    return true;
+  } else if (a->edgesSize() == b->edgesSize()) {
+    return (a->getId() < b->getId());
+  } else {
+    return false;
+  }
 }
 
 

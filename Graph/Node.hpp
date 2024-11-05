@@ -2,10 +2,11 @@
 #define NODE_HPP
 
 #include <unistd.h>
-
-#include "../Utils/Utils.hpp"
-
-using namespace std;
+#include <functional>
+#include <vector>
+#include <unordered_map>
+#include <Utils.hpp>
+#include <memory>
 
 struct Pair {
 	uInt first;
@@ -18,15 +19,15 @@ struct Pair {
 	};
 };
 
-typedef vector<Pair>::iterator WeightedIt;
-typedef vector<uInt>::iterator AdjacentsIt; 
+typedef std::vector<Pair>::iterator WeightedIt;
+typedef std::vector<uInt>::iterator AdjacentsIt; 
 
 class Node {
 	public:
 		Node(uInt);
 		Node(uInt, bool);
 		~Node();
-		uInt getId();
+		uInt getId() const;
 		//void setModified(bool);
 		//bool isModified();
 		bool hasSelfLoop();
@@ -37,21 +38,21 @@ class Node {
 		void addAdjacent(uInt, uInt);
 		bool deleteAdjacent(uInt);
 		bool deleteAdjacent(uInt, uInt);
-		vector<uInt> findToErase(vector<uInt>*);
-		void deleteExtracted(vector<uInt>*);
-		void deleteExtracted(vector<pair<uInt, uInt>>*);
+		std::vector<uInt> findToErase(std::vector<uInt>*);
+		void deleteExtracted(std::vector<uInt>&);
+		void deleteExtracted(std::vector<Pair>&);
 		bool findAdjacent(uInt);
 		bool findAdjacent(uInt, uInt);
 		uInt findAdjacentWeighted(uInt);
 		bool increaseWeight(uInt, uInt);
 		void shrinkToFit();
 		void sort();
-		void sortByFrecuency(unordered_map<uInt, uint32_t>*);
-		void sortByFrecuency(unordered_map<string, uint32_t>*);
-		bool includes(vector<uInt>*);
+		void sortByFrecuency(std::unordered_map<uInt, uint32_t>*);
+		void sortByFrecuency(std::unordered_map<std::string, uint32_t>*);
+		bool includes(std::vector<uInt>*);
 		bool removeAdjacent(uInt);
-		void moveToCache(unordered_map<uInt, uint32_t> *, uint16_t);
-		void moveToCache(unordered_map<string, uint32_t> *, uint16_t);
+		void moveToCache(std::unordered_map<uInt, uint32_t> *, uint16_t);
+		void moveToCache(std::unordered_map<std::string, uint32_t> *, uint16_t);
 		AdjacentsIt adjacentsBegin();
 		AdjacentsIt adjacentsEnd();
 		WeightedIt wAdjacentsBegin();
@@ -67,22 +68,24 @@ class Node {
 	private:
 		uInt id;
 		bool weighted = false; 
-		vector<uInt> adjacentNodes;
-		vector<Pair> wAdjacentNodes; 
-		vector<Pair> wCacheNodes;
-		vector<uInt> cacheNodes;
+		std::vector<uInt> adjacentNodes;
+		std::vector<Pair> wAdjacentNodes; 
+		std::vector<Pair> wCacheNodes;
+		std::vector<uInt> cacheNodes;
 		//bool modified = false;
 		bool naturalSelfLoop = false; 
 		bool selfLoop = false;
 		bool sorted = false;
 
-		bool sortFrecuencyComp(const uInt &a, const uInt &b, unordered_map<uInt, uint32_t> *mapFrecuency);
-		bool sortFrecuencyCompWeighted(Pair& a, Pair& b, unordered_map<string, uint32_t> *mapFrecuency);
+		bool sortFrecuencyComp(const uInt &a, const uInt &b, std::unordered_map<uInt, uint32_t> *mapFrecuency);
+		bool sortFrecuencyCompWeighted(Pair& a, Pair& b, std::unordered_map<std::string, uint32_t> *mapFrecuency);
 		bool binarySearch(uint64_t, uint64_t, uInt);
 		bool binarySearchW(uint64_t, uint64_t, uInt);
 		bool binarySearchW(uint64_t, uint64_t, uInt, uInt);
 		bool sortWeighted(Pair& a, Pair& b);
 	};
+
+typedef std::shared_ptr<Node> NodePtr;
 
 struct compareIncludes {
     bool operator()(Pair& p, uInt value) const {

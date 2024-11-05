@@ -1,45 +1,24 @@
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
-#include "GraphADT.hpp"
-#include "Node.hpp"
+#include <GraphStd.hpp>
+#include <Node.hpp>
 
-using namespace std;
 
-typedef vector<Node *>::iterator AdjMatrixIterator;
-class Graph : public GraphADT
+class Graph : public GraphStd
 {
 public:
-    Graph(const string, bool);
-    Graph(const string);
-    Graph();
-    ~Graph();
+    Graph(const std::string, bool);
+    Graph(const std::string);
+    //~Graph();
 
-    void standardize(vector<uInt>*);
+    void standardize(std::vector<uInt>*);
     void buildTxt();
     void buildBin();
-    void insert(Node *);
-    uint64_t size();
-    Node* back();
-    uint64_t all_edges_size();
-    void print();
-    void printAsMatrix();
     void writeAdjacencyList();
     void writeBinaryFile();
-    void restoreNodes();
-    AdjMatrixIterator begin();
-    AdjMatrixIterator end();
-    Node* at(uInt);
-    Node* find(uInt);
-    string getPath();
-    uint64_t maxValueEdge();
-
-private:
-    // PRIVATE METHODS
-    vector<Node*> matrix;
-    bool selfLoop = false;
-    Node* binarySearch(uInt, uInt, uInt);
-    uint64_t maxEdge = 0;
+    std::string getPath();
+    void writeBicliques(std::vector<BicliquePtr>& bicliques);
+    bool sortC(const uInt& a, const uInt& b);
 };
-
 #endif
