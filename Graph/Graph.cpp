@@ -228,8 +228,8 @@ void Graph::writeBicliques(std::vector<BicliquePtr>& bicliques)
       continue; 
     }
 
-    std::sort(S.begin(), S.end(), bind(&GraphStd::sortS, this, std::placeholders::_1, std::placeholders::_2));
-    std::sort(C.begin(), C.end(), bind(&Graph::sortC, this, std::placeholders::_1, std::placeholders::_2));
+    std::sort(S.begin(), S.end(), std::bind(&GraphStd::sortS, this, std::placeholders::_1, std::placeholders::_2));
+    std::sort(C.begin(), C.end(), std::bind(&Graph::sortC, this, std::placeholders::_1, std::placeholders::_2));
 
     file << "S: ";
     for(auto& it : S){

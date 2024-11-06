@@ -21,7 +21,7 @@ void GraphStd::extract( uint16_t numSignatures,
   _minAdyNodes = minAdyNodes;
   _bicliqueSize = bicliqueSize;
   _bsDecrease = bsDecrease;
-  _shingleSize = _shingleSize;
+  _shingleSize = shingleSize;
   _threshold = threshold;
   _maxIterations = maxIterations;
 
