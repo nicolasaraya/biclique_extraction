@@ -31,7 +31,7 @@ HEADER	=       Graph/Graph.hpp \
 
 OBJ_FOLD = build
 
-debug ?= 0
+debug_level ?= 0
 
 OUT	=           biclique_extractor
 OUT_DEBUG = 		biclique_extractor-g
@@ -43,7 +43,7 @@ LFLAGS	=       -lm -lpthread
 				
 
 ifdef debug
-FLAGS := $(FLAGS) $(DEBUG_FLAGS)
+FLAGS += $(DEBUG_FLAGS)
 else
 FLAGS += $(OPT)
 endif
