@@ -1,12 +1,12 @@
-OBJS	=   	main.o \
-						Utils.o \
-						Shingle.o \
-						Trie.o \
-						Cluster.o \
-						GraphStd.o \
-						Graph.o \
-						GraphWeighted.o \
-						Node.o \
+OBJS	=   			main.o \
+								Utils.o \
+								Shingle.o \
+								Trie.o \
+								Cluster.o \
+								GraphStd.o \
+								Graph.o \
+								GraphWeighted.o \
+								Node.o \
 
 SOURCE	=       main.cpp \
 								Graph/Graph.cpp \

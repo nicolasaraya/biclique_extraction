@@ -49,7 +49,7 @@ int main(int argc, char const *argv[])
 
   
   if (not atoi(arguments["weighted"].c_str())) {
-    Graph g = Graph(arguments["file"], atoi(arguments["selfLoop"].c_str()));
+    boolean::Graph g(arguments["file"], atoi(arguments["selfLoop"].c_str()));
     g.extract(
       atoi(arguments["numSignatures"].c_str()),
       atoi(arguments["minClusterSize"].c_str()),
@@ -61,7 +61,7 @@ int main(int argc, char const *argv[])
       atoi(arguments["iterations"].c_str())
       );
   } else {
-    GraphWeighted g = GraphWeighted(arguments["file"]);
+    weighted::Graph g(arguments["file"]);
     g.extract(
       atoi(arguments["numSignatures"].c_str()),
       atoi(arguments["minClusterSize"].c_str()),

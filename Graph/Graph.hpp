@@ -3,20 +3,24 @@
 
 #include <GraphStd.hpp>
 #include <Node.hpp>
+#include <Utils.hpp>
 
-class Graph : public GraphStd
+namespace boolean
 {
-public:
-    Graph(const std::string, bool);
-    Graph(const std::string);
+  class Graph : public GraphStd
+  {
+    public:
+      Graph(const std::string, bool);
+      Graph(const std::string);
 
-    void standardize(std::vector<uInt>*);
-    void buildTxt();
-    void buildBin();
-    void writeAdjacencyList();
-    void writeBinaryFile();
-    std::string getPath();
-    void writeBicliques(std::vector<BicliquePtr>& bicliques);
-    bool sortC(const uInt& a, const uInt& b);
+      void standardize(std::vector<uInt>*);
+      void buildTxt();
+      void buildBin();
+      void writeAdjacencyList();
+      void writeBinaryFile();
+      std::string getPath();
+      void writeBicliques(std::vector<BicliquePtr>& bicliques);
+      bool sortC(const uInt& a, const uInt& b);
+  };
 };
 #endif
