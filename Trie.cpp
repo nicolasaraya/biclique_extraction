@@ -6,9 +6,9 @@ Trie::Trie() {}
 
 Trie::~Trie()
 {
-    for(auto i : forest){
-        clear(i);
-    }
+  for(auto i : forest){
+    clear(i);
+  }
 }
 
 void Trie::create(Signatures* nodes)
@@ -44,18 +44,15 @@ std::vector<BicliquePtr>& Trie::getBicliques()
 {
   if (forest.empty()) return potential_bicliques;
 
-  for (auto i : candidates) {
-    if(i->depth < 2) continue;
-    if(i->parent == nullptr) continue;
-    if(i->indices.size() <= 1 ) continue;
+  for (auto ptr : candidates) {
+    if (ptr->depth < 2 or not ptr->parent or ptr->indices.size() <= 1) {
+      continue;
+    }
 
     auto tempBiclique = std::make_unique<Biclique>();
-    tempBiclique->S = i->indices; 
+    tempBiclique->S = ptr->indices; 
 
-    //if (i->weight != -1) tempBiclique->C_w = new std::vector<Pair>();
-    //else tempBiclique->C = new std::vector<uInt>();
-
-    TrieNode* ptr = i;
+    //TrieNode* ptr = i;
     do {
       if (ptr->weight != -1) {
         tempBiclique->C_w.push_back(Pair(ptr->vertex, ptr->weight));
@@ -115,7 +112,7 @@ TrieNode* Trie::find(Pair& node, TrieNode* ptr)
 void Trie::clear(TrieNode* node)
 {
   if (node->childrens.size() > 0) {
-    for (size_t i = 0; i < node->childrens.size(); i++) {
+    for (size_t i = 0; i < node->childrens.size(); ++i) {
       clear(node->childrens.at(i));
     }
   }
@@ -124,7 +121,7 @@ void Trie::clear(TrieNode* node)
 
 void Trie::printForest() 
 {
-  for (size_t i = 0; i < forest.size(); i++) {
+  for (size_t i = 0; i < forest.size(); ++i) {
     std::cout << "**** trie: " << i << " *****" << std::endl;
     printTree(forest.at(i));
     std::cout << "******************" << std::endl;
@@ -132,26 +129,40 @@ void Trie::printForest()
 
   uInt x = 0;
   std::cout << "Best candidate: " ;
-  for(auto i : candidates){
+  for (auto i : candidates) {
     std::cout << x++ << " "<< i->vertex << std::endl;
   }
 }
 
 void Trie::printTree(TrieNode* node)
 {
-  for(size_t esp = 0; esp < (node->depth-1) * 3; esp++) std::cout << " ";
+  for (size_t esp = 0; esp < (node->depth-1) * 3; ++esp) {
+    std::cout << " ";
+  }
   
   std::cout << "Nodo: " << "(" << node->vertex << ",";
-  if(node->weight != -1) std::cout << node->weight; 
+  if (node->weight != -1) {
+    std::cout << node->weight;
+  }
   std::cout << ")" << std::endl;
   
-  for(size_t esp = 0; esp < (node->depth-1) * 3; esp++) std::cout << " ";
+  for (size_t esp = 0; esp < (node->depth-1) * 3; ++esp) {
+    std::cout << " ";
+  } 
+
   std::cout << "Indices: ";
-  for (size_t i = 0; i < node->indices.size(); i++) std::cout << node->indices.at(i)->getId() << " ";
+  for (size_t i = 0; i < node->indices.size(); ++i) {
+    std::cout << node->indices.at(i)->getId() << " ";
+  } 
   std::cout << std::endl << std::endl;
-  for(size_t esp = 0; esp < (node->depth-1) * 3; esp++) std::cout << " ";
- std:: cout << "Hijos de " << node->vertex << std::endl;
-  for (size_t i = 0; i < node->childrens.size(); i++) printTree(node->childrens.at(i));
+  for(size_t esp = 0; esp < (node->depth-1) * 3; ++esp) {
+     std::cout << " ";
+  }
+
+  std:: cout << "Hijos de " << node->vertex << std::endl;
+  for (size_t i = 0; i < node->childrens.size(); ++i) {
+    printTree(node->childrens.at(i));
+  }
 }
 
 TrieNode* Trie::find_in_Forest(uInt id)
@@ -166,11 +177,11 @@ TrieNode* Trie::find_in_Forest(uInt id)
 
 void Trie::insertInTree(TrieNode* root, NodePtr node)
 {
-  if(node->isWeighted()) {
+  if (node->isWeighted()) {
     auto ptr = root; 
-    for(auto adj = node->wAdjacentsBegin(); adj != node->wAdjacentsEnd(); adj++) {
+    for(auto adj = node->wAdjacentsBegin(); adj != node->wAdjacentsEnd(); ++adj) {
       auto t_node = find((*adj), ptr);
-      if(t_node != nullptr){ 
+      if (t_node != nullptr) { 
         t_node->indices.push_back(node);
       } else {  //crea una ramificacion
         t_node = new TrieNode();
@@ -196,7 +207,7 @@ void Trie::insertInTree(TrieNode* root, NodePtr node)
       uInt SxC_new = S_new * C_new; 
       float coef_new = (float)SxC_new / (float)(S_new + C_new);
       
-      if(t_node->indices.size() > 1){ //evita nodos hoja de uno solo
+      if (t_node->indices.size() > 1) { //evita nodos hoja de uno solo
         if (SxC_prev <= SxC_new and coef_prev < coef_new){
             candidates[root->treeIndex] = t_node;
         }
@@ -205,9 +216,9 @@ void Trie::insertInTree(TrieNode* root, NodePtr node)
     }
   } else {
     auto ptr = root; 
-    for(auto adj = node->adjacentsBegin(); adj != node->adjacentsEnd(); adj++){
+    for (auto adj = node->adjacentsBegin(); adj != node->adjacentsEnd(); ++adj) {
       auto t_node = find((*adj), ptr);
-      if(t_node != nullptr){ 
+      if (t_node != nullptr) { 
         t_node->indices.push_back(node);
       } else {  //crea una ramificacion
         t_node = new TrieNode();
@@ -232,8 +243,8 @@ void Trie::insertInTree(TrieNode* root, NodePtr node)
       uInt SxC_new = S_new * C_new; 
       float coef_new = (float)SxC_new / (float)(S_new + C_new);
 
-      if(t_node->indices.size() > 1){ //evita nodos hoja de uno solo
-        if (SxC_prev <= SxC_new and coef_prev < coef_new){
+      if (t_node->indices.size() > 1) { //evita nodos hoja de uno solo
+        if (SxC_prev <= SxC_new and coef_prev < coef_new) {
           candidates[root->treeIndex] = t_node;
         }
       }
@@ -244,15 +255,17 @@ void Trie::insertInTree(TrieNode* root, NodePtr node)
 
 void Trie::insertNewTree(NodePtr node)
 {
-    auto root = new TrieNode();
-    forest.push_back(root);
-    candidates.push_back(root);
-    //root->indices = new vector<Node*>();
-    //root->childrens = new vector<TrieNode*>();
-    root->vertex = node->getFrontAdjacent();
-    root->parent = nullptr; 
-    root->depth = 1; 
-    if(node->isWeighted()) root->weight = node->getFrontWeighted()->second;
-    root->treeIndex = forest.size()-1;
-    insertInTree(root, node);
+  auto root = new TrieNode();
+  forest.push_back(root);
+  candidates.push_back(root);
+  //root->indices = new vector<Node*>();
+  //root->childrens = new vector<TrieNode*>();
+  root->vertex = node->getFrontAdjacent();
+  root->parent = nullptr; 
+  root->depth = 1; 
+  if (node->isWeighted()) {
+    root->weight = node->getFrontWeighted()->second;
+  }
+  root->treeIndex = forest.size()-1;
+  insertInTree(root, node);
 }

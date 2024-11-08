@@ -1,8 +1,6 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-#define DEBUG_LEVEL 3
-
 #include <vector>
 #include <cstdint>
 #include <iostream>

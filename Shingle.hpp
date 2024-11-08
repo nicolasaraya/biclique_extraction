@@ -4,7 +4,8 @@
 #include "Utils/Utils.hpp"
 #include "Graph/Node.hpp"
 
-struct SignNodeStruct {
+struct SignNodeStruct 
+{
     NodePtr ptrNode;
     std::vector<uInt> minHash; 
 };
@@ -24,11 +25,13 @@ class Shingle
     uint16_t num_signatures;
     uint32_t minAdyNodes;
     uint32_t shingle_size = 1;
+
     #if defined(BITS32)
         uInt prime = (1ULL << 31ULL) - 1ULL;
     #else
         uInt prime = (1ULL << 61ULL) - 1ULL;
     #endif
+    
     std::hash<std::string> hash_nodes;
     std::vector<uInt> A;
     std::vector<uInt> B;

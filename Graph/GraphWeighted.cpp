@@ -230,15 +230,15 @@ void GraphWeighted::writeBicliques(vector<BicliquePtr>& bicliques)
   std::ofstream file;
   file.open(_pathBicliques, fstream::app);
   assert(file.is_open());
-  for (auto biclique = bicliques.begin(); biclique != bicliques.end(); biclique++) {
-    std::vector<NodePtr>& S = (*biclique)->S;
-    std::vector<Pair>& C_w = (*biclique)->C_w;
+  for (auto& biclique : bicliques) {
+    std::vector<NodePtr>& S = biclique->S;
+    std::vector<Pair>& C_w = biclique->C_w;
 
     uInt S_size = S.size();
     uInt C_size = C_w.size(); 
 
     if(S_size * C_size < _bicliqueSize) {
-      biclique->release();
+      biclique.release();
       continue; 
     }
 
@@ -258,11 +258,16 @@ void GraphWeighted::writeBicliques(vector<BicliquePtr>& bicliques)
     file << std::endl;
     //file << "SxC = " << C_size * S_size << endl;   
     //file << "SxC - C = " << (C_size * S_size) - C_size << endl; 
-    _n_bicliques_iter++;
+    _n_bicliques_iter += 1;
     _biclique_s_size += S_size;
     _biclique_c_size += C_size;
     _biclique_sxc_size += (S_size * C_size);
-    biclique->release(); 
+
+    if (_keepBicliques) {
+      _savedBicliques.push_back(std::move(biclique));
+    } else {
+      biclique.release(); 
+    }
   }
   file.close();
   return; 

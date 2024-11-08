@@ -8,7 +8,8 @@
 #include <Utils.hpp>
 #include <memory>
 
-struct Pair {
+struct Pair
+{
 	uInt first;
 	uInt second; 
 
@@ -22,14 +23,13 @@ struct Pair {
 typedef std::vector<Pair>::iterator WeightedIt;
 typedef std::vector<uInt>::iterator AdjacentsIt; 
 
-class Node {
+class Node 
+{
 	public:
 		Node(uInt);
 		Node(uInt, bool);
 		~Node();
 		uInt getId() const;
-		//void setModified(bool);
-		//bool isModified();
 		bool hasSelfLoop();
 		void setSelfLoop(bool);
 		bool isWeighted();
@@ -87,20 +87,25 @@ class Node {
 
 typedef std::shared_ptr<Node> NodePtr;
 
-struct compareIncludes {
-    bool operator()(Pair& p, uInt value) const {
-        return p.first < value;
-    }
+struct compareIncludes 
+{
+  bool operator()(Pair& p, uInt value) const 
+  {
+    return p.first < value;
+  }
 
-    bool operator()(uInt value, Pair& p) const {
-        return value < p.first;
-    }
+  bool operator()(uInt value, Pair& p) const 
+  {
+    return value < p.first;
+  }
 };
 
-struct CompareFind {
-    bool operator()(Pair& p, uInt value) const {
-        return p.first == value;
-    }
+struct CompareFind 
+{
+  bool operator()(Pair& p, uInt value) const 
+  {
+    return p.first == value;
+  }
 };
 
 #endif

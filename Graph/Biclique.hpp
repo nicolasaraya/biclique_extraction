@@ -8,10 +8,11 @@
 #include <vector>
 
 
-struct Biclique {
-    std::vector<NodePtr> S;
-    std::vector<uInt> C;
-    std::vector<Pair> C_w;
+struct Biclique 
+{
+    std::vector<NodePtr>& S;
+    std::vector<uInt>& C;
+    std::vector<Pair>& C_w;
 };
 
 typedef std::unique_ptr<Biclique> BicliquePtr;

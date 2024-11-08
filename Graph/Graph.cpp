@@ -1,8 +1,9 @@
 #include <Graph.hpp>
 
 #include <cassert>
-
-// PUBLIC METHODS
+#include <string>
+#include <vector>
+#include <fstream>
 
 Graph::Graph(const std::string path) : GraphStd(path)
 {
@@ -225,6 +226,7 @@ void Graph::writeBicliques(std::vector<BicliquePtr>& bicliques)
     uInt C_size = C.size();
       
     if(S_size * C_size < _bicliqueSize) {
+      biclique.release();
       continue; 
     }
 
@@ -249,6 +251,12 @@ void Graph::writeBicliques(std::vector<BicliquePtr>& bicliques)
     _biclique_s_size += S_size;
     _biclique_c_size += C_size;
     _biclique_sxc_size += (S_size * C_size);
+
+    if (_keepBicliques) {
+      _savedBicliques.push_back(std::move(biclique));
+    } else {
+      biclique.release(); 
+    }
   }
   file.close();
   return; 

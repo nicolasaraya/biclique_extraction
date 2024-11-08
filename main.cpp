@@ -12,7 +12,7 @@ int main(int argc, char const *argv[])
 {
   signal(SIGINT, utils::SigHnd::signal_handler);
 
-  std::unordered_map<std::string, std::string> input_arguments{
+  std::unordered_map<std::string, std::string> input_arguments {
     {"file", "../data/dblp-2011.txt"},
     {"numSignatures", "2"},
     {"minClusterSize", "50"},
@@ -62,8 +62,6 @@ int main(int argc, char const *argv[])
       );
   } else {
     GraphWeighted g = GraphWeighted(arguments["file"]);
-    //g.writeBinaryFile();
-    //g.print();
     g.extract(
       atoi(arguments["numSignatures"].c_str()),
       atoi(arguments["minClusterSize"].c_str()),
@@ -75,7 +73,7 @@ int main(int argc, char const *argv[])
       atoi(arguments["iterations"].c_str())
       );
   }
-  
+
     
     return 0;
 }

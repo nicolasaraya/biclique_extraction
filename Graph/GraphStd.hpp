@@ -15,13 +15,11 @@
 #include <Trie.hpp>
 #include <Biclique.hpp>
 
-
 typedef std::vector<NodePtr>::iterator GraphIterator;
 
 class GraphStd
 {
   public:
-
     GraphStd(std::string path): _path(path) {;}
     GraphStd() {};
     
@@ -77,12 +75,11 @@ class GraphStd
     virtual void buildBin() = 0;
     virtual void writeAdjacencyList() = 0;
     virtual void writeBinaryFile() = 0;
-    // virtual bool sortC() = 0; 
     virtual void writeBicliques(std::vector<BicliquePtr>& bicliques) = 0;
 
   protected:
     std::vector<NodePtr> _matrix;
-    std::vector<BicliquePtr> _bicliques;
+    std::vector<BicliquePtr> _savedBicliques;
 
     std::string _path = "graph.txt";
     std::string _format;
@@ -92,6 +89,7 @@ class GraphStd
     bool _selfLoop = false;
     bool _compressed = false;
     bool _transposed = false;
+    bool _keepBicliques = true;
 
     uint64_t _maxEdge = 0;
     uint64_t _numNodes = 0;
@@ -107,7 +105,6 @@ class GraphStd
     uint32_t _threshold;
     uint16_t _maxIterations;
 
-    
     uint64_t _totalBiclique = 0;
     uint64_t _biclique_s_size = 0;
     uint64_t _biclique_c_size = 0;

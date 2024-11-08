@@ -27,29 +27,26 @@ HEADER	=       Graph/Graph.hpp \
 								Shingle.hpp \
 								Trie.hpp \
 								Utils/Utils.hpp \
-								Utils/define.hpp \
+                Utils/DebugSystem.hpp
 
 OBJ_FOLD = build
+
+debug ?= 0
 
 OUT	=           biclique_extractor
 OUT_DEBUG = 		biclique_extractor-g
 CC	 =          g++
-FLAGS =         -c  -std=c++20 -DBITS32 -I. -I./Graph -I./Utils
+FLAGS =         -c  -std=c++20 -DBITS32 -I. -I./Graph -I./Utils -DDEBUG_LEVEL=$(debug_level)
 DEBUG_FLAGS =		-O0 -g
 OPT = 					-O3
 LFLAGS	=       -lm -lpthread
 				
-# Define una variable que se utilizará para pasar las banderas
-# de compilación al objetivo "all" y sus dependencias
 
-
-# Si la variable DEBUG está definida, agrega las DEBUG_FLAGS
 ifdef debug
 FLAGS := $(FLAGS) $(DEBUG_FLAGS)
 else
-FLAGS += $(OPT) # Si no se define DEBUG, se agregan las banderas de optimización
+FLAGS += $(OPT)
 endif
-
 
 all: 
 	mkdir -p $(OBJ_FOLD)

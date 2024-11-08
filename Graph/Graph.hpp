@@ -4,13 +4,11 @@
 #include <GraphStd.hpp>
 #include <Node.hpp>
 
-
 class Graph : public GraphStd
 {
 public:
     Graph(const std::string, bool);
     Graph(const std::string);
-    //~Graph();
 
     void standardize(std::vector<uInt>*);
     void buildTxt();

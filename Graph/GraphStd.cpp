@@ -80,8 +80,8 @@ void GraphStd::compress()
     uint64_t current_edges = all_edges_size();
     double compressionPercentage = 100 - ((double(current_edges) * 100) / double(num_edges));
 
-    std::cout << "biclique iteration: " << _n_bicliques_iter << std::endl;
-    std::cout << "total: " << _totalBiclique << std::endl;
+    std::cout << "Biclique iteration: " << _n_bicliques_iter << std::endl;
+    std::cout << "Total Bicliques founded: " << _totalBiclique << std::endl;
     std::cout << "Compression percentage iteration: " << compressionPercentage << std::endl;
 
     std::ofstream file;
