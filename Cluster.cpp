@@ -72,16 +72,16 @@ void Cluster::updateFrecuency(std::string& id)
 }
 void Cluster::computeFrecuency()
 {
-  if(weighted){
+  if (weighted) {
     for (auto& node : *nodes) {
-      for (auto j = node->wAdjacentsBegin(); j != node->wAdjacentsEnd(); j++) {   
+      for (auto j = node->wAdjacentsBegin(); j != node->wAdjacentsEnd(); ++j) {   
         std::string node_id = std::to_string((*j).first) + "," + std::to_string((*j).second); 
         updateFrecuency(node_id);
       }
     }
   } else {
     for (auto& node : *nodes) {
-      for (auto j = node->adjacentsBegin(); j != node->adjacentsEnd(); j++) {   
+      for (auto j = node->adjacentsBegin(); j != node->adjacentsEnd(); ++j) {   
         updateFrecuency(*j);
       }
     }
@@ -110,7 +110,7 @@ void Cluster::computeFrecuencyFromSignatures()
 
 void Cluster::computeHistogramFromSignatures()
 {
-  computeFrecuency();
+  computeFrecuencyFromSignatures();
 
   for (auto& signNode : *signatures) {
     auto& node = signNode->ptrNode;

@@ -26,11 +26,7 @@ void GraphStd::extract( uint16_t numSignatures,
   _maxIterations = maxIterations;
 
   std::ofstream file;
-  _pathLog = getPath();
-  while(_pathLog.back() != '/') {
-    _pathLog.pop_back();  
-  }
-  _pathLog += "log.txt";
+  _pathLog =  utils::modify_path(getPath(), 4 ,"_log.txt");
   file.open(_pathLog, std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero log
   file.close();
 
