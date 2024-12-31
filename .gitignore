@@ -17,3 +17,4 @@ Utils/generator/*.txt
 log.txt
 Graph/Node.hpp.gch
 Utils/Utils.hpp.gch
+biclique_extractor-g

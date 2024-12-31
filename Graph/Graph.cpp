@@ -10,11 +10,10 @@ namespace boolean
   Graph::Graph(const std::string path) : GraphStd(path)
   {
     TIMERSTART(build_matrix);
-    if(path.find(".txt" )!= std::string::npos) {
+    if (path.find(".txt" )!= std::string::npos) {
       buildTxt();
       _format = "txt";
-    }
-    else if(path.find(".bin")!= std::string::npos) {
+    } else if (path.find(".bin")!= std::string::npos) {
       buildBin();
       _format = "bin";
     }
@@ -40,7 +39,7 @@ namespace boolean
     std::vector<NodePtr> new_matrix;
     auto it = _matrix.rbegin();
     uint64_t last_node = back()->getId();
-    for (uint64_t cont = last_node; cont > 0; it++, cont--) {
+    for (uint64_t cont = last_node; cont > 0; ++it, --cont) {
       if (it != _matrix.rend() && cont == (*it)->getId()) {
         //continue;
         new_matrix.push_back(std::move(*it));
@@ -52,7 +51,7 @@ namespace boolean
       }
     }
 
-    for (size_t cont = last_node; cont > 0; cont--) {
+    for (size_t cont = last_node; cont > 0; --cont) {
       _matrix.push_back(std::move(new_matrix.back()));
       new_matrix.pop_back();
     }
@@ -85,7 +84,7 @@ namespace boolean
       if (_selfLoop) {
         tempNode->setSelfLoop(true);
       }
-      for (size_t i = 1; i < adjacents.size();i++) {
+      for (size_t i = 1; i < adjacents.size(); ++i) {
         uint64_t adjId = atoi(adjacents[i].c_str());
         tempNode->addAdjacent(adjId);
       }
@@ -112,25 +111,25 @@ namespace boolean
     _numNodes = *nodes;
     Int* buffer = new Int(0); 
     NodePtr tempNode = nullptr;
-      while(binFile.read((char*)buffer, sizeof(Int))) {
+      while (binFile.read((char*)buffer, sizeof(Int))) {
       //std::cout << *buffer << std::endl;
-          if((*buffer) < 0) {
-        uint64_t id = (*buffer) * -1;
-        if (tempNode != nullptr) {
-          insert(tempNode);
-          tempNode->sort();
-          tempNode->shrinkToFit();
-        }
-        tempNode = std::make_shared<Node>(id);
-        if (_selfLoop) {
-          tempNode->setSelfLoop(true);
-        }
-          } else {
-        if (tempNode == nullptr) {
-          continue; //num de aristas
-        }
-        tempNode->addAdjacent(*buffer);
+        if((*buffer) < 0) {
+          uint64_t id = (*buffer) * -1;
+          if (tempNode != nullptr) {
+            insert(tempNode);
+            tempNode->sort();
+            tempNode->shrinkToFit();
           }
+          tempNode = std::make_shared<Node>(id);
+          if (_selfLoop) {
+            tempNode->setSelfLoop(true);
+          }
+        } else {
+          if (tempNode == nullptr) {
+            continue; //num de aristas
+          }
+          tempNode->addAdjacent(*buffer);
+        }
       }
 
     if (tempNode != nullptr) {
@@ -163,7 +162,7 @@ namespace boolean
     file << _numNodes << std::endl;
 
     for (uint64_t i = 0; i < matrix_size ; i++) {
-      if(_matrix.at(i) == nullptr) {
+      if (_matrix.at(i) == nullptr) {
         continue; 
       }
 
@@ -195,7 +194,7 @@ namespace boolean
     file.write((char*)&size, sizeof(Int));
     Int count_nodes = 0;
     Int count_edges = 0;
-    for(const auto& i : _matrix){
+    for (const auto& i : _matrix) {
       if (i->edgesSize() == 0) {
         continue;
       }
@@ -203,7 +202,7 @@ namespace boolean
       Int id = i->getId() * -1;
       file.write((char*)&(id), sizeof(Int));
       count_edges += i->edgesSize();
-      for(auto j = i->adjacentsBegin(); j != i->adjacentsEnd(); j++){
+      for (auto j = i->adjacentsBegin(); j != i->adjacentsEnd(); ++j) {
         //file << i->getId() << " " << j->first << " " << j->second << std::endl;
         file.write((char*)&(*j), sizeof(Int));
       }
@@ -227,8 +226,7 @@ namespace boolean
       uInt S_size = S.size();
       uInt C_size = C.size();
         
-      if(S_size * C_size < _bicliqueSize) {
-        biclique.release();
+      if (S_size * C_size < _bicliqueSize) {
         continue; 
       }
 
@@ -236,13 +234,13 @@ namespace boolean
       std::sort(C.begin(), C.end(), std::bind(&Graph::sortC, this, std::placeholders::_1, std::placeholders::_2));
 
       file << "S: ";
-      for(auto& it : S){
+      for (auto& it : S) {
         it->deleteExtracted(C);
         file << it->getId() << " "; 
       }
 
       file << std::endl << "C: ";
-      for(auto it : C){
+      for (auto it : C) {
         file << it << " "; 
       }
       
@@ -256,8 +254,6 @@ namespace boolean
 
       if (_keepBicliques) {
         _savedBicliques.push_back(std::move(biclique));
-      } else {
-        biclique.release(); 
       }
     }
     file.close();

@@ -7,6 +7,7 @@ namespace weighted
 {
   Graph::Graph(const std::string path) : GraphStd(path)
   {
+    _weighted = true; 
     TIMERSTART(build_matrix);
     if(path.find(".txt" ) != std::string::npos) {
       buildTxt();
@@ -237,7 +238,6 @@ namespace weighted
       uInt C_size = C_w.size(); 
 
       if(S_size * C_size < _bicliqueSize) {
-        biclique.release();
         continue; 
       }
 
@@ -264,8 +264,6 @@ namespace weighted
 
       if (_keepBicliques) {
         _savedBicliques.push_back(std::move(biclique));
-      } else {
-        biclique.release(); 
       }
     }
     file.close();

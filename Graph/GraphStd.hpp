@@ -1,5 +1,5 @@
-#ifndef GRAPHSTD
-#define GRAPHSTD
+#ifndef GRAPHSTD_HPP
+#define GRAPHSTD_HPP
 
 #include <iostream>
 #include <vector>
@@ -78,7 +78,7 @@ class GraphStd
     virtual void writeBicliques(std::vector<BicliquePtr>& bicliques) = 0;
 
   protected:
-    std::vector<NodePtr> _matrix;
+    std::vector<NodePtr> _matrix; //podria ser std::list? 
     std::vector<BicliquePtr> _savedBicliques;
 
     std::string _path = "graph.txt";
@@ -90,6 +90,7 @@ class GraphStd
     bool _compressed = false;
     bool _transposed = false;
     bool _keepBicliques = true;
+    bool _weighted = false;
 
     uint64_t _maxEdge = 0;
     uint64_t _numNodes = 0;

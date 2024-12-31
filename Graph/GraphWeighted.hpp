@@ -1,5 +1,5 @@
-#ifndef ADJ_MATRIXW
-#define ADJ_MATRIXW
+#ifndef GRAPHW_HPP
+#define GRAPHW_HPP
 
 #include <GraphStd.hpp>
 #include <Node.hpp>
