@@ -12,12 +12,13 @@ namespace boolean
     public:
       Graph(const std::string, bool);
       Graph(const std::string);
+      Graph() = default;
 
       void standardize(std::vector<uInt>*);
-      void buildTxt();
-      void buildBin();
-      void writeAdjacencyList();
-      void writeBinaryFile();
+      void buildTxt() override;
+      void buildBin() override;
+      void writeAdjacencyList() override;
+      void writeBinaryFile() override;
       std::string getPath();
       void writeBicliques(std::vector<BicliquePtr>& bicliques);
       bool sortC(const uInt& a, const uInt& b);

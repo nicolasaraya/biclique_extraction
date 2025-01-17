@@ -7,29 +7,24 @@
 
 namespace boolean 
 {
-  Graph::Graph(const std::string path) : GraphStd(path)
+  Graph::Graph(const std::string path, bool selfLoop)
   {
+    _selfLoop = selfLoop;
     TIMERSTART(build_matrix);
-    if (path.find(".txt" )!= std::string::npos) {
+    if (_path.find(".txt" )!= std::string::npos) {
       buildTxt();
       _format = "txt";
-    } else if (path.find(".bin")!= std::string::npos) {
+    } else if (_path.find(".bin")!= std::string::npos) {
       buildBin();
       _format = "bin";
+    } else {
+      std::cout << "Invalid file format" << std::endl;
+      exit(0);
     }
     TIMERSTOP(build_matrix);
   }
 
-  Graph::Graph(const std::string path, bool selfLoop) : Graph(path)
-  {
-    _selfLoop = selfLoop;
-  }
-
-
-  std::string Graph::getPath()
-  {
-    return _path;
-  }
+  Graph::Graph(const std::string path) : Graph(path, false) {;}
 
   // funcion que agrega los nodos intermedios que no contienen ninguna arista
   // para facilitar la busqueda de los nodos source

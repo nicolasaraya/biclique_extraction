@@ -14,18 +14,16 @@
 #include <Shingle.hpp>
 #include <Trie.hpp>
 #include <Biclique.hpp>
+#include <AttrMgr.hpp>
 
 typedef std::vector<NodePtr>::iterator GraphIterator;
 
 class GraphStd
 {
-  public:
-    GraphStd(std::string path): _path(path) {;}
-    GraphStd() {};
-    
+  public:  
     uint64_t size();
     uint64_t all_edges_size();
-    std::string& getPath();
+    std::string getPath();
     void setPath(std::string path);
     void print();
     uint64_t maxValueEdge();
@@ -45,15 +43,7 @@ class GraphStd
     bool compareNodes(const NodePtr& a, const NodePtr& b);
     void transpose();
 
-    void extract( uint16_t num_signatures,
-                  uint16_t minClusterSize,
-                  uint16_t minAdyNodes,
-                  uint32_t biclique_size,
-                  uint16_t bs_decrease,
-                  uint32_t shingleSize,
-                  uint32_t threshold,
-                  uint16_t maxIterations
-                );
+    void extract();
 
     void compress();
     std::unique_ptr<Group> makeGroups(Signatures* group, int column);
@@ -78,6 +68,9 @@ class GraphStd
     virtual void writeBicliques(std::vector<BicliquePtr>& bicliques) = 0;
 
   protected:
+   // GraphStd(std::string path, bool selfLoop) ;
+    GraphStd() = default;
+
     std::vector<NodePtr> _matrix; //podria ser std::list? 
     std::vector<BicliquePtr> _savedBicliques;
 
@@ -97,6 +90,7 @@ class GraphStd
     uint64_t _numEdges = 0;
 
     //params
+    #if 1
     uint16_t _numSignatures;
     uint32_t _minClusterSize;
     uint32_t _bicliqueSize;
@@ -105,6 +99,7 @@ class GraphStd
     uint32_t _shingleSize;
     uint32_t _threshold;
     uint16_t _maxIterations;
+    #endif
 
     uint64_t _totalBiclique = 0;
     uint64_t _biclique_s_size = 0;

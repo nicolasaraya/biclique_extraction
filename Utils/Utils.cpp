@@ -28,6 +28,7 @@ std::vector<std::string> utils::splitString(std::string line, std::string delims
   return words;
 }
 
+#if 0
 std::unordered_map<std::string, std::string> utils::parseArguments(int argc, char const *argv[], std::unordered_map<std::string, std::string> *arguments)
 {
   const std::string prefix = "--";
@@ -51,6 +52,7 @@ std::unordered_map<std::string, std::string> utils::parseArguments(int argc, cha
   }
   return *arguments;
 }
+#endif
 
 std::string utils::modify_path(std::string old_path,int n ,std::string text)
 {

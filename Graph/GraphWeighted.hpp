@@ -11,10 +11,11 @@ namespace weighted
   {
     public:
       Graph(const std::string);
+      Graph() = default;
       //~GraphWeighted();
-      void buildBin();
+      void buildBin() override;
       void buildBin_alt();
-      void buildTxt();
+      void buildTxt() override;
       void writeAdjacencyList();
       void writeBinaryFile();
       void writeBinaryFile_alt(); 

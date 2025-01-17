@@ -36,7 +36,9 @@ namespace utils
 {
   std::string now_time();
   std::vector<std::string> splitString(std::string line, std::string delims);
+  #if 0
   std::unordered_map<std::string, std::string> parseArguments(int argc, char const *argv[], std::unordered_map<std::string, std::string> *);
+  #endif
   std::string modify_path(std::string old_path, int n,std::string text);
   bool validateExtension(std::string, std::string);
 

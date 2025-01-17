@@ -1,32 +1,28 @@
 #include <GraphWeighted.hpp>
 #include <Utils.hpp>
+#include <AttrMgr.hpp>
 
 #include <cassert>
 
 namespace weighted
 {
-  Graph::Graph(const std::string path) : GraphStd(path)
+  Graph::Graph(const std::string path)
   {
     _weighted = true; 
     TIMERSTART(build_matrix);
-    if(path.find(".txt" ) != std::string::npos) {
+    if (_path.find(".txt" )!= std::string::npos) {
       buildTxt();
       _format = "txt";
-    } else if(path.find(".bin") != std::string::npos) {
+    } else if (_path.find(".bin")!= std::string::npos) {
       buildBin();
       _format = "bin";
+    } else {
+      std::cout << "Invalid file format" << std::endl;
+      exit(0);
     }
     TIMERSTOP(build_matrix);
     //print();
   }
-
-  // Graph::~Graph()
-  // {
-  // 	for (auto it = _matrix.begin(); it != _matrix.end(); it++) {
-  // 		delete (*it);
-  // 	}
-  // 	_matrix.clear();
-  // }
 
   void Graph::buildBin_alt()
   {

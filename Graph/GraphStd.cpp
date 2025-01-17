@@ -3,27 +3,21 @@
 #include <Biclique.hpp>
 #include <Cluster.hpp>
 #include <Trie.hpp>
+#include <AttrMgr.hpp>
 
 #include <cassert>
 #include <memory>
 
-void GraphStd::extract( uint16_t numSignatures, 
-                        uint16_t minClusterSize, 
-                        uint16_t minAdyNodes, 
-                        uint32_t bicliqueSize, 
-                        uint16_t bsDecrease, 
-                        uint32_t shingleSize, 
-                        uint32_t threshold, 
-                        uint16_t maxIterations )              
+void GraphStd::extract()              
 {
-  _numSignatures = numSignatures;
-  _minClusterSize = minClusterSize;
-  _minAdyNodes = minAdyNodes;
-  _bicliqueSize = bicliqueSize;
-  _bsDecrease = bsDecrease;
-  _shingleSize = shingleSize;
-  _threshold = threshold;
-  _maxIterations = maxIterations;
+  _numSignatures = AttrMgr::get().numSignatures();
+  _minClusterSize = AttrMgr::get().minClusterSize();
+  _minAdyNodes = AttrMgr::get().minAdyNodes();
+  _bicliqueSize = AttrMgr::get().bicliqueSize();
+  _bsDecrease = AttrMgr::get().bsDecrease();
+  _shingleSize = AttrMgr::get().shingleSize();
+  _threshold = AttrMgr::get().threshold();
+  _maxIterations = AttrMgr::get().maxIterations();
 
   std::ofstream file;
   _pathLog =  utils::modify_path(getPath(), 4 ,"_log.txt");
@@ -304,7 +298,7 @@ uint64_t GraphStd::all_edges_size()
 	return size;
 }
 
-std::string& GraphStd::getPath()
+std::string GraphStd::getPath()
 {
   return _path;
 };

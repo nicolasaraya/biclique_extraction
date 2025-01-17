@@ -7,6 +7,7 @@ OBJS	=   			main.o \
 								Graph.o \
 								GraphWeighted.o \
 								Node.o \
+								AttrMgr.o \
 
 SOURCE	=       main.cpp \
 								Graph/Graph.cpp \
@@ -17,6 +18,7 @@ SOURCE	=       main.cpp \
 								Shingle.cpp \
 								Trie.cpp \
 								Utils/Utils.cpp \
+								AttrMgr.cpp \
 
 HEADER	=       Graph/Graph.hpp \
 								Graph/GraphStd.hpp \
@@ -27,23 +29,24 @@ HEADER	=       Graph/Graph.hpp \
 								Shingle.hpp \
 								Trie.hpp \
 								Utils/Utils.hpp \
-                Utils/DebugSystem.hpp
+                Utils/DebugSystem.hpp \
+								AttrMgr.hpp \
 
 OBJ_FOLD = build
 
-debug_level ?= 0
+debug_level ?= 3
 
 OUT	=           biclique_extractor
 OUT_DEBUG = 		biclique_extractor-g
 CC	 =          g++
-FLAGS =         -c  -std=c++20 -DBITS32 -I. -I./Graph -I./Utils -DDEBUG_LEVEL=$(debug_level)
-DEBUG_FLAGS =		-O0 -g
+FLAGS =         -c  -std=c++20 -DBITS32 -I. -I./Graph -I./Utils
+DEBUG_FLAGS =		-O0 -g 
 OPT = 					-O3
 LFLAGS	=       -lm -lpthread
 				
 
 ifdef debug
-FLAGS += $(DEBUG_FLAGS)
+FLAGS += $(DEBUG_FLAGS) -DDEBUG_LEVEL=$(debug_level)
 else
 FLAGS += $(OPT)
 endif
@@ -93,6 +96,9 @@ Trie.o: Trie.cpp
 
 Utils.o: Utils/Utils.cpp
 	$(CC) $(FLAGS) Utils/Utils.cpp -o $(OBJ_FOLD)/Utils.o
+
+AttrMgr.o: AttrMgr.cpp
+	$(CC) $(FLAGS) AttrMgr.cpp -o $(OBJ_FOLD)/AttrMgr.o
 
 clean:
 	rm -rf $(OBJS) $(OBJS_CHECKER) $(OUT) $(OUT_DEBUG) $(OBJ_FOLD) 
