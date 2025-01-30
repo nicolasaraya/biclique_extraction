@@ -10,7 +10,7 @@
 #include <Graph/GraphStd.hpp>
 #include <Trie.hpp>
 #include <Shingle.hpp>
-#include <Biclique.hpp>
+#include <Graph/BicliqueExtracted.hpp>
 
 class Trie;
 

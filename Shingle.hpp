@@ -26,12 +26,12 @@ class Shingle
     uint32_t minAdyNodes;
     uint32_t shingle_size = 1;
 
-    #if defined(BITS32)
-        uInt prime = (1ULL << 31ULL) - 1ULL;
+    #ifdef BITS64
+    uInt prime = (1ULL << 61ULL) - 1ULL;
     #else
-        uInt prime = (1ULL << 61ULL) - 1ULL;
+    uInt prime = (1ULL << 31ULL) - 1ULL;
     #endif
-    
+  
     std::hash<std::string> hash_nodes;
     std::vector<uInt> A;
     std::vector<uInt> B;

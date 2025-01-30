@@ -1,6 +1,6 @@
 #include <GraphStd.hpp>
 #include <Utils.hpp>
-#include <Biclique.hpp>
+#include <BicliqueExtracted.hpp>
 #include <Cluster.hpp>
 #include <Trie.hpp>
 #include <AttrMgr.hpp>

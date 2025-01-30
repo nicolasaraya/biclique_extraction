@@ -4,7 +4,7 @@
 
 #include <cassert>
 
-namespace weighted
+namespace Weighted
 {
   Graph::Graph(const std::string path)
   {

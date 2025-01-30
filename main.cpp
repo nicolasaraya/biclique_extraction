@@ -16,10 +16,10 @@ int main(int argc, char const *argv[])
   AttrMgr::get().show();
 
   if (AttrMgr::get().weighted()) {
-    weighted::Graph g(AttrMgr::get().file());
+    Weighted::Graph g(AttrMgr::get().file());
     g.extract();
   } else {
-    boolean::Graph g(AttrMgr::get().file());
+    Boolean::Graph g(AttrMgr::get().file());
     g.extract();
   }
   return 0;

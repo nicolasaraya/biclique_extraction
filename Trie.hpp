@@ -5,7 +5,7 @@
 #include <Graph/Node.hpp>
 #include <Graph/GraphStd.hpp>
 #include <Shingle.hpp>
-#include <Graph/Biclique.hpp>
+#include <Graph/BicliqueExtracted.hpp>
 
 
 struct TrieNode 

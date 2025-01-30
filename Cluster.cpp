@@ -2,7 +2,7 @@
 
 #include <Cluster.hpp>
 #include <Trie.hpp>
-#include <Biclique.hpp>
+#include <Graph/BicliqueExtracted.hpp>
 
 #include <iostream>
 #include <memory>

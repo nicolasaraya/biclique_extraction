@@ -13,7 +13,7 @@
 #include <Cluster.hpp>
 #include <Shingle.hpp>
 #include <Trie.hpp>
-#include <Biclique.hpp>
+#include <BicliqueExtracted.hpp>
 #include <AttrMgr.hpp>
 
 typedef std::vector<NodePtr>::iterator GraphIterator;

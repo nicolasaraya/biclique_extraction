@@ -5,7 +5,7 @@
 #include <Node.hpp>
 #include <Utils.hpp>
 
-namespace boolean
+namespace Boolean
 {
   class Graph : public GraphStd
   {

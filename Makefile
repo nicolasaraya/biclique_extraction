@@ -23,7 +23,7 @@ SOURCE	=       main.cpp \
 HEADER	=       Graph/Graph.hpp \
 								Graph/GraphStd.hpp \
 								Graph/GraphWeighted.hpp \
-								Graph/Biclique.hpp \
+								Graph/BicliqueExtracted.hpp \
 								Graph/Node.hpp \
 								Cluster.hpp \
 								Shingle.hpp \

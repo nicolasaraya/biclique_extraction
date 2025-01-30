@@ -5,7 +5,7 @@
 #include <Node.hpp>
 #include <Utils.hpp>
 
-namespace weighted
+namespace Weighted
 {
   class Graph : public GraphStd
   {

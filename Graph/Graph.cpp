@@ -5,7 +5,7 @@
 #include <vector>
 #include <fstream>
 
-namespace boolean 
+namespace Boolean 
 {
   Graph::Graph(const std::string path, bool selfLoop)
   {
