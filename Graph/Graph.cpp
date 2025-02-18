@@ -10,6 +10,7 @@ namespace Boolean
   Graph::Graph(const std::string path, bool selfLoop)
   {
     _selfLoop = selfLoop;
+    _path = path;
     TIMERSTART(build_matrix);
     if (_path.find(".txt" )!= std::string::npos) {
       buildTxt();
