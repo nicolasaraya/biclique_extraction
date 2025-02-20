@@ -1,4 +1,5 @@
 #include <Shingle.hpp>
+#include <DebugSystem.hpp>
 
 #include <memory>
 #include <vector>
@@ -33,11 +34,11 @@ SignNode Shingle::computeShingle(NodePtr node)
   s->ptrNode = node;
   //node->setModified(false);
 
-  for (size_t i = 0; i < num_signatures; i++){
+  for (size_t i = 0; i < num_signatures; i++) {
     s->minHash.push_back(prime);
   }
 
-  if(node->isWeighted()){
+  if (node->isWeighted()) {
     for (auto adjacent = node->wAdjacentsBegin(); adjacent != node->wAdjacentsEnd(); adjacent++){
       std::string shingle_ = std::to_string((*adjacent).first) + "," + std::to_string((*adjacent).second);
       shingleID = hash_nodes(shingle_);
@@ -60,6 +61,7 @@ SignNode Shingle::computeShingle(NodePtr node)
       }
     }
   }
+  s->print();
 
   return s;
 }

@@ -8,6 +8,19 @@ struct SignNodeStruct
 {
     NodePtr ptrNode;
     std::vector<uInt> minHash; 
+
+
+    void print()
+    {
+      std::cout << ptrNode->getId() << ":";
+      for (auto i : minHash) {
+        std::cout << " " << i;
+      }
+      std::cout << std::endl;
+      return;
+    }
+    
+  
 };
 
 typedef std::unique_ptr<SignNodeStruct> SignNode; 

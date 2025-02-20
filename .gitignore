@@ -21,3 +21,6 @@ biclique_extractor-g
 .vscode/settings.json
 biclique_extractor-g
 *.json
+ej1_bicliques.txt
+ej1_log.txt
+ej1_output.txt

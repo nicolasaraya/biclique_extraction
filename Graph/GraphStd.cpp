@@ -51,7 +51,10 @@ void GraphStd::compress()
     TIMERSTART(compute_shingles);
     auto signatures = computeShingles();
     TIMERSTOP(compute_shingles);
-    assert(not signatures->empty());
+    if (signatures->empty()) {
+      std::cout << "0 Signatures founded" << std::endl;
+      return;
+    } 
 
     std::cout << "Compute Clusters and Extract Bicliques" << std::endl;
     TIMERSTART(compute_clusters_and_bicliques);
