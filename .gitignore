@@ -24,3 +24,5 @@ biclique_extractor-g
 ej1_bicliques.txt
 ej1_log.txt
 ej1_output.txt
+adjacency_list.txt
+*.png

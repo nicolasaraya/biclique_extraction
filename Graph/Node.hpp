@@ -13,11 +13,7 @@ struct Pair
 	uInt first;
 	uInt second; 
 
-	Pair(uInt f, uInt s) 
-	{
-		first = f;
-		second = s;
-	};
+	Pair(uInt f, uInt s) : first(f), second(s) {;}
 };
 
 typedef std::vector<Pair>::iterator WeightedIt;

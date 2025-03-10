@@ -26,7 +26,10 @@ Shingle::~Shingle()
 
 SignNode Shingle::computeShingle(NodePtr node)
 {
-  if (node->edgesSize() == 0 || node->edgesSize() < minAdyNodes) return nullptr;
+  if (node->edgesSize() == 0 or node->edgesSize() < minAdyNodes) {
+    msg(7) << node->getId() << " is < minAdyNodes" << msgEndl;
+    return nullptr;
+  }
   
   uInt shingleID;
   uInt shingleHash;
@@ -61,7 +64,7 @@ SignNode Shingle::computeShingle(NodePtr node)
       }
     }
   }
-  s->print();
+  //s->print();
 
   return s;
 }

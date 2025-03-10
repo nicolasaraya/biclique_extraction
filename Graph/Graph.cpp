@@ -64,8 +64,9 @@ namespace Boolean
     }
     std::string line;
     uInt id;
+    long long int countOut = 0;
     getline(file, line); // num nodes
-    _numNodes = atoi(line.c_str());
+    //_numNodes = atoi(line.c_str());
     while (!file.eof()) {
       getline(file, line);
       auto adjacents = utils::splitString(line, " ");
@@ -91,7 +92,7 @@ namespace Boolean
     }
     file.close();
     _matrix.shrink_to_fit();
-
+    _numNodes = _matrix.size();
     std::cout << "nodes: " << _numNodes << ", edges: " << _numEdges << std::endl;
   }
 
