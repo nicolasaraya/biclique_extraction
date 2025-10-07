@@ -21,6 +21,8 @@ namespace Weighted
       void writeBinaryFile_alt(); 
       void writeBicliques(std::vector<BicliquePtr>& bicliques);
       bool sortC(const Pair& a, const Pair& b);
+      void writeBicliqueBinary() override;
+
   };
 };
 

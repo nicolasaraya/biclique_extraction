@@ -1,116 +1,74 @@
-OBJS	=   			main.o \
-								Utils.o \
-								Shingle.o \
-								Trie.o \
-								Cluster.o \
-								GraphStd.o \
-								Graph.o \
-								GraphWeighted.o \
-								Node.o \
-								AttrMgr.o \
+# ==============================
+#   Makefile — Biclique Extractor
+# ==============================
 
-SOURCE	=       main.cpp \
-								Graph/Graph.cpp \
-								Graph/GraphWeighted.cpp \
-								Graph/GraphStd.cpp \
-								Graph/Node.cpp \
-								Cluster.cpp \
-								Shingle.cpp \
-								Trie.cpp \
-								Utils/Utils.cpp \
-								AttrMgr.cpp \
+# Source and header directories
+SRC_DIRS := . Graph Utils test
+SRCS := $(wildcard $(addsuffix /*.cpp, $(SRC_DIRS)))
+OBJS := $(patsubst %.cpp, build/%.o, $(SRCS))
 
-HEADER	=       Graph/Graph.hpp \
-								Graph/GraphStd.hpp \
-								Graph/GraphWeighted.hpp \
-								Graph/BicliqueExtracted.hpp \
-								Graph/Node.hpp \
-								Cluster.hpp \
-								Shingle.hpp \
-								Trie.hpp \
-								Utils/Utils.hpp \
-                Utils/DebugSystem.hpp \
-								AttrMgr.hpp \
-
-OBJ_FOLD = build
+OUT := biclique_extractor
+OUT_DEBUG := biclique_extractor-g
+CC := g++
+CFLAGS := -std=c++20 -DBITS32 -I. -I./Graph -I./Utils
+LFLAGS := -lm -lpthread -lz
 
 debug_level ?= 3
 
-OUT	=           biclique_extractor
-OUT_DEBUG = 		biclique_extractor-g
-CC	 =          g++
-FLAGS =         -c  -std=c++20 -DBITS32 -I. -I./Graph -I./Utils
-DEBUG_FLAGS =		-O0 -g 
-OPT = 					-O3
-LFLAGS	=       -lm -lpthread
-				
-
+# Flags depending on mode
 ifdef debug
-FLAGS += $(DEBUG_FLAGS) -DDEBUG_LEVEL=$(debug_level)
+CFLAGS += -O0 -g -DDEBUG_LEVEL=$(debug_level)
 else
-FLAGS += $(OPT)
+CFLAGS += -O3
 endif
 
-all: 
-	mkdir -p $(OBJ_FOLD)
-	make $(OBJS)
-	$(CC) $(OBJ_FOLD)/* -o $(OUT) $(LFLAGS)
+# ==============================
+#   Main Targets
+# ==============================
 
-debug:
-	mkdir -p $(OBJ_FOLD)
-	make debug=1 $(OBJS)
-	$(CC) $(DEBUG_FLAGS) $(OBJ_FOLD)/* -o $(OUT_DEBUG) $(LFLAGS)
+.PHONY: all debug testGraphs clean gdb valgrind valgrind_leakcheck valgrind_extreme
 
-main.o: main.cpp
-	$(CC) $(FLAGS) main.cpp -o $(OBJ_FOLD)/main.o
+all: $(OUT)
 
-checker.o: checker.cpp
-	$(CC) $(FLAGS) checker.cpp -o $(OBJ_FOLD)/checker.o
+debug: debug=1
+debug: $(OUT_DEBUG)
 
-Graph.o: Graph/Graph.cpp
-	$(CC) $(FLAGS) Graph/Graph.cpp -o $(OBJ_FOLD)/Graph.o
-	
-GraphStd.o: Graph/GraphStd.cpp
-	$(CC) $(FLAGS) Graph/GraphStd.cpp -o $(OBJ_FOLD)/GraphStd.o
+# Exclude test sources from main build
+$(OUT): $(filter-out build/test/%.o, $(OBJS))
+	$(CC) $^ -o $@ $(LFLAGS)
 
-Cluster.o: Cluster.cpp
-	$(CC) $(FLAGS) Cluster.cpp -o $(OBJ_FOLD)/Cluster.o
+# Debug build (same object filtering)
+$(OUT_DEBUG): $(filter-out build/test/%.o, $(OBJS))
+	$(CC) $^ -o $@ $(LFLAGS)
 
-GraphWeighted.o: Graph/GraphWeighted.cpp
-	$(CC) $(FLAGS) Graph/GraphWeighted.cpp -o $(OBJ_FOLD)/GraphWeighted.o
+# Separate target for testGraphs
+testGraphs: $(filter-out build/main.o, $(OBJS))
+	$(CC) $^ -o testGraph $(LFLAGS)
 
-Node.o: Graph/Node.cpp
-	$(CC) $(FLAGS) Graph/Node.cpp -o $(OBJ_FOLD)/Node.o
+# ==============================
+#   Generic Compilation Rule
+# ==============================
 
-NodeWeighted.o: Graph/NodeWeighted.cpp
-	$(CC) $(FLAGS) Graph/NodeWeighted.cpp -o $(OBJ_FOLD)/NodeWeighted.o
+build/%.o: %.cpp
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-NodeADT.o: Graph/NodeADT.hpp
-	$(CC) $(FLAGS)Graph/NodeADT.hpp -o $(OBJ_FOLD)/NodeADT.o
-
-Shingle.o: Shingle.cpp
-	$(CC) $(FLAGS) Shingle.cpp -o $(OBJ_FOLD)/Shingle.o
-
-Trie.o: Trie.cpp
-	$(CC) $(FLAGS) Trie.cpp -o $(OBJ_FOLD)/Trie.o
-
-Utils.o: Utils/Utils.cpp
-	$(CC) $(FLAGS) Utils/Utils.cpp -o $(OBJ_FOLD)/Utils.o
-
-AttrMgr.o: AttrMgr.cpp
-	$(CC) $(FLAGS) AttrMgr.cpp -o $(OBJ_FOLD)/AttrMgr.o
+# ==============================
+#   Utilities
+# ==============================
 
 clean:
-	rm -rf $(OBJS) $(OBJS_CHECKER) $(OUT) $(OUT_DEBUG) $(OBJ_FOLD) 
+	rm -rf build $(OUT) $(OUT_DEBUG) testGraph
 
-gdb: $(OUT)
-	gdb ./$(OBJ_FOLD)/$(OUT_DEBUG)
+gdb: $(OUT_DEBUG)
+	gdb ./$(OUT_DEBUG)
 
-valgrind: $(OUT)
-	valgrind ./$(OBJ_FOLD)/$(OUT_DEBUG)
+valgrind: $(OUT_DEBUG)
+	valgrind ./$(OUT_DEBUG)
 
-valgrind_leakcheck: $(OUT)
-	valgrind --leak-check=full ./$(OBJ_FOLD)/$(OUT_DEBUG)
+valgrind_leakcheck: $(OUT_DEBUG)
+	valgrind --leak-check=full ./$(OUT_DEBUG)
 
-valgrind_extreme: $(OUT)
-	valgrind --leak-check=full --show-leak-kinds=all --leak-resolution=high --track-origins=yes --vgdb=yes ./$(OBJ_FOLD)/$(OUT_DEBUG)
+valgrind_extreme: $(OUT_DEBUG)
+	valgrind --leak-check=full --show-leak-kinds=all \
+		--leak-resolution=high --track-origins=yes --vgdb=yes ./$(OUT_DEBUG)

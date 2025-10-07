@@ -1,9 +1,18 @@
 #include <Graph.hpp>
+#include <GraphStd.hpp>
+#include <Node.hpp>
 
 #include <cassert>
 #include <string>
 #include <vector>
 #include <fstream>
+#include <zlib.h>
+#include <cstring>
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <numeric>
 
 namespace Boolean 
 {
@@ -55,6 +64,7 @@ namespace Boolean
 
   void Graph::buildTxt()
   {
+    _optimize = AttrMgr::get().optimize();
     std::ifstream file;
     file.open(_path);
     if (!file.is_open()) {
@@ -66,6 +76,7 @@ namespace Boolean
     uInt id;
     long long int countOut = 0;
     getline(file, line); // num nodes
+    _originalNumNodes = atoi(line.c_str());
     //_numNodes = atoi(line.c_str());
     while (!file.eof()) {
       getline(file, line);
@@ -78,66 +89,73 @@ namespace Boolean
       id = atoi(adjacents.at(0).c_str());
 
       NodePtr tempNode = std::make_shared<Node>(id);
+      
       if (_selfLoop) {
         tempNode->setSelfLoop(true);
       }
+
       for (size_t i = 1; i < adjacents.size(); ++i) {
         uint64_t adjId = atoi(adjacents[i].c_str());
         tempNode->addAdjacent(adjId);
       }
+
+      if (not tempNode->edgesSize()) {
+        continue;
+      }
+
       tempNode->shrinkToFit();
       tempNode->sort();
+      
       insert(tempNode);
-      _numEdges += tempNode->edgesSize();
+      
     }
     file.close();
     _matrix.shrink_to_fit();
     _numNodes = _matrix.size();
+    _avgDegree = (double)_numEdges / (double)_numNodes;
+    _density = _numEdges / (_numNodes * _numNodes);
+    _originalNumEdges = _numEdges;
     std::cout << "nodes: " << _numNodes << ", edges: " << _numEdges << std::endl;
   }
 
   void Graph::buildBin()
   {
-    std::ifstream binFile; 
-    binFile.open(_path, std::ios::in | std::ios::binary);    
-    assert(binFile.is_open());
-
-    Int* nodes = new Int(0); 
-    binFile.read((char*)nodes, sizeof(Int)); //num_nodes
-    //std::std::cout << "cantidad de nodos: " << *nodes << std::endl;
-    _numNodes = *nodes;
-    Int* buffer = new Int(0); 
-    NodePtr tempNode = nullptr;
-      while (binFile.read((char*)buffer, sizeof(Int))) {
-      //std::cout << *buffer << std::endl;
-        if((*buffer) < 0) {
-          uint64_t id = (*buffer) * -1;
-          if (tempNode != nullptr) {
-            insert(tempNode);
-            tempNode->sort();
-            tempNode->shrinkToFit();
-          }
-          tempNode = std::make_shared<Node>(id);
-          if (_selfLoop) {
-            tempNode->setSelfLoop(true);
-          }
-        } else {
-          if (tempNode == nullptr) {
-            continue; //num de aristas
-          }
-          tempNode->addAdjacent(*buffer);
-        }
-      }
-
-    if (tempNode != nullptr) {
-      insert(tempNode);
-      tempNode->sort();
-      tempNode->shrinkToFit();
+    _optimize = AttrMgr::get().optimize();
+    std::ifstream file(_path.c_str(), std::ios::in | std::ios::binary);
+    if (!file.is_open()) {
+      std::cout << "No se puede leer fichero" << std::endl;
+      std::cout << _path << std::endl;
+      exit(0);
     }
-    delete buffer;
-    delete nodes;
-    binFile.close();
-    return;
+
+    file.seekg(0, std::ios::end);
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    std::vector<char> buffer(size);
+    if (file.read(buffer.data(), size)) {
+        std::cout << size << " bytes readed" << std::endl;
+    }
+
+    std::string blob(buffer.data(), buffer.size());
+    buffer.clear();
+
+    std::istringstream iss(blob, std::ios::in | std::ios::binary);
+
+     if (_path.find("delta16") != std::string::npos) {
+      deserializeDelta16(iss);
+    } else {
+      deserialize(iss);
+    }
+
+    std::cout << "nodes: " << _matrix.size();
+    std::cout << ", edges: " << all_edges_size() << std::endl;
+
+    _matrix.shrink_to_fit();
+    _numNodes = _matrix.size();
+    _avgDegree = (double)_numEdges / (double)_numNodes;
+    _density = _numEdges / (_numNodes * _numNodes);
+    _originalNumEdges = _numEdges;
   }
 
   void Graph::writeAdjacencyList()
@@ -156,7 +174,7 @@ namespace Boolean
     std::cout << "Writing: " << pathFile<< std::endl;
     file.open(pathFile, std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero
 
-    file << _numNodes << std::endl;
+    file << _originalNumNodes << std::endl;
 
     for (uint64_t i = 0; i < matrix_size ; i++) {
       if (_matrix.at(i) == nullptr) {
@@ -176,46 +194,170 @@ namespace Boolean
     file.close();
   }
 
-  void Graph::writeBinaryFile()
+  void Graph::serialize(std::ostream& os)
   {
-    std::ofstream file;
-    std::string pathFile = utils::modify_path(_path, 4 ,".bin");
-    if (_compressed) {
-      pathFile = utils::modify_path(_path, 4 ,"_compressed.bin");
-    } 
-    std::cout << "Writing: " << pathFile << std::endl;
-    file.open(pathFile, std::ios::out | std::ios::binary | std::ios::trunc); 
-    assert(file.is_open());
-    
-    Int size = _matrix.size();
-    file.write((char*)&size, sizeof(Int));
-    Int count_nodes = 0;
-    Int count_edges = 0;
-    for (const auto& i : _matrix) {
-      if (i->edgesSize() == 0) {
+    _matrix.shrink_to_fit();
+    uint32_t size = 0;
+    std::stringstream ss;
+    for (const auto& node : _matrix) {
+      if (not node) {
         continue;
       }
-      count_nodes++;
-      Int id = i->getId() * -1;
-      file.write((char*)&(id), sizeof(Int));
-      count_edges += i->edgesSize();
-      for (auto j = i->adjacentsBegin(); j != i->adjacentsEnd(); ++j) {
-        //file << i->getId() << " " << j->first << " " << j->second << std::endl;
-        file.write((char*)&(*j), sizeof(Int));
-      }
+      node->serialize(ss);
+      ++size;
     }
 
-    file.seekp(0);
-    file.write((char*)&size, sizeof(Int));
-    //file.write((char*)&count_edges, sizeof(Int));
-    file.close();
+    os.write(reinterpret_cast<const char*>(&size), sizeof(size));
+    os << ss.rdbuf();
   }
+
+  void Graph::serializeDelta16(std::ostream& os)
+  {
+    uint32_t numNodes = _matrix.size();
+    os.write(reinterpret_cast<const char*>(&numNodes), sizeof(numNodes));
+    for (const auto& node : _matrix) {
+      if (node && node->edgesSize() > 0) {
+        node->serializeDelta16(os);
+      }
+    }
+  }
+
+  void Graph::deserialize(std::istream& is) {
+    uint32_t cnt;
+    is.read(reinterpret_cast<char*>(&cnt), sizeof(cnt));
+
+    _matrix.reserve(cnt);
+
+    while (cnt--) {
+      auto node = Node::deserialize(is);
+      if (node->edgesSize() > 0) {
+        insert(node);
+      } else {
+        //std::cout << "skip:"<< node->getId();
+        continue;
+      }
+    }
+  }
+
+  void Graph::deserializeDelta16(std::istream& is)
+  {
+    uint32_t numNodes = 0;
+    is.read(reinterpret_cast<char*>(&numNodes), sizeof(numNodes));
+    _matrix.clear();
+    _matrix.reserve(numNodes);
+
+    for (uint32_t i = 0; i < numNodes; ++i) {
+      auto node = Node::deserializeDelta16(is); // Usa la versión delta16 de Node::deserialize
+      if (node && node->edgesSize() > 0) {
+        //std::cout << "Insert node: " << node->getId() << " with " << node->edgesSize() << " edges." << std::endl;
+        insert(node);
+      }
+    }
+  }
+
+  void Graph::writeBinaryFile()
+  {
+    std::string pathFile = utils::modify_path(_path, 4 ,".bin");
+
+    if (AttrMgr::get().useDelta()) {
+      std::cout << "Using delta encoding for adjacency lists." << std::endl;
+      pathFile = utils::modify_path(pathFile, 4 ,"_delta16.bin");
+    }
+
+    if (_compressed) {
+      pathFile = utils::modify_path(pathFile, 4 ,"_compressed.bin");
+    }
+
+    std::ostringstream oss(std::ios::out | std::ios::binary);
+
+    if (AttrMgr::get().useDelta()) {
+      serializeDelta16(oss);
+    } else {
+      serialize(oss);
+    }
+
+    std::cout << "Writing: " << pathFile << std::endl;
+
+
+    std::string raw = oss.str();
+
+    std::ofstream file(pathFile,
+                      std::ios::out | std::ios::binary);
+    assert(file.is_open());
+    file.write(raw.data(), raw.size());
+    file.close();
+
+    if (not _compressed) {
+      uLong rawSize = raw.size();
+      auto compBytes = std::filesystem::file_size(pathFile);
+      auto edges = all_edges_size();
+      double bpeRaw  = (rawSize * 8.0) / double(edges);
+      double bpeGz   = (compBytes * 8.0) / double(edges);
+      double BypeRaw  = (rawSize) / double(edges);
+      double BypeGz   = (compBytes) / double(edges);
+
+      std::cout
+      << "Raw size     : " << rawSize  << " bytes\n"
+      << "File compressed: " << compBytes << " bytes\n"
+      << "Edges total  : " << edges     << "\n\n"
+      << "Bits/edge raw: " << bpeRaw  << "\n"
+      << "Bits/edge file : " << bpeGz   << "\n"
+      << "Bytes/edge raw: " << BypeRaw  << "\n"
+      << "Bytes/edge file : " << BypeGz   << "\n";
+    }
+  }
+
+  void Graph::writeBicliqueBinary()
+  {
+    std::string pathFileBic = utils::modify_path(_pathBicliques, 4 ,".bin");
+
+    const std::string& raw = ossBicliques.str();
+    uLong rawSize = raw.size();
+
+    std::cout << "Writing: " << pathFileBic << std::endl;
+
+    std::ofstream file(pathFileBic, std::ios::out | std::ios::binary);
+    file.write(raw.data(), raw.size());
+    file.close();
+
+    std::string pathFile = _path;
+    if (AttrMgr::get().useDelta()) {
+      std::cout << "Using delta encoding for adjacency lists." << std::endl;
+      pathFile = utils::modify_path(_path, 4 ,"_delta16.bin");
+    }
+
+    pathFile = utils::modify_path(pathFile, 4 ,"_compressed.bin");
+    auto compBytes = std::filesystem::file_size(pathFile) + std::filesystem::file_size(pathFileBic);
+    auto edges = _originalNumEdges;
+    double bpeRaw  = (rawSize * 8.0) / double(edges);
+    double bpeGz   = (compBytes * 8.0) / double(edges);
+    double BypeRaw  = (rawSize) / double(edges);
+    double BypeGz   = (compBytes) / double(edges);
+
+    std::cout
+    << "Raw size     : " << rawSize  << " bytes\n"
+    << "File compressed: " << compBytes << " bytes\n"
+    << "Edges total  : " << edges     << "\n\n"
+    << "Bits/edge raw: " << bpeRaw  << "\n"
+    << "Bits/edge file : " << bpeGz   << "\n"
+    << "Bytes/edge raw: " << BypeRaw  << "\n"
+    << "Bytes/edge file : " << BypeGz   << "\n";
+  }
+
+
 
   void Graph::writeBicliques(std::vector<BicliquePtr>& bicliques)
   {
+    bool saveTxt = AttrMgr::get().saveTxt();
+    bool saveBin = AttrMgr::get().saveBin();
+
     std::ofstream file;
-    file.open(_pathBicliques, std::fstream::app);
-    assert(file.is_open());
+    if (saveTxt) {
+      file.open(_pathBicliques, std::fstream::app);
+      assert(file.is_open());
+    }
+    
+
     for (auto& biclique : bicliques) {
       std::vector<NodePtr>& S = biclique->S;
       std::vector<uInt>& C = biclique->C; 
@@ -223,39 +365,74 @@ namespace Boolean
       uInt S_size = S.size();
       uInt C_size = C.size();
         
-      if (S_size * C_size < _bicliqueSize) {
+      if (S_size * C_size < AttrMgr::get().bicliqueSize()) {
         continue; 
       }
 
       std::sort(S.begin(), S.end(), std::bind(&GraphStd::sortS, this, std::placeholders::_1, std::placeholders::_2));
       std::sort(C.begin(), C.end(), std::bind(&Graph::sortC, this, std::placeholders::_1, std::placeholders::_2));
 
-      file << "S: ";
-      for (auto& it : S) {
-        it->deleteExtracted(C);
-        file << it->getId() << " "; 
+      if (saveTxt) {
+        file << "S: ";
       }
-
-      file << std::endl << "C: ";
-      for (auto it : C) {
-        file << it << " "; 
+      if (saveBin) {
+        ossBicliques.write(reinterpret_cast<const char*>(&S_size), sizeof(S_size));
       }
       
-      file << std::endl;
+      for (auto& it : S) {
+        it->deleteExtracted(C);
+        const uInt& id = it->getId();
+        if (saveTxt) {
+          file << it->getId() << " ";
+        }
+        if (saveBin) {
+          ossBicliques.write(reinterpret_cast<const char*>(&id), sizeof(id));
+        }
+      }
+
+      if (saveTxt) {
+        file << std::endl << "C: ";
+      }
+      if (saveBin) {
+        ossBicliques.write(reinterpret_cast<const char*>(&C_size), sizeof(C_size));
+      }
+
+      for (auto& it : C) {
+        if (saveTxt) {
+          file << it << " ";
+        }
+        if (saveBin) {
+          ossBicliques.write(reinterpret_cast<const char*>(&it), sizeof(it));
+        }
+      }
+      
+      if (saveTxt) {
+        file << std::endl;
+      }
+
       //file << "SxC = " << C_size * S_size << endl;   
       //file << "SxC - C = " << (C_size * S_size) - C_size << endl; 
       _n_bicliques_iter += 1;
       _biclique_s_size += S_size;
+      _biclique_s_sizeIter = S_size;
+
       _biclique_c_size += C_size;
+      _biclique_c_sizeIter = C_size;
+      
       _biclique_sxc_size += (S_size * C_size);
+      _biclique_sxc_sizeIter = S_size * C_size;
 
       if (_keepBicliques) {
         _savedBicliques.push_back(std::move(biclique));
       }
     }
-    file.close();
+    if (saveTxt) {
+      file.close();
+    }
     return; 
   }
+
+
 
   bool Graph::sortC(const uInt& a, const uInt& b)
   {

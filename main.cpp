@@ -8,7 +8,6 @@
 #include <Utils/Utils.hpp>
 #include <AttrMgr.hpp>
 
-
 int main(int argc, char const *argv[])
 {
   signal(SIGINT, utils::SigHnd::signal_handler);
@@ -20,6 +19,7 @@ int main(int argc, char const *argv[])
     g.extract();
   } else {
     Boolean::Graph g(AttrMgr::get().file());
+    g.writeBinaryFile();
     g.extract();
   }
   return 0;

@@ -1,10 +1,19 @@
 #include <Node.hpp>
 
 #include <functional>
+#include <cassert>
+#include <zlib.h>
+#include <cstring>
 
 Node::Node(uInt id) : id(id), weighted(false) {}
 
 Node::Node(uInt id, bool weighted) : id(id), weighted(weighted) {}
+
+Node::Node(std::istream& is) 
+{
+  deserialize(is);
+}
+
 
 Node::~Node()
 {
@@ -563,6 +572,111 @@ bool Node::sortFrecuencyCompWeighted(Pair& a, Pair& b, std::unordered_map<std::s
 	return false;
 }
 
-bool Node::sortWeighted(Pair& a, Pair& b){
+bool Node::sortWeighted(Pair& a, Pair& b)
+{
 	return a.first < b.first; 
+}
+
+void Node::serialize(std::ostream& os) 
+{
+  // 1) ID
+  shrinkToFit();
+
+  uInt n = adjacentNodes.size();
+
+  if (n == 0) {
+    return;
+  }
+
+  os.write(reinterpret_cast<const char*>(&id), sizeof(id));
+
+  // 2) Cantidad de adyacentes
+  
+  os.write(reinterpret_cast<const char*>(&n), sizeof(n));
+
+  // 3) Vector de adyacentes (bloque contiguo)
+ 
+  os.write(reinterpret_cast<const char*>(adjacentNodes.data()),
+    n * sizeof(uInt));
+  
+}
+
+void Node::serializeDelta16(std::ostream& os) 
+{
+  shrinkToFit();
+  uInt n = adjacentNodes.size();
+  if (n == 0) return;
+
+  os.write(reinterpret_cast<const char*>(&id), sizeof(id));
+  os.write(reinterpret_cast<const char*>(&n), sizeof(n));
+
+  os.write(reinterpret_cast<const char*>(&adjacentNodes[0]), sizeof(uInt));
+
+  // Ahora diferencias a partir del segundo
+  for (size_t i = 1; i < n; ++i) {
+    uInt diff = adjacentNodes[i] - adjacentNodes[i-1];
+    uInt rest = diff;
+    while (rest > std::numeric_limits<uint16_t>::max()) {
+      uint16_t zero = 0;
+      os.write(reinterpret_cast<const char*>(&zero), sizeof(zero));
+      rest -= std::numeric_limits<uint16_t>::max();
+    }
+    uint16_t d16 = static_cast<uint16_t>(rest);
+    os.write(reinterpret_cast<const char*>(&d16), sizeof(d16));
+  }
+}
+
+std::shared_ptr<Node> Node::deserialize(std::istream& is) 
+{
+  // 1) ID
+  auto temp = std::make_shared<Node>(0);
+  is.read(reinterpret_cast<char*>(&temp->id), sizeof(temp->id));
+
+  // 2) Cantidad de adyacentes
+  uInt n;
+  is.read(reinterpret_cast<char*>(&n), sizeof(n));
+
+  // 3) Vector de adyacentes
+  temp->adjacentNodes.resize(n);
+  if (n > 0) {
+    is.read(reinterpret_cast<char*>(temp->adjacentNodes.data()),
+            n * sizeof(uInt));
+  }
+  //temp->print();
+  return temp;
+}
+
+std::shared_ptr<Node> Node::deserializeDelta16(std::istream& is) 
+{
+  auto temp = std::make_shared<Node>(0);
+  is.read(reinterpret_cast<char*>(&temp->id), sizeof(temp->id));
+
+  uInt n;
+  is.read(reinterpret_cast<char*>(&n), sizeof(n));
+
+  temp->adjacentNodes.clear();
+  temp->adjacentNodes.reserve(n);
+
+  if (n == 0) return temp;
+
+  uInt prev = 0;
+  is.read(reinterpret_cast<char*>(&prev), sizeof(prev));
+  temp->adjacentNodes.push_back(prev);
+
+  for (uInt i = 1; i < n; ++i) {
+    uInt diff = 0;
+    while (true) {
+      uint16_t d16 = 0;
+      is.read(reinterpret_cast<char*>(&d16), sizeof(d16));
+      if (d16 == 0) {
+        diff += std::numeric_limits<uint16_t>::max();
+      } else {
+        diff += d16;
+        break;
+      }
+    }
+    prev += diff;
+    temp->adjacentNodes.push_back(prev);
+  }
+  return temp;
 }

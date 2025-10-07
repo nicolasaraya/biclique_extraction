@@ -31,6 +31,11 @@ class AttrMgr
     bool weighted() const { return std::stoi(arguments.at(_weighted)); }
     uint16_t maxIterations() const { return static_cast<uint16_t>(std::atoi(arguments.at(_maxIterations).c_str())); }
     bool optimize() const { return std::stoi(arguments.at(_optimize)); }
+    uint16_t lowerBound() const { return static_cast<uint16_t>(std::atoi(arguments.at(_lowerBound).c_str())); }
+    uint16_t upperBound() const { return static_cast<uint16_t>(std::atoi(arguments.at(_upperBound).c_str())); }
+    bool useDelta() const { return std::stoi(arguments.at(_useDelta)); }
+    bool saveTxt() const { return std::stoi(arguments.at(_saveTxt)); }
+    bool saveBin() const { return std::stoi(arguments.at(_saveBin)); }
 
     //
     void set_file(const std::string& f) { arguments[_file] = optimize() ? f : arguments[_file]; }
@@ -41,6 +46,7 @@ class AttrMgr
     void set_bsDecrease(const uint16_t& value) { arguments[_bsDecrease] = optimize() ? std::to_string(value) : arguments[_bsDecrease]; }
     void set_shingleSize(const uint32_t& value) { arguments[_shingleSize] = optimize() ? std::to_string(value) : arguments[_shingleSize]; }
     void set_threshold(const uint32_t& value) { arguments[_threshold] = optimize() ? std::to_string(value) : arguments[_threshold]; }
+    void set_lowerBound(const uint32_t& value) { arguments[_lowerBound] = optimize() ? std::to_string(value) : arguments[_lowerBound]; }
 
     AttrMgr(const AttrMgr&) = delete;
     AttrMgr& operator=(const AttrMgr&) = delete;
@@ -48,7 +54,6 @@ class AttrMgr
   private:
     AttrMgr() = default;
     ~AttrMgr() = default;
-
 
     //default params id
     std::string _optimize = "optimize";
@@ -63,20 +68,36 @@ class AttrMgr
     std::string _threshold = "threshold";
     std::string _weighted = "weighted";
     std::string _maxIterations = "maxIterations";
+    std::string _useDelta = "useDelta";
+    std::string _saveTxt = "saveTxt";
+    std::string _saveBin = "saveBin";
+    
+    //new
+    std::string _lowerBound = "lowerBound";
+    std::string _upperBound = "upperBound";
 
     std::unordered_map<std::string, std::string> arguments {
         {_file, ""}, 
-        {_numSignatures, "2"}, 
-        {_minClusterSize, "50"}, 
-        {_bicliqueSize, "1000"}, 
-        {_minAdyNodes, "10"},
-        {_bsDecrease, "100"},
+        {_numSignatures, "2"},
         {_shingleSize, "1"},
+
+        {_minClusterSize, "50"},    //used
+        {_bicliqueSize, "1000"},    //optimized
+        {_minAdyNodes, "10"},       //optimized
+        {_bsDecrease, "100"},       //not used in optimize
+        //
         {_selfLoop, "0"}, //boolean
         {_threshold, "200"},
         {_weighted, "0"}, //boolean
         {_maxIterations, "10"},
-        {_optimize, "0"}  //boolean
+
+        //
+        {_optimize, "0"},  //boolean
+        {_lowerBound, "80"},
+        {_upperBound, "100"},
+        {_useDelta, "0"},   //boolean
+        {_saveTxt, "0"},   //boolean
+        {_saveBin, "1"}   //boolean
     };
 };
 

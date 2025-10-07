@@ -233,7 +233,7 @@ namespace Weighted
       uInt S_size = S.size();
       uInt C_size = C_w.size(); 
 
-      if(S_size * C_size < _bicliqueSize) {
+      if(S_size * C_size < AttrMgr::get().bicliqueSize()) {
         continue; 
       }
 
@@ -270,4 +270,7 @@ namespace Weighted
   {
     return a.first < b.first;
   }
+  
+  void Graph::writeBicliqueBinary(){ ; }
+
 };
