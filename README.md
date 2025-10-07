@@ -15,7 +15,6 @@ Flags:
 * `-DBITS32` : compile with 32 bits 
 * `-DNUM_THREADS=value` : set number of threads
     
-    
 
 ## Execute
 
@@ -37,6 +36,10 @@ Flags:
 * `--threshold`: minimum bicliques founded per iteration
 * `--debug`: debug flag
 * `--iterations`: number of iterations
+* `--useDelta`: set 1 to sae using delta16
+* `--saveBin`: set 1 to save the result in binary, on by default
+* `--saveTxt`: set 1 to save the result in txt, off by default
+* `--optimize`: set 1 to run with optimized params, off by default
 
 
 Execution example 
