@@ -28,8 +28,9 @@ void GraphStd::extract()
   file.open(_pathLog, std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero log
   file.close();
 
+  _pathBicliques = utils::modify_path(getPath(), 4 ,"_bicliques.txt");
+
   if (AttrMgr::get().saveTxt()) {
-    _pathBicliques = utils::modify_path(getPath(), 4 ,"_bicliques.txt");
     file.open(_pathBicliques, std::ofstream::out | std::ofstream::trunc); // limpia el contenido del fichero bicliques y se cierra
     file << _numNodes << std::endl; //optional
     file.close();
