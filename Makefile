@@ -10,7 +10,9 @@ OBJS := $(patsubst %.cpp, build/%.o, $(SRCS))
 OUT := biclique_extractor
 OUT_DEBUG := biclique_extractor-g
 CC := g++
-CFLAGS := -std=c++20 -DBITS32 -I. -I./Graph -I./Utils
+BITSFLAG ?= -DBITS32
+CFLAGS = -std=c++20 -I. -I./Graph -I./Utils
+CFLAGS += $(BITSFLAG)
 LFLAGS := -lm -lpthread -lz
 
 debug_level ?= 3
@@ -26,12 +28,18 @@ endif
 #   Main Targets
 # ==============================
 
-.PHONY: all debug testGraphs clean gdb valgrind valgrind_leakcheck valgrind_extreme
+.PHONY: all debug bits32 bits64 testGraphs clean gdb valgrind valgrind_leakcheck valgrind_extreme
 
 all: $(OUT)
 
 debug: debug=1
 debug: $(OUT_DEBUG)
+
+bits32: BITSFLAG=-DBITS32
+bits32: all
+
+bits64: BITSFLAG=-DBITS64
+bits64: all
 
 # Exclude test sources from main build
 $(OUT): $(filter-out build/test/%.o, $(OBJS))

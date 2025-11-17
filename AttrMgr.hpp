@@ -17,6 +17,7 @@ class AttrMgr
 
     void parseArguments(int argc, char const *argv[]);
     void show();
+    void showDescription();
     
     //accessors
     std::string file() const { return arguments.at(_file); }
@@ -30,7 +31,8 @@ class AttrMgr
     uint32_t threshold() const { return static_cast<uint32_t>(std::atoi(arguments.at(_threshold).c_str()));}
     bool weighted() const { return std::stoi(arguments.at(_weighted)); }
     uint16_t maxIterations() const { return static_cast<uint16_t>(std::atoi(arguments.at(_maxIterations).c_str())); }
-    bool optimize() const { return std::stoi(arguments.at(_optimize)); }
+    bool optimize() const { return std::stoi(arguments.at(_adaptive)); }
+    bool adaptive() const { return std::stoi(arguments.at(_adaptive)); }
     uint16_t lowerBound() const { return static_cast<uint16_t>(std::atoi(arguments.at(_lowerBound).c_str())); }
     uint16_t upperBound() const { return static_cast<uint16_t>(std::atoi(arguments.at(_upperBound).c_str())); }
     bool useDelta() const { return std::stoi(arguments.at(_useDelta)); }
@@ -56,7 +58,7 @@ class AttrMgr
     ~AttrMgr() = default;
 
     //default params id
-    std::string _optimize = "optimize";
+    //std::string _optimize = "optimize";
     std::string _file = "file";
     std::string _numSignatures = "numSignatures";
     std::string _minClusterSize = "minClusterSize";
@@ -71,7 +73,7 @@ class AttrMgr
     std::string _useDelta = "useDelta";
     std::string _saveTxt = "saveTxt";
     std::string _saveBin = "saveBin";
-    
+    std::string _adaptive = "adaptive";
     //new
     std::string _lowerBound = "lowerBound";
     std::string _upperBound = "upperBound";
@@ -92,7 +94,7 @@ class AttrMgr
         {_maxIterations, "10"},
 
         //
-        {_optimize, "0"},  //boolean
+        {_adaptive, "1"},  //boolean
         {_lowerBound, "80"},
         {_upperBound, "100"},
         {_useDelta, "0"},   //boolean

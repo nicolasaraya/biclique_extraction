@@ -2,6 +2,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <csignal>
+#include <cstdlib>
 
 #include <Graph.hpp>
 #include <GraphWeighted.hpp>
@@ -10,6 +11,15 @@
 
 int main(int argc, char const *argv[])
 {
+  if (argc <= 1) {
+    std::cout << "No arguments provided." << std::endl;
+    std::cout << "Usage: " << argv[0]
+              << " --file <path> [--numSignatures 2 --minClusterSize 50 ...]" << std::endl;
+    std::cout << "Available attributes:" << std::endl;
+    AttrMgr::get().showDescription();
+    return EXIT_FAILURE;
+  }
+
   signal(SIGINT, utils::SigHnd::signal_handler);
   AttrMgr::get().parseArguments(argc, argv);
   AttrMgr::get().show();
