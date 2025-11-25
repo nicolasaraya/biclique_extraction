@@ -107,7 +107,7 @@ class Node
 		void print();
 		void printBinary();
     //void writeInBinaryFile(std::ostream& os);
-    void serialize(std::ostream& os);
+    bool serialize(std::ostream& os);
     void serializeDelta16(std::ostream& os);
     static std::shared_ptr<Node> deserialize(std::istream& is);
     static std::shared_ptr<Node> deserializeDelta16(std::istream& is);

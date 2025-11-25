@@ -577,7 +577,7 @@ bool Node::sortWeighted(Pair& a, Pair& b)
 	return a.first < b.first; 
 }
 
-void Node::serialize(std::ostream& os) 
+bool Node::serialize(std::ostream& os) 
 {
   // 1) ID
   shrinkToFit();
@@ -585,19 +585,18 @@ void Node::serialize(std::ostream& os)
   uInt n = adjacentNodes.size();
 
   if (n == 0) {
-    return;
+    return false;
   }
 
   os.write(reinterpret_cast<const char*>(&id), sizeof(id));
 
   // 2) Cantidad de adyacentes
-  
   os.write(reinterpret_cast<const char*>(&n), sizeof(n));
 
   // 3) Vector de adyacentes (bloque contiguo)
- 
-  os.write(reinterpret_cast<const char*>(adjacentNodes.data()),
-    n * sizeof(uInt));
+  os.write(reinterpret_cast<const char*>(adjacentNodes.data()), n * sizeof(uInt));
+
+  return true;
   
 }
 

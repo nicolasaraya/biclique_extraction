@@ -177,7 +177,7 @@ namespace Boolean
     file << _originalNumNodes << std::endl;
 
     for (uint64_t i = 0; i < matrix_size ; i++) {
-      if (_matrix.at(i) == nullptr) {
+      if (_matrix.at(i) == nullptr or _matrix.at(i)->edgesSize() == 0) {
         continue; 
       }
 
@@ -203,8 +203,9 @@ namespace Boolean
       if (not node) {
         continue;
       }
-      node->serialize(ss);
-      ++size;
+      if (node->serialize(ss)) {
+        ++size;
+      }
     }
 
     os.write(reinterpret_cast<const char*>(&size), sizeof(size));
@@ -277,7 +278,6 @@ namespace Boolean
     }
 
     std::cout << "Writing: " << pathFile << std::endl;
-
 
     std::string raw = oss.str();
 
@@ -431,8 +431,6 @@ namespace Boolean
     }
     return; 
   }
-
-
 
   bool Graph::sortC(const uInt& a, const uInt& b)
   {
