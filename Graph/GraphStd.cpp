@@ -75,17 +75,20 @@ void GraphStd::compress()
 
   TIMERSTART(extraction_biclique);
   while (currIteration <= _maxIterations) {
-    
     if (utils::SigHnd::get_state()) {
       std::cout << "Interrupt in " << currIteration << " iteration" << std::endl;
       break;
     }
 
-    TIMERSTART(iteration);
-    std::cout << std::endl << std::endl << "Iteration: " << currIteration << std::endl;
+    _biclique_sxc_sizeIter = 0;
+    _biclique_s_sizeIter = 0;
+    _biclique_c_sizeIter = 0;
 
     uint64_t initialEdges = _numEdges;
     _n_bicliques_iter = 0;
+
+    TIMERSTART(iteration);
+    std::cout << std::endl << std::endl << "Iteration: " << currIteration << std::endl;
 
     std::cout << "Compute Shingles" << std::endl;
     TIMERSTART(compute_shingles);
@@ -117,6 +120,17 @@ void GraphStd::compress()
     _sumCompression += currentCompression;
     auto avgBicliques = (double)_totalBiclique / currIteration;
 
+    double ratioIter = (_biclique_s_sizeIter + _biclique_c_sizeIter + _originalNumEdges - _biclique_sxc_sizeIter);
+    std::cout << "Ratio iter before division: " << ratioIter << std::endl;
+    ratioIter /= _originalNumEdges;
+    ratioIter = 1.0 - ratioIter;
+    ratioIter *= 100.0;
+
+    double ratioCum = (_biclique_s_size + _biclique_c_size + current_edges);
+    ratioCum /= _originalNumEdges;
+    ratioCum = 1.0 - ratioCum;
+    ratioCum *= 100.0;
+
     std::ostringstream iter_summary;
     iter_summary << "****************************************************************" << std::endl;
     iter_summary << "Iteration nº: " << currIteration << std::endl;
@@ -128,6 +142,17 @@ void GraphStd::compress()
     iter_summary << "Total Bicliques founded: " << _totalBiclique << std::endl;
     iter_summary << "Compression percentage iteration: " << currentCompression << std::endl;
     iter_summary << "Total Compression percentage: " << _sumCompression << std::endl;
+    iter_summary << "Ratio Iter: " << ratioIter << "%" << std::endl;
+    iter_summary << "Ratio Cumulative: " << ratioCum << "%" << std::endl;
+    iter_summary << "S this iteration: " << _biclique_s_sizeIter << std::endl;
+    iter_summary << "C this iteration: " << _biclique_c_sizeIter << std::endl;
+    iter_summary << "SxC this iteration: " << _biclique_sxc_sizeIter << std::endl;
+    iter_summary << "S+C this iteration: " << (_biclique_s_sizeIter + _biclique_c_sizeIter) << std::endl;
+    iter_summary << "S cumulative: " << _biclique_s_size << std::endl;
+    iter_summary << "C cumulative: " << _biclique_c_size << std::endl;
+    iter_summary << "SxC cumulative: " << _biclique_sxc_size << std::endl;
+    iter_summary << "S+C cumulative: " << (_biclique_s_size + _biclique_c_size) << std::endl;
+    iter_summary << "****************************************************************" << std::endl;
 
     std::ofstream file;
     file.open(_pathLog, std::fstream::app);
@@ -142,6 +167,7 @@ void GraphStd::compress()
     }
 
     if (_optimize and _n_bicliques_iter < avgBicliques * 0.8 and currIteration > 1) {
+      std::cout << "Adjusting parameters for next iteration" << std::endl;
       auto minAdyNodes = AttrMgr::get().minAdyNodes() * 0.8;
       
       if (minAdyNodes <= _minMinAdyNodes) {
@@ -160,7 +186,8 @@ void GraphStd::compress()
       
       // AttrMgr::get().set_bicliqueSize(_bicliqueSize);
       std::cout << "Estimated _minAdyNodes: " << minAdyNodes << std::endl;
-      AttrMgr::get().show();
+
+      //AttrMgr::get().show();
     }
     
     if (_n_bicliques_iter < AttrMgr::get().threshold() and not _optimize) {
@@ -190,6 +217,11 @@ void GraphStd::compress()
 
   double compressionPercentage = (double(_originalNumEdges - all_edges_size()) * 100) / double(_originalNumEdges);
 
+  double finalRatio = (_biclique_s_size + _biclique_c_size + all_edges_size());
+  finalRatio /= _originalNumEdges;
+  finalRatio = 1.0 - finalRatio;
+  finalRatio *= 100.0;
+
   std::ofstream file;
   std::ostringstream summary;
   summary << "****************************************************************" << std::endl;
@@ -205,6 +237,7 @@ void GraphStd::compress()
   summary << "SxC/S+C: " << (_biclique_s_size + _biclique_c_size > 0 ?
                   float(_biclique_sxc_size) / float(_biclique_s_size + _biclique_c_size) : 0)
           << " | Compression: " << compressionPercentage << "%" << std::endl;
+  summary << "Final Ratio: " << finalRatio << "%" << std::endl;
 
   file.open(_pathLog, std::fstream::app);
   file << summary.str();

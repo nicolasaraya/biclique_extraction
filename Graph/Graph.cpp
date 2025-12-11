@@ -356,7 +356,6 @@ namespace Boolean
       file.open(_pathBicliques, std::fstream::app);
       assert(file.is_open());
     }
-    
 
     for (auto& biclique : bicliques) {
       std::vector<NodePtr>& S = biclique->S;
@@ -414,13 +413,13 @@ namespace Boolean
       //file << "SxC - C = " << (C_size * S_size) - C_size << endl; 
       _n_bicliques_iter += 1;
       _biclique_s_size += S_size;
-      _biclique_s_sizeIter = S_size;
+      _biclique_s_sizeIter += S_size;
 
       _biclique_c_size += C_size;
-      _biclique_c_sizeIter = C_size;
+      _biclique_c_sizeIter += C_size;
       
       _biclique_sxc_size += (S_size * C_size);
-      _biclique_sxc_sizeIter = S_size * C_size;
+      _biclique_sxc_sizeIter += S_size * C_size;
 
       if (_keepBicliques) {
         _savedBicliques.push_back(std::move(biclique));
